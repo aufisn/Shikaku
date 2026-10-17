@@ -135,6 +135,10 @@ button:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); 
 .mini button + button { border-left: 1px solid var(--line); }
 .mini button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
 .ghost { border: 1px solid var(--line); background: transparent; border-radius: 9px; padding: 8px 12px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.swatch { flex: none; width: 44px; height: 30px; border-radius: 7px; border: 2px solid; background: var(--surface); }
+.srange { min-height: 36px; gap: 10px; }
+.srange .end { font-size: 12px; color: var(--muted); }
+.srange input { max-width: none; }
 .snote { margin: 0; font-size: 12px; color: var(--muted); min-height: 1.4em; }
 
 #g2 .seg{display: grid; grid-template-columns: repeat(var(--cols, 2), 1fr);
@@ -501,6 +505,8 @@ body { margin: 0; }
         <div class="mini" id="sSwipe" role="group" aria-label="Swipe speed">
           <button type="button" data-v="0" aria-pressed="false">Slow</button><button type="button" data-v="1" aria-pressed="true">Normal</button><button type="button" data-v="2" aria-pressed="false">Fast</button>
         </div></div>
+      <div class="srow"><label for="sFill">Finished boxes<small>How strongly a completed box is coloured. Empty space and the box you are placing stay see-through.</small></label><span class="swatch" id="sFillSwatch" aria-hidden="true"></span></div>
+      <div class="srow srange"><span class="end">Faint</span><input type="range" id="sFill" min="0" max="100" step="5"><span class="end">Solid</span></div>
     </div>
     <p class="snote">Saved on this device.</p>
   </section>
@@ -509,7 +515,7 @@ body { margin: 0; }
 (function () {
 'use strict';
 var KEY = 'shikaku-settings';
-var DEF = { sound: true, vol: 0.6, vib: true, vibLevel: 1, swipe: 1 };
+var DEF = { sound: true, vol: 0.6, vib: true, vibLevel: 1, swipe: 1, fill: 0.5 };
 var st = {}; Object.keys(DEF).forEach(function (k) { st[k] = DEF[k]; });
 try {
   var o = JSON.parse(localStorage.getItem(KEY) || '{}');
@@ -518,6 +524,7 @@ try {
   if (typeof o.vol === 'number' && o.vol >= 0 && o.vol <= 1) st.vol = o.vol;
   if (o.vibLevel === 0 || o.vibLevel === 1 || o.vibLevel === 2) st.vibLevel = o.vibLevel;
   if (o.swipe === 0 || o.swipe === 1 || o.swipe === 2) st.swipe = o.swipe;
+  if (typeof o.fill === 'number' && o.fill >= 0 && o.fill <= 1) st.fill = o.fill;
 } catch (e) {}
 function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
 
@@ -563,7 +570,8 @@ function buzz(p) {
 }
 window.FX = {
   get: function () { return st; },
-  set: function (k, v) { if (k in DEF) { st[k] = v; save(); } },
+  set: function (k, v) { if (k in DEF) { st[k] = v; save(); try { window.dispatchEvent(new Event('shikaku-settings')); } catch (e) {} } },
+  fillMul: function () { return 0.25 * Math.pow(16, st.fill); },
   play: function (n) {
     if (st.sound && SND[n] && st.vol > 0 && ctx()) { try { SND[n](); } catch (e) {} }
     if (st.vib && VIB[n]) buzz(VIB[n]);
@@ -1610,7 +1618,7 @@ function renderCube(ctx, W, H, S, V, T) {
           var nx = c.x + DIRS[d][0], ny = c.y + DIRS[d][1], nz = c.z + DIRS[d][2];
           var inside = nx >= 0 && ny >= 0 && nz >= 0 && nx < n && ny < n && nz < n;
           if (inside && S.boxOf[nx + n * (ny + n * nz)] === b) continue;
-          fillQuad(ctx, pts, FACE_IDX[d], glass(hue, (pass ? T.glassA : T.glassA * 0.55) + (sel ? 0.1 : 0), T));
+          fillQuad(ctx, pts, FACE_IDX[d], glass(hue, Math.min(0.92, (pass ? T.glassA : T.glassA * 0.55) * (T.fillMul || 1) + (sel ? 0.1 : 0)), T));
         }
       }
       continue;
@@ -1814,7 +1822,7 @@ function frame() {
     if (t < 1) moving = true; else tween = null;
   }
   if (spin > 0) { V.yaw += 0.016; spin--; moving = true; }
-  if (S) lastHits = renderCube(ctx, W, H, S, V, T);
+  if (S) { T.fillMul = window.FX ? window.FX.fillMul() : 1; lastHits = renderCube(ctx, W, H, S, V, T); }
   if (moving) request();
 }
 function snapTo(name) {
@@ -2191,6 +2199,7 @@ try { new MutationObserver(themeChanged).observe(document.documentElement, { att
 if (typeof ResizeObserver !== 'undefined') new ResizeObserver(resize).observe(stage); else window.addEventListener('resize', resize);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { T = readTheme(); request(); });
 resize();
+window.addEventListener('shikaku-settings', request);
 newPuzzle(3);
 window.__games = window.__games || {};
 window.__games.d3 = { inProgress: function () { return !!S && !S.solved && S.boxes.filter(Boolean).length > (S.given >= 0 ? 1 : 0); }, show: function () { resize(); } };
@@ -2262,6 +2271,12 @@ var FX = window.FX, gear = document.getElementById('gear'), sheet = document.get
 var sSound = document.getElementById('sSound'), sVol = document.getElementById('sVol'), sVib = document.getElementById('sVib');
 var sLevel = document.getElementById('sLevel'), sSwipe = document.getElementById('sSwipe'), note = document.getElementById('sVibNote');
 function paintSeg(el, v) { Array.prototype.forEach.call(el.querySelectorAll('button'), function (b) { b.setAttribute('aria-pressed', String(+b.dataset.v === v)); }); }
+function paintSwatch() {
+  var a = Math.min(0.92, 0.2 * FX.fillMul()), el = document.getElementById('sFillSwatch');
+  var t = 'hsla(205, 60%, 50%, ' + a + ')';
+  el.style.background = 'linear-gradient(' + t + ',' + t + '), var(--surface)';
+  el.style.borderColor = 'hsl(205, 55%, 45%)';
+}
 function paint() {
   var s = FX.get();
   sSound.setAttribute('aria-checked', String(s.sound));
@@ -2271,6 +2286,8 @@ function paint() {
   sVib.disabled = !FX.canVibrate();
   paintSeg(sLevel, s.vibLevel);
   paintSeg(sSwipe, s.swipe);
+  document.getElementById('sFill').value = Math.round(s.fill * 100);
+  paintSwatch();
   document.getElementById('s3d').hidden = !(window.__shell && window.__shell.mode() === '3d');
   if (!FX.canVibrate()) note.textContent = 'This browser does not support vibration.';
 }
@@ -2306,6 +2323,7 @@ sVol.addEventListener('change', function () { FX.sample(); });
 document.getElementById('sSample').addEventListener('click', function () { var was = FX.get().sound; if (!was) FX.set('sound', true); FX.sample(); if (!was) FX.set('sound', false); });
 sVib.addEventListener('click', function () { FX.set('vib', !FX.get().vib); paint(); if (FX.get().vib) FX.play('tap'); });
 sLevel.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; FX.set('vibLevel', +b.dataset.v); paint(); FX.testVibe(); });
+document.getElementById('sFill').addEventListener('input', function () { FX.set('fill', this.value / 100); paintSwatch(); });
 sSwipe.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; FX.set('swipe', +b.dataset.v); paint(); });
 document.getElementById('sVibTest').addEventListener('click', function () {
   if (!FX.canVibrate()) { note.textContent = 'This browser does not support vibration.'; return; }
