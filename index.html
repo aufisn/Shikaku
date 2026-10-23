@@ -1471,7 +1471,7 @@ function loadDaily() {
       S.solved = true;
       S.hints = done.hints;
       S.elapsed = done.secs;
-      S.rects = S.solution.map(function (cd, i) { return { r: cd.r, c: cd.c, h: cd.h, w: cd.w, hue: HUES[i % HUES.length] }; });
+      S.rects = huedRects(S.solution);
     } else {
       restoreDraft();
     }
@@ -1608,6 +1608,22 @@ function describeSel() {
 function overlap(a, b) {
   return a.r < b.r + b.h && b.r < a.r + a.h && a.c < b.c + b.w && b.c < a.c + a.w;
 }
+// Colour: the next hue in the cycle that no touching rectangle already wears (the plain cycle when all of them are taken).
+function touches(a, b) {
+  var rows = a.r < b.r + b.h && b.r < a.r + a.h, cols = a.c < b.c + b.w && b.c < a.c + a.w;
+  return (rows && (a.c + a.w === b.c || b.c + b.w === a.c)) || (cols && (a.r + a.h === b.r || b.r + b.h === a.r));
+}
+function freshHue(rc, start, list) {
+  var used = {};
+  list.forEach(function (x) { if (touches(rc, x)) used[x.hue] = 1; });
+  for (var k = 0; k < HUES.length; k++) { var h = HUES[(start + k) % HUES.length]; if (!used[h]) return h; }
+  return HUES[start % HUES.length];
+}
+function huedRects(pieces) {
+  var out = [];
+  pieces.forEach(function (x, i) { var rc = { r: x.r, c: x.c, h: x.h, w: x.w }; rc.hue = freshHue(rc, i, out); out.push(rc); });
+  return out;
+}
 function pushUndo() { S.undo.push(JSON.stringify(S.rects)); if (S.undo.length > 100) S.undo.shift(); }
 
 function startTimer() {
@@ -1656,8 +1672,8 @@ function resetRun() {
 
 function placeRect(rc, tone) {
   pushUndo();
-  rc.hue = HUES[S.nextHue++ % HUES.length];
   S.rects = S.rects.filter(function (x) { return !overlap(x, rc); });
+  rc.hue = freshHue(rc, S.nextHue++, S.rects);
   S.rects.push(rc);
   startTimer();
   afterChange();
@@ -1729,7 +1745,7 @@ function replayOpen() {
 function replayShow(p) {
   if (!RP || RP.s !== S) return null;
   var o = S.order, T = o.length;
-  S.rects = o.slice(0, p).map(function (x, i) { return { r: x.piece.r, c: x.piece.c, h: x.piece.h, w: x.piece.w, hue: HUES[i % HUES.length] }; });
+  S.rects = huedRects(o.slice(0, p).map(function (x) { return x.piece; }));
   S.hint = null; S.hintOn = false; S.sel = -1;
   render();
   if (p >= T) return { step: null };
@@ -3823,10 +3839,21 @@ function resetRun() {
 }
 
 /* ---------- placing ---------- */
+// Colour: the next hue in the cycle that no touching block already wears (the plain cycle when all of them are taken).
+function freshHue(b, start, list) {
+  var near = {}, used = {};
+  b.cells.forEach(function (id) {
+    var c = lift(S.P, id);
+    [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(function (d) { near[BC.cellId(S.P, c.i + d[0], c.j + d[1])] = 1; });
+  });
+  list.forEach(function (x) { for (var q = 0; q < x.cells.length; q++) if (near[x.cells[q]]) { used[x.hue] = 1; break; } });
+  for (var k = 0; k < HUES.length; k++) { var h = HUES[(start + k) % HUES.length]; if (!used[h]) return h; }
+  return HUES[start % HUES.length];
+}
 function placeBlock(b) {
   pushUndo();
-  b.hue = HUES[S.nextHue++ % HUES.length];
   S.blocks = S.blocks.filter(function (x) { return !overlap(x.cells, b.cells); });
+  b.hue = freshHue(b, S.nextHue++, S.blocks);
   S.blocks.push(b);
   startTimer();
   afterChange();
@@ -3938,7 +3965,8 @@ function replayOpen() {
 function replayShow(p) {
   if (!RP || RP.s !== S) return null;
   var o = S.order, T = o.length, g = S.g;
-  S.blocks = o.slice(0, p).map(function (x, i) { return mk(x.piece.i0, x.piece.j0, x.piece.A, x.piece.B, HUES[i % HUES.length]); });
+  S.blocks = [];
+  o.slice(0, p).forEach(function (x, i) { var bk = mk(x.piece.i0, x.piece.j0, x.piece.A, x.piece.B, 0); bk.hue = freshHue(bk, i, S.blocks); S.blocks.push(bk); });
   S.hint = null; S.hintOn = false; S.sel = -1;
   render();
   if (p >= T) return { step: null };
