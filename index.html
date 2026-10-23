@@ -1137,6 +1137,7 @@ const AREA_WEIGHT = [0, 0.12, 1, 1.2, 1.2, 0.6, 1, 0.35, 0.8, 0.6, 0.4, 0.15, 0.
 
 // Random tiling of the grid into rectangles, one number placed in each.
 function randomTiling(R, C, rng, cfg) {
+  const RB = cfg.rb || 1;
   const cover = new Uint8Array(R * C);
   const nums = [];
   for (let r = 0; r < R; r++) {
@@ -1156,8 +1157,9 @@ function randomTiling(R, C, rng, cfg) {
           const a = w * hh;
           if (a > cfg.maxArea) break;
           const wt = AREA_WEIGHT[a] === undefined ? 0.1 : AREA_WEIGHT[a];
-          opts.push({ w, h: hh, wt });
-          total += wt;
+          const wt2 = wt * (w >= 2 && hh >= 2 ? RB : 1);
+          opts.push({ w, h: hh, wt: wt2 });
+          total += wt2;
         }
       }
       let pick = rng() * total, ch = opts[opts.length - 1];
@@ -1179,16 +1181,24 @@ function generate(R, C, rng, cfg) {
     for (const n of nums) if (n.v === 1) ones++;
     if (ones > cfg.maxOnes) continue;
     const res = solve(R, C, nums, 2, cfg.budget);
-    if (res.count === 1 && !res.aborted) return { nums, solution: res.solution, tries: t + 1 };
+    if (res.count === 1 && !res.aborted) {
+      if (cfg.maxShare) {   // true rectangles (both sides 2 or more) as a share of all blocks: at least minShare, never above maxShare
+        let rc = 0;
+        for (const p of res.solution) if (p.h >= 2 && p.w >= 2) rc++;
+        const sh = rc / res.solution.length;
+        if (sh > cfg.maxShare || sh < cfg.minShare) continue;
+      }
+      return { nums, solution: res.solution, tries: t + 1 };
+    }
   }
   return null;
 }
 
 var LEVELS = {
-  5:  { name: 'Easy',   maxArea: 8,  maxOnes: 1, tries: 3000,  budget: 20000 },
-  7:  { name: 'Medium', maxArea: 10, maxOnes: 2, tries: 6000,  budget: 30000 },
-  10: { name: 'Hard',   maxArea: 14, maxOnes: 3, tries: 20000, budget: 60000 },
-  13: { name: 'Expert', maxArea: 16, maxOnes: 4, tries: 30000, budget: 80000 }
+  5:  { name: 'Easy',   maxArea: 8,  maxOnes: 1, tries: 3000,  budget: 20000, rb: 100, minShare: 0.45, maxShare: 0.6 },
+  7:  { name: 'Medium', maxArea: 10, maxOnes: 2, tries: 6000,  budget: 30000, rb: 100, minShare: 0.5, maxShare: 0.6 },
+  10: { name: 'Hard',   maxArea: 14, maxOnes: 3, tries: 20000, budget: 60000, rb: 100, minShare: 0.5, maxShare: 0.6 },
+  13: { name: 'Expert', maxArea: 16, maxOnes: 4, tries: 30000, budget: 80000, rb: 100, minShare: 0.5, maxShare: 0.6 }
 };
 
 // Weekday ramp, keyed by Date.getDay(): Sun 0 ... Sat 6.
