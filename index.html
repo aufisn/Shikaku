@@ -1,5 +1,5 @@
-<!doctype html><html><head><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%232457c5%27/%3E%3Cpath d=%27M7 7h8v8H7zM17 7h8v4h-8zM17 13h8v12h-8zM7 17h8v8H7z%27 fill=%27none%27 stroke=%27white%27 stroke-width=%272%27/%3E%3C/svg%3E"><title>Shikaku</title><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Shikaku</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%232457c5%27/%3E%3Crect x=%277%27 y=%277%27 width=%2718%27 height=%2718%27 rx=%273%27 fill=%27none%27 stroke=%27white%27 stroke-width=%273%27/%3E%3C/svg%3E"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Shikaku</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -70,21 +70,22 @@ button:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); 
 
 [hidden] { display: none !important; }
 /* ---- 2D / 3D switch ---- */
-#g2, #g3 { display: flex; flex-direction: column; gap: 14px; }
+#g2, #g3, #gB { display: flex; flex-direction: column; gap: 14px; }
 .ctl { display: flex; gap: 8px; align-items: stretch; }
 .dimsw {
-  position: relative; display: grid; grid-template-columns: 1fr 1fr; flex: 0 0 auto; width: 112px; padding: 3px; gap: 0;
+  position: relative; display: grid; grid-template-columns: repeat(3, 1fr); flex: 0 0 auto; width: 200px; padding: 3px; gap: 0;
   background: var(--surface); border: 1px solid var(--line); border-radius: 14px; isolation: isolate;
 }
 .dimsw::before {
-  content: ""; position: absolute; z-index: -1; top: 3px; bottom: 3px; left: 3px; width: calc(50% - 3px);
+  content: ""; position: absolute; z-index: -1; top: 3px; bottom: 3px; left: 3px; width: calc((100% - 6px) / 3);
   background: var(--accent); border-radius: 11px; transform: translateX(0); transition: transform 0.26s cubic-bezier(.3,.8,.3,1);
 }
 .dimsw[data-pos="3d"]::before { transform: translateX(100%); }
+.dimsw[data-pos="bl"]::before { transform: translateX(200%); }
 .dimsw button {
   border: 0; background: transparent; cursor: pointer; padding: 0 4px; border-radius: 11px; min-height: 40px;
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-display); font-weight: 800; font-size: 19px; line-height: 1; letter-spacing: -0.01em; color: var(--ink);
+  font-family: var(--font-display); font-weight: 800; font-size: 16px; line-height: 1; letter-spacing: -0.01em; color: var(--ink);
   transition: color 0.2s;
 }
 .dimsw button[aria-pressed="true"] { color: var(--accent-ink); }
@@ -135,7 +136,7 @@ body { padding-block: 14px 40px; }
 .pbox .playbtn svg { width: 38px; height: 38px; margin-left: 4px; }
 .pbox .pnote { margin: 0; font-size: 15px; font-weight: 600; color: var(--muted); text-wrap: pretty; }
 .pbox .pnote.warn { color: var(--bad); }
-#g2, #g3 { position: relative; }
+#g2, #g3, #gB { position: relative; }
 .wbtns { display: flex; flex-direction: column; gap: 8px; }
 .wbtns .done { padding: 13px 16px; font-size: 15px; }
 .wbtns .danger { border: 1px solid var(--bad); color: var(--bad); background: transparent; border-radius: 10px; padding: 12px 16px; font-size: 15px; font-weight: 600; cursor: pointer; }
@@ -225,102 +226,102 @@ body { padding-block: 14px 40px; }
 .snote { margin: 0; font-size: 12px; color: var(--muted); min-height: 1.4em; }
 
 
-:is(#g2, .g2s) .seg{display: grid; grid-template-columns: repeat(var(--cols, 2), 1fr);
+:is(#g2, .g2s, #gB, .gBs) .seg{display: grid; grid-template-columns: repeat(var(--cols, 2), 1fr);
   border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface);}
-:is(#g2, .g2s) .seg button{border: 0; background: transparent; cursor: pointer; padding: 9px 4px 8px;
+:is(#g2, .g2s, #gB, .gBs) .seg button{border: 0; background: transparent; cursor: pointer; padding: 9px 4px 8px;
   display: flex; flex-direction: column; align-items: center; gap: 1px;
   font-size: 13px; font-weight: 600;}
-:is(#g2, .g2s) .seg button + button{border-left: 1px solid var(--line);}
-:is(#g2, .g2s) .seg button small{font-family: var(--font-mono); font-weight: 500; font-size: 11px; opacity: 0.75;}
-:is(#g2, .g2s) .seg button[aria-pressed="true"]{background: var(--accent); color: var(--accent-ink);}
-:is(#g2, .g2s) .seg button[aria-pressed="true"] small{opacity: 0.9;}
-:is(#g2, .g2s) .stats{display: flex; justify-content: space-between; gap: 4px 8px; flex-wrap: wrap;
+:is(#g2, .g2s, #gB, .gBs) .seg button + button{border-left: 1px solid var(--line);}
+:is(#g2, .g2s, #gB, .gBs) .seg button small{font-family: var(--font-mono); font-weight: 500; font-size: 11px; opacity: 0.75;}
+:is(#g2, .g2s, #gB, .gBs) .seg button[aria-pressed="true"]{background: var(--accent); color: var(--accent-ink);}
+:is(#g2, .g2s, #gB, .gBs) .seg button[aria-pressed="true"] small{opacity: 0.9;}
+:is(#g2, .g2s, #gB, .gBs) .stats{display: flex; justify-content: space-between; gap: 4px 8px; flex-wrap: wrap;
   font-family: var(--font-mono); font-size: 12px; color: var(--muted);
   font-variant-numeric: tabular-nums;}
-:is(#g2, .g2s) .stats b{color: var(--ink); font-weight: 600;}
-:is(#g2, .g2s) .pz{border: 0; background: none; padding: 6px 8px; margin: -6px -8px; font: inherit; color: inherit; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; border-radius: 8px;}
-:is(#g2, .g2s) .pz:disabled{opacity: 1; cursor: default;}
-:is(#g2, .g2s) .pz:disabled svg{opacity: 0.35;}
-:is(#g2, .g2s) .pz.used svg{color: var(--hint, #d97706);}
-:is(#g2, .g2s) .pz .ic-play{display: none;}
-:is(#g2, .g2s) .pz.paused .ic-play{display: block; color: var(--accent);}
-:is(#g2, .g2s) .pz.paused .ic-pause{display: none;}
-:is(#g2, .g2s) .stage{container-type: inline-size; width: 100%;}
-:is(#g2, .g2s) .board{position: relative; width: 100%; aspect-ratio: 1;
+:is(#g2, .g2s, #gB, .gBs) .stats b{color: var(--ink); font-weight: 600;}
+:is(#g2, .g2s, #gB, .gBs) .pz{border: 0; background: none; padding: 6px 8px; margin: -6px -8px; font: inherit; color: inherit; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; border-radius: 8px;}
+:is(#g2, .g2s, #gB, .gBs) .pz:disabled{opacity: 1; cursor: default;}
+:is(#g2, .g2s, #gB, .gBs) .pz:disabled svg{opacity: 0.35;}
+:is(#g2, .g2s, #gB, .gBs) .pz.used svg{color: var(--hint, #d97706);}
+:is(#g2, .g2s, #gB, .gBs) .pz .ic-play{display: none;}
+:is(#g2, .g2s, #gB, .gBs) .pz.paused .ic-play{display: block; color: var(--accent);}
+:is(#g2, .g2s, #gB, .gBs) .pz.paused .ic-pause{display: none;}
+:is(#g2, .g2s, #gB, .gBs) .stage{container-type: inline-size; width: 100%;}
+:is(#g2, .g2s, #gB, .gBs) .board{position: relative; width: 100%; aspect-ratio: 1;
   background: var(--surface); border-radius: 6px;
   box-shadow: 0 0 0 2px var(--frame);
   touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
   overflow: hidden; cursor: crosshair;}
-:is(#g2, .g2s) .layer{position: absolute; inset: 0; pointer-events: none;}
-:is(#g2, .g2s) .rects{z-index: 1;}
-:is(#g2, .g2s) .cand{z-index: 2;}
-:is(#g2, .g2s) .draftl{z-index: 4;}
-:is(#g2, .g2s) .cells{position: absolute; inset: 0; z-index: 3; pointer-events: none;
+:is(#g2, .g2s, #gB, .gBs) .layer{position: absolute; inset: 0; pointer-events: none;}
+:is(#g2, .g2s, #gB, .gBs) .rects{z-index: 1;}
+:is(#g2, .g2s, #gB, .gBs) .cand{z-index: 2;}
+:is(#g2, .g2s, #gB, .gBs) .draftl{z-index: 4;}
+:is(#g2, .g2s, #gB, .gBs) .cells{position: absolute; inset: 0; z-index: 3; pointer-events: none;
   display: grid; grid-template-columns: repeat(var(--n), 1fr); grid-template-rows: repeat(var(--n), 1fr);}
-:is(#g2, .g2s) .cell{display: grid; place-items: center;
+:is(#g2, .g2s, #gB, .gBs) .cell{display: grid; place-items: center;
   box-shadow: inset -1px -1px 0 var(--line);
   font-family: var(--font-mono); font-weight: 600;
   font-size: clamp(11px, 5vw, 22px);
   font-size: calc(46cqw / var(--n));
   font-variant-numeric: tabular-nums;}
-:is(#g2, .g2s) .cell span{display: grid; place-items: center; line-height: 1; min-width: 1.5em; height: 1.5em; border-radius: 50%;}
-:is(#g2, .g2s) .cell.bad span{color: var(--bad);}
-:is(#g2, .g2s) .cell.sel span{background: var(--accent); color: var(--accent-ink);}
-:is(#g2, .g2s) .rect{position: absolute;}
-:is(#g2, .g2s) .rect i{position: absolute; inset: 1.5px; display: block; border-radius: 5px;}
-:is(#g2, .g2s) .rects .rect i{background: hsl(var(--h) var(--rs) var(--rl));
+:is(#g2, .g2s, #gB, .gBs) .cell span{display: grid; place-items: center; line-height: 1; min-width: 1.5em; height: 1.5em; border-radius: 50%;}
+:is(#g2, .g2s, #gB, .gBs) .cell.bad span{color: var(--bad);}
+:is(#g2, .g2s, #gB, .gBs) .cell.sel span{background: var(--accent); color: var(--accent-ink);}
+:is(#g2, .g2s, #gB, .gBs) .rect{position: absolute;}
+:is(#g2, .g2s, #gB, .gBs) .rect i{position: absolute; inset: 1.5px; display: block; border-radius: 5px;}
+:is(#g2, .g2s, #gB, .gBs) .rects .rect i{background: hsl(var(--h) var(--rs) var(--rl));
   border: 2px solid hsl(var(--h) var(--bs) var(--bl));}
-:is(#g2, .g2s) .rects .rect.bad i{background:
+:is(#g2, .g2s, #gB, .gBs) .rects .rect.bad i{background:
     repeating-linear-gradient(135deg, color-mix(in srgb, var(--bad) 26%, transparent) 0 6px, transparent 6px 12px),
     var(--surface);
   border-color: var(--bad);}
-:is(#g2, .g2s) .cand .rect i{background: color-mix(in srgb, var(--accent) 11%, transparent);
+:is(#g2, .g2s, #gB, .gBs) .cand .rect i{background: color-mix(in srgb, var(--accent) 11%, transparent);
   border: 1.5px dashed color-mix(in srgb, var(--accent) 70%, transparent);}
-:is(#g2, .g2s) .cand .rect.hintr i{background: none; border: 4px solid var(--hint); border-radius: 4px;
+:is(#g2, .g2s, #gB, .gBs) .cand .rect.hintr i{background: none; border: 4px solid var(--hint); border-radius: 4px;
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--surface) 85%, transparent);}
-:is(#g2, .g2s) .cand .rect.hintr.rm i{border-color: var(--bad);}
-:is(#g2, .g2s) .cand .rect.hintr.cellm i{border-style: dashed; border-width: 3px;}
-:is(#g2, .g2s) .draftl .rect i{background: color-mix(in srgb, var(--accent) 18%, transparent);
+:is(#g2, .g2s, #gB, .gBs) .cand .rect.hintr.rm i{border-color: var(--bad);}
+:is(#g2, .g2s, #gB, .gBs) .cand .rect.hintr.cellm i{border-style: dashed; border-width: 3px;}
+:is(#g2, .g2s, #gB, .gBs) .draftl .rect i{background: color-mix(in srgb, var(--accent) 18%, transparent);
   border: 2px solid var(--accent);}
-:is(#g2, .g2s) .board.solved .rects .rect i{animation: pop 0.5s ease both; animation-delay: calc(var(--i) * 35ms);}
+:is(#g2, .g2s, #gB, .gBs) .board.solved .rects .rect i{animation: pop 0.5s ease both; animation-delay: calc(var(--i) * 35ms);}
 @keyframes pop{ from { transform: scale(0.88); opacity: 0.3; } }
-@media (prefers-reduced-motion: reduce){:is(#g2, .g2s) .board.solved .rects .rect i{animation: none;}}
-:is(#g2, .g2s) .status{margin: 0; color: var(--muted); font-size: 14px; text-wrap: pretty;}
-:is(#g2, .g2s) .status:empty{display: none;}
-:is(#g2, .g2s) .status strong{color: var(--ink); font-weight: 600;}
-:is(#g2, .g2s) .status.win{color: var(--good);}
-:is(#g2, .g2s) .status.win strong{color: var(--good);}
-:is(#g2, .g2s) .actions{display: grid; grid-template-columns: 1fr 1fr 1fr 1.6fr; gap: 8px;}
-:is(#g2, .g2s) .actions.three{grid-template-columns: repeat(3, 1fr);}
-:is(#g2, .g2s) .actions button{border: 1px solid var(--line); background: var(--surface); border-radius: 10px;
+@media (prefers-reduced-motion: reduce){:is(#g2, .g2s, #gB, .gBs) .board.solved .rects .rect i{animation: none;}}
+:is(#g2, .g2s, #gB, .gBs) .status{margin: 0; color: var(--muted); font-size: 14px; text-wrap: pretty;}
+:is(#g2, .g2s, #gB, .gBs) .status:empty{display: none;}
+:is(#g2, .g2s, #gB, .gBs) .status strong{color: var(--ink); font-weight: 600;}
+:is(#g2, .g2s, #gB, .gBs) .status.win{color: var(--good);}
+:is(#g2, .g2s, #gB, .gBs) .status.win strong{color: var(--good);}
+:is(#g2, .g2s, #gB, .gBs) .actions{display: grid; grid-template-columns: 1fr 1fr 1fr 1.6fr; gap: 8px;}
+:is(#g2, .g2s, #gB, .gBs) .actions.three{grid-template-columns: repeat(3, 1fr);}
+:is(#g2, .g2s, #gB, .gBs) .actions button{border: 1px solid var(--line); background: var(--surface); border-radius: 10px;
   padding: 10px 6px; font-size: 14px; font-weight: 600; cursor: pointer;}
-:is(#g2, .g2s) .actions button:disabled{opacity: 0.45; cursor: default;}
-:is(#g2, .g2s) .actions button.primary{background: var(--accent); border-color: var(--accent); color: var(--accent-ink);}
-:is(#g2, .g2s) .record{border-top: 1px solid var(--line); padding-top: 16px; display: flex; flex-direction: column; gap: 14px;}
-:is(#g2, .g2s) .record h2{margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 20px; letter-spacing: -0.01em;}
-:is(#g2, .g2s) .figs{display: grid; grid-template-columns: repeat(3, 1fr);}
-:is(#g2, .g2s) .figs div{display: flex; flex-direction: column; padding-inline: 12px; border-left: 1px solid var(--line);}
-:is(#g2, .g2s) .figs div:first-child{padding-left: 0; border-left: 0;}
-:is(#g2, .g2s) .figs b{font-family: var(--font-mono); font-weight: 600; font-size: 28px; line-height: 1.1; font-variant-numeric: tabular-nums;}
-:is(#g2, .g2s) .figs span{font-size: 12px; color: var(--muted);}
-:is(#g2, .g2s) .strip{display: flex; gap: 4px;}
-:is(#g2, .g2s) .day{flex: 1 1 0; max-width: 26px; aspect-ratio: 1; border-radius: 4px; border: 1.5px solid var(--line);}
-:is(#g2, .g2s) .day.on{background: var(--accent); border-color: var(--accent);}
-:is(#g2, .g2s) .day.today{outline: 2px solid var(--frame); outline-offset: 1px;}
-:is(#g2, .g2s) .caption{display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: -8px;}
-:is(#g2, .g2s) .result{display: flex; flex-direction: column; gap: 10px; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface);}
-:is(#g2, .g2s) .share{margin: 0; font-family: var(--font-mono); font-size: 13px; word-break: break-word; user-select: text; -webkit-user-select: text;}
-:is(#g2, .g2s) .result .row{display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap;}
-:is(#g2, .g2s) .result .row span{font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums;}
-:is(#g2, .g2s) .result button{border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink);
+:is(#g2, .g2s, #gB, .gBs) .actions button:disabled{opacity: 0.45; cursor: default;}
+:is(#g2, .g2s, #gB, .gBs) .actions button.primary{background: var(--accent); border-color: var(--accent); color: var(--accent-ink);}
+:is(#g2, .g2s, #gB, .gBs) .record{border-top: 1px solid var(--line); padding-top: 16px; display: flex; flex-direction: column; gap: 14px;}
+:is(#g2, .g2s, #gB, .gBs) .record h2{margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 20px; letter-spacing: -0.01em;}
+:is(#g2, .g2s, #gB, .gBs) .figs{display: grid; grid-template-columns: repeat(3, 1fr);}
+:is(#g2, .g2s, #gB, .gBs) .figs div{display: flex; flex-direction: column; padding-inline: 12px; border-left: 1px solid var(--line);}
+:is(#g2, .g2s, #gB, .gBs) .figs div:first-child{padding-left: 0; border-left: 0;}
+:is(#g2, .g2s, #gB, .gBs) .figs b{font-family: var(--font-mono); font-weight: 600; font-size: 28px; line-height: 1.1; font-variant-numeric: tabular-nums;}
+:is(#g2, .g2s, #gB, .gBs) .figs span{font-size: 12px; color: var(--muted);}
+:is(#g2, .g2s, #gB, .gBs) .strip{display: flex; gap: 4px;}
+:is(#g2, .g2s, #gB, .gBs) .day{flex: 1 1 0; max-width: 26px; aspect-ratio: 1; border-radius: 4px; border: 1.5px solid var(--line);}
+:is(#g2, .g2s, #gB, .gBs) .day.on{background: var(--accent); border-color: var(--accent);}
+:is(#g2, .g2s, #gB, .gBs) .day.today{outline: 2px solid var(--frame); outline-offset: 1px;}
+:is(#g2, .g2s, #gB, .gBs) .caption{display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: -8px;}
+:is(#g2, .g2s, #gB, .gBs) .result{display: flex; flex-direction: column; gap: 10px; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface);}
+:is(#g2, .g2s, #gB, .gBs) .share{margin: 0; font-family: var(--font-mono); font-size: 13px; word-break: break-word; user-select: text; -webkit-user-select: text;}
+:is(#g2, .g2s, #gB, .gBs) .result .row{display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap;}
+:is(#g2, .g2s, #gB, .gBs) .result .row span{font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums;}
+:is(#g2, .g2s, #gB, .gBs) .result button{border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink);
   border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 600; cursor: pointer;}
-:is(#g2, .g2s) .note{margin: 0; font-size: 12px; color: var(--muted);}
-:is(#g2, .g2s) details{border-top: 1px solid var(--line); padding-top: 10px;}
-:is(#g2, .g2s) details + details{margin-top: -4px;}
-:is(#g2, .g2s) summary{cursor: pointer; font-weight: 600; padding-block: 2px;}
-:is(#g2, .g2s) details ul{margin: 10px 0 2px; padding-left: 1.2em; display: flex; flex-direction: column; gap: 8px; color: var(--muted);}
-:is(#g2, .g2s) details li strong{color: var(--ink); font-weight: 600;}
-:is(#g2, .g2s) details p{margin: 10px 0 2px; color: var(--muted);}
+:is(#g2, .g2s, #gB, .gBs) .note{margin: 0; font-size: 12px; color: var(--muted);}
+:is(#g2, .g2s, #gB, .gBs) details{border-top: 1px solid var(--line); padding-top: 10px;}
+:is(#g2, .g2s, #gB, .gBs) details + details{margin-top: -4px;}
+:is(#g2, .g2s, #gB, .gBs) summary{cursor: pointer; font-weight: 600; padding-block: 2px;}
+:is(#g2, .g2s, #gB, .gBs) details ul{margin: 10px 0 2px; padding-left: 1.2em; display: flex; flex-direction: column; gap: 8px; color: var(--muted);}
+:is(#g2, .g2s, #gB, .gBs) details li strong{color: var(--ink); font-weight: 600;}
+:is(#g2, .g2s, #gB, .gBs) details p{margin: 10px 0 2px; color: var(--muted);}
 :is(#g3, .g3s) .seg{display: grid; grid-template-columns: repeat(var(--cols, 2), 1fr);
   border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface);}
 :is(#g3, .g3s) .seg button{border: 0; background: transparent; cursor: pointer; padding: 8px 4px 7px;
@@ -396,6 +397,31 @@ body { padding-block: 14px 40px; }
 :is(#g3, .g3s) details ul{margin: 10px 0 2px; padding-left: 1.2em; display: flex; flex-direction: column; gap: 8px; color: var(--muted);}
 :is(#g3, .g3s) details li strong{color: var(--ink); font-weight: 600;}
 :is(#g3, .g3s) details p{margin: 10px 0 2px; color: var(--muted);}
+/* ---- Bloom: the flower board ---- */
+#gB .bstage{position:relative; aspect-ratio:1; background:var(--surface); border-radius:6px; box-shadow:0 0 0 2px var(--frame); overflow:hidden; touch-action:none;}
+#gB .bzoom{position:absolute; right:8px; top:8px; z-index:2; border:1px solid var(--line,#c5cdd6); background:var(--surface,#fff); color:inherit; border-radius:999px; padding:6px 12px; font:600 13px/1 inherit; cursor:pointer;}
+#gB .bzoom[hidden]{display:none;}
+#gB .bsvg{position:absolute; inset:0; width:100%; height:100%; display:block; touch-action:none; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; cursor:crosshair;}
+#gB .bcell{fill:var(--surface); stroke:var(--line); stroke-width:.45; stroke-linejoin:round;}
+#gB .bblk{fill:hsl(var(--h) var(--rs) var(--rl)); stroke:hsl(var(--h) var(--bs) var(--bl)); stroke-width:1; stroke-linejoin:round;}
+#gB .bblk.bad{fill:url(#bl-hatch); stroke:var(--bad);}
+#gB .bcand{fill:color-mix(in srgb, var(--accent) 12%, transparent); stroke:color-mix(in srgb, var(--accent) 70%, transparent); stroke-width:.5; stroke-dasharray:1.6 1.1; stroke-linejoin:round;}
+#gB .bhint{fill:none; stroke:var(--hint); stroke-width:1.7; stroke-linejoin:round;}
+#gB .bhint.rm{stroke:var(--bad);}
+#gB .bhint.cellm{stroke-dasharray:1.6 1.1; stroke-width:1.3;}
+#gB .bdraft{fill:color-mix(in srgb, var(--accent) 18%, transparent); stroke:var(--accent); stroke-width:1; stroke-linejoin:round;}
+#gB .bdraft.off{fill:color-mix(in srgb, var(--bad) 18%, transparent); stroke:var(--bad);}
+#gB .bn{pointer-events:none;}
+#gB .bring{fill:none;}
+#gB .bn.sel .bring{fill:var(--accent);}
+#gB .btxt{font-family:var(--font-mono); font-weight:600; text-anchor:middle; dominant-baseline:central; fill:var(--ink); pointer-events:none; font-variant-numeric:tabular-nums;}
+#gB .bn.bad .btxt{fill:var(--bad);}
+#gB .bn.sel .btxt{fill:var(--accent-ink);}
+#gB .bstage.solved .bblk{animation:bpop .5s ease both; animation-delay:calc(var(--i) * 35ms);}
+@keyframes bpop{ from { opacity:.25; } }
+@media (prefers-reduced-motion: reduce){#gB .bstage.solved .bblk{animation:none;}}
+@media (max-width: 349px){ .dimsw{width:168px;} .dimsw button{font-size:14px;padding:0;} }
+@media (max-width: 430px){ .lvlchip .nm small{display:none;} }
 </style>
 
 <main class="wrap">
@@ -412,6 +438,7 @@ body { padding-block: 14px 40px; }
     <div class="dimsw" id="dimsw" data-pos="2d" role="group" aria-label="Dimension">
       <button type="button" data-dim="2d" aria-pressed="true">2D</button>
       <button type="button" data-dim="3d" aria-pressed="false">3D</button>
+      <button type="button" data-dim="bl" aria-pressed="false">Bloom</button>
     </div>
     <button type="button" class="lvlchip" id="lvlchip" aria-haspopup="dialog"></button>
   </div>
@@ -523,10 +550,11 @@ body { padding-block: 14px 40px; }
 
   <div id="g3" hidden>
 
-  <div class="seg" id="d3-levels" style="--cols:4" role="group" aria-label="Difficulty">
+  <div class="seg" id="d3-levels" style="--cols:5" role="group" aria-label="Difficulty">
     <button type="button" data-n="3" aria-pressed="true">Easy<small>3×3×3</small></button>
     <button type="button" data-n="4" aria-pressed="false">Medium<small>4×4×4</small></button>
     <button type="button" data-n="5" aria-pressed="false">Hard<small>5×5×5</small></button>
+    <button type="button" data-n="6" aria-pressed="false">Expert<small>6×6×6</small></button>
     <button type="button" data-n="5" data-master="1" aria-pressed="false">Master<small>5×5×5</small></button>
   </div>
   <p class="dimnote" id="d3-locknote" role="status" hidden></p>
@@ -614,8 +642,8 @@ body { padding-block: 14px 40px; }
       <li><strong>Elimination:</strong> cells a number must own rule out other options.</li>
       <li><strong>Trial:</strong> you have to test a guess.</li>
     </ul>
-    <p>Size alone does not decide difficulty: some small puzzles need a trial, and some big ones fall to single-option moves. Each level aims for one technique: Easy needs only Direct, Medium goes up to Cross-check, Hard needs Elimination, Master needs Trial.</p>
-    <p><strong>Badges.</strong> Solve a puzzle with at most one hint (three on Master) and you earn the badge for that level's technique. Medium needs the Direct badge, Hard needs Cross-check, and Master needs Elimination from 3D Hard plus the Trial badge from 2D Master. Badges show at the bottom of the page. You can switch the locks off in Settings; badges are still kept.</p>
+    <p>Size alone does not decide difficulty: some small puzzles need a trial, and some big ones fall to single-option moves. Each level aims for one technique: Easy needs only Direct, Medium goes up to Cross-check, Hard and Expert need Elimination, Master needs Trial. Expert is a 6×6×6 cube.</p>
+    <p><strong>Badges.</strong> Solve a puzzle with at most one hint (three on Master) and you earn the badge for that level's technique. Medium needs the Direct badge, Hard needs Cross-check, Expert needs Elimination, and Master needs Elimination from 3D Expert plus the Trial badge from 2D Master. Badges show at the bottom of the page. You can switch the locks off in Settings; badges are still kept.</p>
     <p><strong>Master</strong> is a 5×5×5 that needs at least two Trial steps. It has no starter box, no candidate dots, no red warnings, and only three hints. Each Master puzzle comes from a stored set, turned or mirrored so it looks new. <strong>Hints</strong> work from the same steps. A hint outlines the easiest forced box, says why it is forced and names the technique, for example <em>Hint · Cross-check</em>. For a cross-check it also marks the key cell with a dashed outline. The outline fades after 5 seconds; the explanation stays until your next move. If no step is left, the hint says so and gives you the answer. Each new hint counts.</p>
   </details>
 
@@ -625,6 +653,39 @@ body { padding-block: 14px 40px; }
     <p>The generator cuts the cube into random boxes and puts one number in each, equal to the box's volume. A solver then counts the solutions, stopping at two. Puzzles with more than one solution are thrown away, so the one you get has exactly one answer. Difficulty is set by cube size only. Medium and Hard begin with one mid-sized box already placed.</p>
   </details>
 </div>
+
+  <div id="gB" hidden>
+
+  <div class="stats">
+    <span><button type="button" class="pz" id="bl-pause" aria-label="Pause the clock"><svg class="ic-pause" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M8 5v14M16 5v14" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg><svg class="ic-play" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg><b id="bl-time">0:00</b></button></span>
+    <span><span id="bl-countlabel">Correct</span> <b id="bl-count">0/0</b></span>
+    <span>Hints <b id="bl-hints">0</b></span>
+    <span>Logic <b id="bl-rating">·</b></span>
+  </div>
+
+  <div class="stage bstage" id="bl-stage">
+    <svg class="bsvg" id="bl-svg" viewBox="0 0 200 200" role="application" aria-label="Bloom flower puzzle. Drag from one diamond to another to draw a block.">
+      <defs><pattern id="bl-hatch" patternUnits="userSpaceOnUse" width="3.2" height="3.2" patternTransform="rotate(45)"><rect width="3.2" height="3.2" style="fill:var(--surface)"/><line x1="0" y1="0" x2="0" y2="3.2" style="stroke:var(--bad)" stroke-width="1.1" opacity=".55"/></pattern></defs>
+      <g id="bl-cells"></g><g id="bl-blocks"></g><g id="bl-cand"></g><g id="bl-draft"></g><g id="bl-nums"></g>
+    </svg>
+    <button type="button" class="bzoom" id="bl-zoom" hidden>Reset zoom</button>
+  </div>
+
+  <div class="actions" id="bl-actions">
+    <button type="button" id="bl-undo">Undo</button>
+    <button type="button" id="bl-clear">Clear</button>
+    <button type="button" id="bl-hint">Hint</button>
+    <button type="button" id="bl-new" class="primary">New puzzle</button>
+  </div>
+
+  <div class="pidrow" id="bl-pidrow">
+    <button type="button" class="pidbtn" id="bl-pid" hidden></button>
+    <button type="button" class="pidbtn watch" id="bl-watch" hidden>▶ Watch the logic</button>
+  </div>
+
+  <p class="status" id="bl-status" aria-live="polite"></p>
+</div>
+
 </main>
 
 
@@ -697,9 +758,10 @@ body { padding-block: 14px 40px; }
   <div class="scrim"></div>
   <section class="sheetbody" role="dialog" aria-modal="true" aria-labelledby="t-help" tabindex="-1">
     <div class="shead"><h2 id="t-help">Help</h2><button type="button" class="done">Done</button></div>
-    <div class="seg helptabs mini" id="helpTabs" role="group" aria-label="Which game"><button type="button" data-m="d2" aria-pressed="true">2D grid</button><button type="button" data-m="d3" aria-pressed="false">3D cube</button></div>
+    <div class="seg helptabs mini" id="helpTabs" role="group" aria-label="Which game"><button type="button" data-m="d2" aria-pressed="true">2D grid</button><button type="button" data-m="d3" aria-pressed="false">3D cube</button><button type="button" data-m="bl" aria-pressed="false">Bloom</button></div>
     <div class="helpbody g2s" id="helpBody2"><p><strong>Goal.</strong> Split the grid into rectangles. Each rectangle holds exactly one number, and that number is its area.</p><p><strong>Controls.</strong> Drag across cells to draw a rectangle. Tap a rectangle to remove it. Tap a number to see where it could go.</p><p><strong>Pause.</strong> Tap the clock to take a break. The clock stops and the board is hidden until you resume. Each puzzle allows <strong>one pause</strong>. A second pause <strong>resets the puzzle</strong>: the board is cleared and the clock goes back to 0:00, and hints you used stay counted. You get a warning first, and the pause icon turns amber once your pause is used. Closing the page does not count as a pause; for the daily, your time so far and your pause are saved.</p><p><strong>Puzzle ID.</strong> Every practice puzzle shows an ID such as 2D-H-104729 under the buttons. Tap it to copy. Open the level chip, type or paste an ID under Play a puzzle ID, and you get exactly the same puzzle. Shared puzzles record no best time and earn no badge, so a friend can race you on the same board.</p><p><strong>Watch the logic.</strong> After you solve a puzzle, tap Watch the logic. The solver places each rectangle in the order it would find them, and names the technique for every step. A Trial step shows the options that fail in red.</p></div>
     <div class="helpbody g3s" id="helpBody3" hidden><p><strong>Goal.</strong> Fill the cube with boxes. Each box holds exactly one number, and that number is its volume.</p><p><strong>Controls.</strong> Tap a number to see where its box could go; blue circles show the cells its options would cover. Pick a shape, step through placements, then Place box. Drag the cube to rotate it, pinch to zoom.</p><p><strong>Pause.</strong> Tap the clock to take a break. The clock stops and the board is hidden until you resume. Each puzzle allows <strong>one pause</strong>. A second pause <strong>resets the puzzle</strong>: the board is cleared and the clock goes back to 0:00, and hints you used stay counted. You get a warning first, and the pause icon turns amber once your pause is used. Closing the page does not count as a pause; for the daily, your time so far and your pause are saved.</p><p><strong>Daily cube.</strong> Open the level chip and pick Daily for today's cube, the same for everyone. Its size follows the weekday: Mon 3, Tue 4, Wed 4, Thu 5, Fri 5, Sat 5, Sun 4. Your boxes, clock and pause are saved, so a reload brings the cube back as you left it. Streaks are kept separately from the 2D daily. Practice cubes you leave unfinished also come back after a reload.</p><p><strong>Puzzle ID.</strong> Every practice cube shows an ID such as 3D-H-933546 under the buttons. Tap it to copy. Type or paste an ID under Play a puzzle ID in the level chip to get exactly the same cube. Shared puzzles record no best time and earn no badge.</p><p><strong>Watch the logic.</strong> After you solve a cube, tap Watch the logic to see each box placed in the order the solver would find it, with the technique named. On a Trial step the dashed box is an option that fails.</p></div>
+    <div class="helpbody gBs" id="helpBodyB" hidden><p><strong>Goal.</strong> Fill the flower with blocks of diamonds. Each block holds exactly one number, and that number is how many diamonds the block has.</p><p><strong>The flower.</strong> The diamonds lie along two families of spirals, one turning each way. A block is a rectangle between two spirals of each kind: 2×3 means two diamonds along one spiral and three along the other. The ring closes, so a block can cross any petal. The inner and outer edges are zigzags, and a block cannot poke past them.</p><p><strong>Controls.</strong> Drag from one diamond to another: they are opposite corners of the block. Tap a block to remove it. Tap a number to see where it could go. A 1 places itself when you tap it.</p><p><strong>Levels.</strong> Size is rings × petals, from 5×8 on Easy up to 10×16 on Master. Easy needs only Direct steps, Medium goes up to Cross-check, Hard and Expert need Elimination, and Master needs Trial steps. Master has no previews, no error marks and only three hints. Bloom has no daily puzzle yet.</p><p><strong>Badges.</strong> Solve a puzzle with at most one hint (three on Master) and you earn the badge for that level's technique. Medium needs the Direct badge, Hard needs Cross-check, Expert needs Elimination, and Master needs Elimination earned on Expert. Bloom badges are separate from 2D and 3D. The Level locks switch in Settings turns the locks off.</p><p><strong>Pause.</strong> Tap the clock to take a break. The clock stops and the board is hidden until you resume. Each puzzle allows <strong>one pause</strong>. A second pause <strong>resets the puzzle</strong>: the board is cleared and the clock goes back to 0:00, and hints you used stay counted.</p><p><strong>Puzzle ID.</strong> Every puzzle shows an ID such as BL-H-104729 under the buttons. Tap it to copy. Type or paste an ID under Play a puzzle ID in the level chip to get exactly the same puzzle. Shared puzzles record no best time.</p><p><strong>Watch the logic.</strong> After you solve a puzzle, tap Watch the logic to see each block placed in the order the solver would find it, with the technique named. A Trial step shows the options that fail in red.</p></div>
   </section>
 </div>
 <div class="sheet" id="sheet-warn" hidden>
@@ -961,19 +1023,25 @@ var Logic = (function () {
 if (typeof module !== 'undefined') module.exports = Logic;
 </script>
 <script>
-// Puzzle IDs: "2D-H-104729" = mode, level, seed. 3D Master carries a bank code instead of a seed.
+// Puzzle IDs: "2D-H-104729" = mode, level, seed. 3D Master and Bloom Master carry a bank code instead of a seed. "BL-H-104729" is Bloom.
 window.ShikakuId = (function () {
-  var N2 = { E: 5, M: 7, H: 10, X: 13, MA: 13 }, N3 = { E: 3, M: 4, H: 5, MA: 5 };
+  var N2 = { E: 5, M: 7, H: 10, X: 13, MA: 13 }, N3 = { E: 3, M: 4, H: 5, X: 6, MA: 5 }, NB = { E: 'easy', M: 'medium', H: 'hard', X: 'expert', MA: 'master' };
   function parse(s) {
-    var m = /^\s*([23])\s*D\s*[-_ ]\s*(E|M|H|X|MA)\s*[-_ ]\s*(\d{1,9})\s*$/i.exec(String(s == null ? '' : s));
-    if (!m) return null;
-    var dim = +m[1], code = m[2].toUpperCase(), tbl = dim === 2 ? N2 : N3;
-    if (!tbl[code]) return null;
-    return { dim: dim, n: tbl[code], master: code === 'MA', seed: +m[3] };
+    var str = String(s == null ? '' : s);
+    var m = /^\s*([23])\s*D\s*[-_ ]\s*(E|M|H|X|MA)\s*[-_ ]\s*(\d{1,9})\s*$/i.exec(str);
+    if (m) {
+      var dim = +m[1], code = m[2].toUpperCase(), tbl = dim === 2 ? N2 : N3;
+      if (!tbl[code]) return null;
+      return { dim: dim, n: tbl[code], master: code === 'MA', seed: +m[3] };
+    }
+    var b = /^\s*BL\s*[-_ ]\s*(E|M|H|X|MA)\s*[-_ ]\s*(\d{1,9})\s*$/i.exec(str);
+    if (b) { var lv = NB[b[1].toUpperCase()]; return { dim: 'bl', lv: lv, master: lv === 'master', seed: +b[2] }; }
+    return null;
   }
   return { parse: parse };
 })();
 </script>
+
 <script>
 (function () {
 'use strict';
@@ -2390,7 +2458,8 @@ function pickNumber(hits, px, py, current) {
 var CFG = {
   3: { maxVol: 9,  maxOnes: 0, minNums: 4,  maxNums: 7,  tries: 20000, budget: 20000, weights: [0, 0.05, 0.6, 1, 1.2, 0.6, 1.4, 0.5, 1.3, 1, 0.7, 0.15, 1, 0.1, 0.3, 0.2, 0.4, 0.1, 0.3] },
   4: { maxVol: 12, maxOnes: 1, minNums: 7,  maxNums: 11, tries: 40000, budget: 40000, weights: [0, 0.05, 0.6, 1, 1.2, 0.6, 1.4, 0.5, 1.3, 1, 0.7, 0.15, 1, 0.1, 0.3, 0.2, 0.4, 0.1, 0.3] },
-  5: { maxVol: 16, maxOnes: 1, minNums: 12, maxNums: 20, tries: 80000, budget: 80000, weights: [0, 0.05, 0.6, 1, 1.2, 0.6, 1.4, 0.5, 1.3, 1, 0.7, 0.15, 1, 0.1, 0.3, 0.2, 0.4, 0.1, 0.3] }
+  5: { maxVol: 16, maxOnes: 1, minNums: 12, maxNums: 20, tries: 80000, budget: 80000, weights: [0, 0.05, 0.6, 1, 1.2, 0.6, 1.4, 0.5, 1.3, 1, 0.7, 0.15, 1, 0.1, 0.3, 0.2, 0.4, 0.1, 0.3] },
+  6: { maxVol: 18, maxOnes: 1, minNums: 20, maxNums: 34, tries: 40000, budget: 200000, weights: [0, 0.05, 0.6, 1, 1.2, 0.6, 1.4, 0.5, 1.3, 1, 0.7, 0.15, 1, 0.1, 0.3, 0.2, 0.4, 0.1, 0.3] }
 };
 var SNAP = { iso: { yaw: -0.6, pitch: 0.5 }, front: { yaw: 0, pitch: 0 }, right: { yaw: -Math.PI / 2, pitch: 0 }, top: { yaw: 0, pitch: 1.5 } };
 
@@ -2476,7 +2545,7 @@ function defaultStatus() {
 }
 
 // Levels are steered by logic rating as well as size: Easy needs no elimination, Hard does.
-var STEER = { 3: { max: 1 }, 4: { min: 2, max: 2 }, 5: { min: 3 } };
+var STEER = { 3: { max: 1 }, 4: { min: 2, max: 2 }, 5: { min: 3 }, 6: { min: 3 } };
 // Medium and Hard start with a middle-sized box already placed. The largest box would remove too much of the puzzle.
 function pickStarter(res) {
   var nums = res.nums, ord = nums.map(function (m, i) { return i; }).sort(function (p, q) { return nums[p].v - nums[q].v || p - q; });
@@ -2506,7 +2575,7 @@ function steeredGenerate(n, seed) {
     if (!pk) continue;
     var g = Logic.gap(spec, pk.tier);
     if (g < bg) { bg = g; best = pk; }
-    if (!g || Date.now() - t0 > 1200) break;
+    if (!g || Date.now() - t0 > (n > 5 ? 3500 : 1200)) break;
   }
   return best;
 }
@@ -2541,7 +2610,7 @@ function masterPick() {
   return steeredGenerate(5, Math.floor(Math.random() * 900000) + 100000);
 }
 
-var ID_CODE3 = { 3: 'E', 4: 'M', 5: 'H' };
+var ID_CODE3 = { 3: 'E', 4: 'M', 5: 'H', 6: 'X' };
 // Starts a puzzle from a pick. opts: { daily, date, shared }.
 function beginPuzzle(n, master, pick, opts) {
   opts = opts || {};
@@ -2578,7 +2647,7 @@ function beginPuzzle(n, master, pick, opts) {
 function newPuzzle(n, master) {
   if (window.Progress) {
     var k0 = Progress.key('d3', n, master), k1 = Progress.clamp('d3', k0);
-    if (k1 !== k0) { master = k1 === 'master'; n = { easy: 3, medium: 4, hard: 5, master: 5 }[k1]; }
+    if (k1 !== k0) { master = k1 === 'master'; n = { easy: 3, medium: 4, hard: 5, expert: 6, master: 5 }[k1]; }
   }
   lsSet('shikaku-mode3', 'practice');
   beginPuzzle(n, master, master ? masterPick() : steeredGenerate(n, Math.floor(Math.random() * 900000) + 100000));
@@ -3247,18 +3316,833 @@ window.__games.d3 = { inProgress: function () { return !!S && !S.solved && S.box
   canReplay: canReplay, replayOpen: replayOpen, replayShow: replayShow, replayClose: replayClose, replayActive: function () { return !!RP && RP.s === S; } };
 })();
 </script>
+<script>// Bloom engine: a diamond lattice wrapped around a ring.
+// Bloom engine: a diamond lattice wrapped around a ring. Pure logic, no DOM, no clock, no Math.random.
+// Lattice cell (i, j) sits on level s = i + j. The ring closes with (i, j) ~ (i + P, j - P), so each level holds P cells.
+// A block is an A x B rectangle in (i, j): A steps along one spiral family, B along the other.
+// Cell id = s * P + (i mod P). Levels run 0 .. L-1 from the inside out. A block must stay inside levels 0 .. L-1.
+var BloomCore = (function () {
+'use strict';
+
+function mulberry32(seed) {
+  var a = seed >>> 0;
+  return function () {
+    a = (a + 0x6D2B79F5) | 0;
+    var t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// One table to tune every level. P petals around, L levels deep (L is the "rings" count shown to the player).
+// harden: after the random tiling, merge neighbouring blocks until the puzzle needs the technique the level asks for.
+var LEVELS = {
+  easy:   { k: 'easy',   n: 'Easy',   code: 'E',  t: 1, P: 8,  L: 5,  maxVol: 6,  maxOnes: 1, tries: 4000,  budget: 30000, minRect: 0.1 },
+  medium: { k: 'medium', n: 'Medium', code: 'M',  t: 2, P: 10, L: 6,  maxVol: 8,  maxOnes: 2, tries: 8000,  budget: 40000, minRect: 0.15 },
+  hard:   { k: 'hard',   n: 'Hard',   code: 'H',  t: 3, P: 12, L: 8,  maxVol: 10, maxOnes: 3, tries: 20000, budget: 60000, minRect: 0.3, harden: { iters: 600, mergeV: 14, tier: 3 } },
+  expert: { k: 'expert', n: 'Expert', code: 'X',  t: 3, P: 14, L: 9,  maxVol: 10, maxOnes: 3, tries: 20000, budget: 60000, minRect: 0.33, harden: { iters: 1500, mergeV: 20, tier: 3 } },
+  master: { k: 'master', n: 'Master', code: 'MA', t: 4, P: 16, L: 10, maxVol: 12, maxOnes: 4, tries: 30000, budget: 30000, minRect: 0.35, master: true, harden: { iters: 2500, mergeV: 20, trials: 1 } }
+};
+var ORDER = ['easy', 'medium', 'hard', 'expert', 'master'];
+var BY_CODE = { E: 'easy', M: 'medium', H: 'hard', X: 'expert', MA: 'master' };
+
+var LG = null;
+function setLogic(l) { LG = l; }
+
+function cellId(P, i, j) { return (i + j) * P + (((i % P) + P) % P); }
+function asc(x, y) { return x - y; }
+
+// Sorted cell ids of the block, or null when it leaves the flower (a level below 0 or above L-1).
+function blockCells(P, L, i0, j0, A, B) {
+  var s0 = i0 + j0;
+  if (A < 1 || B < 1 || s0 < 0 || s0 + A + B - 2 > L - 1) return null;
+  var out = [], x, y;
+  for (x = 0; x < A; x++) for (y = 0; y < B; y++) out.push(cellId(P, i0 + x, j0 + y));
+  out.sort(asc);
+  return out;
+}
+
+function buildNumAt(N, nums) {
+  var a = new Int16Array(N).fill(-1);
+  nums.forEach(function (n, k) { a[n.id] = k; });
+  return a;
+}
+
+// Every block of the number's volume that holds its cell and no other number.
+function candidatesFor(P, L, nums, numAt, k) {
+  var c = nums[k].id, v = nums[k].v, s = Math.floor(c / P), a = c % P, i = a, j = s - a, out = [], seen = {};
+  for (var A = 1; A <= v; A++) {
+    if (v % A) continue;
+    var B = v / A;
+    if (A + B - 1 > L) continue;
+    for (var i0 = i - A + 1; i0 <= i; i0++) {
+      for (var j0 = j - B + 1; j0 <= j; j0++) {
+        var cells = blockCells(P, L, i0, j0, A, B);
+        if (!cells) continue;
+        var ok = true;
+        for (var t = 0; t < cells.length; t++) { var o = numAt[cells[t]]; if (o !== -1 && o !== k) { ok = false; break; } }
+        if (!ok) continue;
+        var key = cells.join(',');
+        if (seen[key]) continue;
+        seen[key] = 1;
+        out.push({ cells: cells, i0: i0, j0: j0, A: A, B: B, key: key });
+      }
+    }
+  }
+  return out;
+}
+
+// Counts solutions up to `limit`, branching on the number with the fewest placements left.
+function solve(P, L, nums, limit, budget) {
+  var N = P * L, numAt = buildNumAt(N, nums);
+  var cands = nums.map(function (_, k) { return candidatesFor(P, L, nums, numAt, k); });
+  var covered = new Uint8Array(N), placed = new Uint8Array(nums.length), chosen = new Array(nums.length);
+  var solution = null, count = 0, nodes = 0, aborted = false;
+  function rec(left) {
+    if (++nodes > budget) { aborted = true; return true; }
+    if (left === 0) { count++; if (!solution) solution = chosen.slice(); return count >= limit; }
+    var best = -1, bestList = null;
+    for (var i = 0; i < nums.length; i++) {
+      if (placed[i]) continue;
+      var list = [];
+      for (var q = 0; q < cands[i].length; q++) {
+        var cd = cands[i][q], ok = true;
+        for (var t = 0; t < cd.cells.length; t++) if (covered[cd.cells[t]]) { ok = false; break; }
+        if (ok) list.push(cd);
+      }
+      if (!list.length) return false;
+      if (!bestList || list.length < bestList.length) { best = i; bestList = list; }
+      if (list.length === 1) break;
+    }
+    placed[best] = 1;
+    for (var m = 0; m < bestList.length; m++) {
+      var cd2 = bestList[m];
+      for (var u = 0; u < cd2.cells.length; u++) covered[cd2.cells[u]] = 1;
+      chosen[best] = cd2;
+      var stop = rec(left - 1);
+      for (var w = 0; w < cd2.cells.length; w++) covered[cd2.cells[w]] = 0;
+      if (stop) { placed[best] = 0; return true; }
+    }
+    placed[best] = 0;
+    return false;
+  }
+  rec(nums.length);
+  return { count: count, solution: solution, aborted: aborted, cands: cands };
+}
+
+// Blocks that use both spiral directions (A and B at least 2) make the puzzle harder than 1 x N strips. Bias toward them, and
+// every puzzle must have at least MIN_RECT of its blocks like that.
+var RECT_BIAS = 4, STRIP_BIAS = 0.5, MIN_RECT = 0.6, CUR_MIN = 0;
+function setRect(a,b,c){RECT_BIAS=a;STRIP_BIAS=b;MIN_RECT=c;}
+function rectShare(nums, P, L, solution) {
+  var r = 0; solution.forEach(function (p) { if (p.A >= 2 && p.B >= 2) r++; });
+  return r / solution.length;
+}
+var AREA_WEIGHT = [0, 0.12, 1, 1.2, 1.2, 0.6, 1, 0.35, 0.8, 0.6, 0.4, 0.15, 0.5, 0.1, 0.3];
+
+// Random tiling: take the lowest free cell, pick a shape, then one free placement of it that covers that cell.
+function randomTiling(P, L, rng, cfg) {
+  var N = P * L, cover = new Uint8Array(N), nums = [], plant = [];
+  nums.plant = plant;
+  for (var id = 0; id < N; id++) {
+    if (cover[id]) continue;
+    var s = Math.floor(id / P), a = id % P, i = a, j = s - a, shapes = [], total = 0;
+    for (var A = 1; A <= cfg.maxVol; A++) {
+      for (var B = 1; A * B <= cfg.maxVol; B++) {
+        if (A + B - 1 > L) continue;
+        var places = []; places.ij = [];
+        for (var i0 = i - A + 1; i0 <= i; i0++) {
+          for (var j0 = j - B + 1; j0 <= j; j0++) {
+            var cells = blockCells(P, L, i0, j0, A, B);
+            if (!cells) continue;
+            var free = true;
+            for (var t = 0; t < cells.length; t++) if (cover[cells[t]]) { free = false; break; }
+            if (free) { places.push(cells); places.ij.push([i0, j0]); }
+          }
+        }
+        if (!places.length) continue;
+        var wt = AREA_WEIGHT[A * B] === undefined ? 0.1 : AREA_WEIGHT[A * B];
+        if (A * B > 1) wt *= (A >= 2 && B >= 2) ? (cfg.rectBias || RECT_BIAS) : (cfg.stripBias || STRIP_BIAS);
+        shapes.push({ places: places, wt: wt, A: A, B: B, ij: places.ij }); total += wt;
+      }
+    }
+    var pick = rng() * total, ch = shapes[shapes.length - 1];
+    for (var q = 0; q < shapes.length; q++) { pick -= shapes[q].wt; if (pick <= 0) { ch = shapes[q]; break; } }
+    var pi = Math.floor(rng() * ch.places.length), cs = ch.places[pi], ij = ch.ij[pi];
+    cs.forEach(function (c) { cover[c] = 1; });
+    nums.push({ id: cs[Math.floor(rng() * cs.length)], v: cs.length }); plant.push({ cells: cs, A: ch.A, B: ch.B, i0: ij[0], j0: ij[1], key: cs.join(',') });
+  }
+  return nums;
+}
+
+function generate(P, L, rng, cfg) {
+  for (var t = 0; t < cfg.tries; t++) {
+    var nums = randomTiling(P, L, rng, cfg), ones = 0;
+    nums.forEach(function (n) { if (n.v === 1) ones++; });
+    if (ones > cfg.maxOnes) continue;
+    var res = solve(P, L, nums, 2, cfg.budget);
+    if (res.count === 1 && !res.aborted && rectShare(nums, P, L, res.solution) >= (cfg.minRect || 0)) return { nums: nums, solution: res.solution, cands: res.cands, tries: t + 1 };
+  }
+  return null;
+}
+
+/* ---------- hardening ---------- */
+// Difficulty score from the Logic grader: deeper techniques weigh more, ambiguity adds a little.
+function scoreOf(r, cands) {
+  var tot = 0; cands.forEach(function (c) { tot += c.length; });
+  return r.tier * 1000 + r.steps[4] * 80 + r.steps[3] * 14 + r.steps[2] * 4 + tot * 0.2;
+}
+// Unique-solution check plus rating for a clue layout; null when it is not unique.
+function evaluate(P, L, nums, budget) {
+  var res = solve(P, L, nums, 2, budget);
+  if (res.count !== 1 || res.aborted) return null;
+  var r = LG.rate(P * L, res.cands, []);
+  return { res: res, rating: r, score: scoreOf(r, res.cands) };
+}
+// Merge two neighbouring blocks into one rectangle (fewer clues, more ambiguity). Returns the merged piece or null.
+function mergePieces(P, L, X, Y, maxV) {
+  for (var m = -1; m <= 1; m++) {
+    var yi = Y.i0 + m * P, yj = Y.j0 - m * P;
+    var i0 = Math.min(X.i0, yi), i1 = Math.max(X.i0 + X.A, yi + Y.A), j0 = Math.min(X.j0, yj), j1 = Math.max(X.j0 + X.B, yj + Y.B);
+    var A = i1 - i0, B = j1 - j0;
+    if (A * B !== X.A * X.B + Y.A * Y.B || A * B > maxV) continue;
+    var cells = blockCells(P, L, i0, j0, A, B);
+    if (!cells) continue;
+    var ks = X.cells.concat(Y.cells).sort(asc), same = ks.length === cells.length;
+    for (var q = 0; same && q < ks.length; q++) if (ks[q] !== cells[q]) same = false;
+    if (same) return { cells: cells, i0: i0, j0: j0, A: A, B: B, key: cells.join(',') };
+  }
+  return null;
+}
+// Hill climb for difficulty: merge neighbouring blocks, or move a clue inside its block, and keep a change when the
+// puzzle is still unique and not easier. Fixed iteration count and a seeded rng: the result depends only on the seed.
+function harden(P, L, res, rng, iters, budget, maxV, goal) {
+  var pieces = res.solution.slice(), nums = res.nums.map(function (n) { return { id: n.id, v: n.v }; });
+  var cur = evaluate(P, L, nums, budget);
+  if (!cur) return res;
+  for (var it = 0; it < iters && !goal(cur.rating); it++) {
+    var k = Math.floor(rng() * nums.length), np = pieces.slice(), nn = nums.map(function (n) { return { id: n.id, v: n.v }; }), changed = false;
+    if (rng() < 0.7 && nums.length > 2) {
+      var ys = [];
+      for (var y = 0; y < pieces.length; y++) if (y !== k) { var mg = mergePieces(P, L, pieces[k], pieces[y], maxV); if (mg) ys.push([y, mg]); }
+      if (ys.length) {
+        var pick = ys[Math.floor(rng() * ys.length)], hi = Math.max(k, pick[0]), lo = Math.min(k, pick[0]), mp = pick[1];
+        np.splice(hi, 1); nn.splice(hi, 1);
+        np[lo] = mp; nn[lo] = { id: mp.cells[Math.floor(rng() * mp.cells.length)], v: mp.cells.length };
+        changed = true;
+      }
+    }
+    if (!changed) {
+      var blk = pieces[k].cells;
+      if (blk.length < 2) continue;
+      var c = blk[Math.floor(rng() * blk.length)];
+      if (c === nums[k].id) continue;
+      nn[k].id = c;
+    }
+    var e = evaluate(P, L, nn, budget);
+    if (e && e.score >= cur.score && rectShare(nn, P, L, e.res.solution) >= CUR_MIN) { cur = e; nums = nn; pieces = np; }
+  }
+  return { nums: nums, solution: cur.res.solution, cands: cur.res.cands, tries: res.tries };
+}
+
+/* ---------- rectangle-rich tilings ---------- */
+// On this lattice 1 x N strips fill most random tilings (about 90% of blocks). A solver proved that 60% blocks with both sides
+// at least 2 is impossible at every size; the real ceilings are about Easy 10%, Medium 15%, Hard 30%, Expert and Master 40%.
+// So each level starts from a banked tiling that reaches its ceiling (found offline), turned by a random rotation and mirror,
+// with the clue of each block placed at random and then moved until the solution is unique.
+var TILES = {};
+function setTiles(t) { TILES = t; }
+function totalCands(P, L, nums) {
+  var na = buildNumAt(P * L, nums), t = 0;
+  for (var k = 0; k < nums.length; k++) t += candidatesFor(P, L, nums, na, k).length;
+  return t;
+}
+function fromTiles(lv, seed) {
+  var cfg = LEVELS[lv], bank = TILES[lv], P = cfg.P, L = cfg.L;
+  if (!bank || !bank.length) return null;
+  var rng = mulberry32((seed ^ 0x51ed270b) >>> 0);
+  for (var attempt = 0; attempt < 40; attempt++) {
+    var t = bank[Math.floor(rng() * bank.length)], rot = Math.floor(rng() * P), mir = rng() < 0.5, pcs = [], bad = false;
+    for (var q = 0; q < t.length && !bad; q++) {
+      var s = t[q][0], a = t[q][1], A = t[q][2], Bq = t[q][3], i0 = a, j0 = s - a, tmp;
+      if (mir) { tmp = i0; i0 = j0; j0 = tmp; tmp = A; A = Bq; Bq = tmp; }
+      i0 += rot; j0 -= rot;
+      var c = blockCells(P, L, i0, j0, A, Bq);
+      if (!c) bad = true; else pcs.push(c);
+    }
+    if (bad) continue;
+    var cur = pcs.map(function (c) { return { id: c[Math.floor(rng() * c.length)], v: c.length }; }), ct = totalCands(P, L, cur);
+    for (var it = 0; it < 600; it++) {
+      var r = solve(P, L, cur, 2, cfg.budget);
+      if (r.count === 1 && !r.aborted) return { nums: cur, solution: r.solution, cands: r.cands, tries: attempt + 1 };
+      var k = Math.floor(rng() * cur.length), cs = pcs[k], c2 = cs[Math.floor(rng() * cs.length)];
+      if (c2 === cur[k].id) continue;
+      var nn = cur.map(function (x) { return { id: x.id, v: x.v }; });
+      nn[k].id = c2;
+      var tt = totalCands(P, L, nn);
+      if (tt <= ct) { cur = nn; ct = tt; }
+    }
+  }
+  return null;
+}
+
+// Same (level, seed) always gives the same puzzle.
+function makePuzzle(lv, seed) {
+  var cfg = LEVELS[lv], res = null, round = 0;
+  CUR_MIN = cfg.minRect || 0;
+  res = fromTiles(lv, seed);
+  while (!res && round < 6 && !TILES[lv]) { res = generate(cfg.P, cfg.L, mulberry32(seed + round * 7919), cfg); round++; }
+  if (!res) res = generate(cfg.P, cfg.L, mulberry32(seed), { P: cfg.P, L: cfg.L, maxVol: 6, maxOnes: 99, tries: 50000, budget: 60000 });
+  if (!res) return null;
+  if (cfg.harden && LG) {
+    var h = cfg.harden, goal = h.trials ? function (r) { return r.steps[4] >= h.trials; } : function (r) { return r.tier >= h.tier; };
+    res = harden(cfg.P, cfg.L, res, mulberry32((seed ^ 0x9e3779b9) >>> 0), h.iters, cfg.budget, h.mergeV, goal);
+  }
+  res.P = cfg.P; res.L = cfg.L;
+  return res;
+}
+
+/* ---------- Master bank ---------- */
+// Each bank entry is a verified clue layout as [[cell id, volume], ...]. A code picks an entry and one of 32 symmetric variants:
+// code = entry * 32 + rot * 2 + mirror, where rot turns the ring by whole petals and mirror swaps the two spiral families.
+var MASTER = [];
+function setMaster(bank) { MASTER = bank; }
+function masterCount() { return MASTER.length * 32; }
+function masterNums(code) {
+  var cfg = LEVELS.master, P = cfg.P, e = MASTER[Math.floor(code / 32)];
+  if (!e) return null;
+  var rot = (code >> 1) & 15, mir = code & 1;
+  return e.map(function (x) {
+    var s = Math.floor(x[0] / P), a = x[0] % P;
+    if (mir) a = (((s - a) % P) + P) % P;
+    a = (a + rot) % P;
+    return { id: s * P + a, v: x[1] };
+  });
+}
+function masterBuild(code) {
+  var cfg = LEVELS.master, nums = masterNums(code);
+  if (!nums) return null;
+  var res = solve(cfg.P, cfg.L, nums, 2, 200000);
+  if (res.count !== 1 || res.aborted) return null;
+  return { nums: nums, solution: res.solution, cands: res.cands, P: cfg.P, L: cfg.L };
+}
+
+return { setLogic: setLogic, setMaster: setMaster, masterCount: masterCount, masterBuild: masterBuild, LEVELS: LEVELS, ORDER: ORDER, BY_CODE: BY_CODE,
+         mulberry32: mulberry32, cellId: cellId, blockCells: blockCells, buildNumAt: buildNumAt, candidatesFor: candidatesFor, solve: solve, makePuzzle: makePuzzle, harden: harden, setTiles: setTiles, mergePieces: mergePieces, rectShare: rectShare, setRect: setRect, randomTiling: randomTiling, candidatesFor: candidatesFor, buildNumAt: buildNumAt };
+})();
+window.BloomCore.setTiles({"easy":[[[0,0,1,5],[0,1,1,5],[0,2,1,5],[0,3,1,5],[0,4,1,5],[0,5,1,2],[0,6,1,3],[0,7,1,5],[2,5,2,2],[4,5,1,1]],[[0,0,1,5],[0,1,1,5],[0,2,1,5],[0,3,1,5],[0,4,1,2],[0,5,1,3],[0,6,1,5],[0,7,1,5],[2,4,2,2],[4,4,1,1]],[[0,0,2,2],[0,1,1,1],[0,2,1,5],[0,3,1,5],[0,4,1,5],[0,5,1,5],[0,6,1,5],[0,7,1,5],[2,0,1,3],[3,1,1,2]],[[0,0,5,1],[0,1,5,1],[0,2,5,1],[0,3,5,1],[0,4,3,1],[0,5,2,1],[0,6,5,1],[0,7,5,1],[2,7,2,2],[4,1,1,1]],[[0,0,5,1],[0,1,1,1],[0,2,2,2],[0,3,5,1],[0,4,5,1],[0,5,5,1],[0,6,5,1],[0,7,5,1],[2,4,3,1],[3,4,2,1]],[[0,0,1,1],[0,1,1,5],[0,2,1,5],[0,3,1,5],[0,4,1,5],[0,5,1,5],[0,6,1,5],[0,7,2,2],[2,7,1,3],[3,0,1,2]],[[0,0,1,5],[0,1,1,5],[0,2,1,5],[0,3,1,5],[0,4,2,2],[0,5,1,1],[0,6,1,5],[0,7,1,5],[2,4,1,3],[3,5,1,2]],[[0,0,5,1],[0,1,5,1],[0,2,5,1],[0,3,3,1],[0,4,2,1],[0,5,5,1],[0,6,5,1],[0,7,5,1],[2,6,2,2],[4,0,1,1]],[[0,0,1,1],[0,1,2,2],[0,2,5,1],[0,3,5,1],[0,4,5,1],[0,5,5,1],[0,6,5,1],[0,7,5,1],[2,3,3,1],[3,3,2,1]],[[0,0,1,5],[0,1,1,5],[0,2,1,5],[0,3,1,5],[0,4,1,5],[0,5,2,2],[0,6,1,1],[0,7,1,5],[2,5,1,3],[3,6,1,2]],[[0,0,5,1],[0,1,5,1],[0,2,5,1],[0,3,5,1],[0,4,5,1],[0,5,3,1],[0,6,2,1],[0,7,5,1],[2,0,2,2],[4,2,1,1]],[[0,0,5,1],[0,1,5,1],[0,2,1,1],[0,3,2,2],[0,4,5,1],[0,5,5,1],[0,6,5,1],[0,7,5,1],[2,5,3,1],[3,5,2,1]],[[0,0,1,5],[0,1,2,2],[0,2,1,1],[0,3,1,5],[0,4,1,5],[0,5,1,5],[0,6,1,5],[0,7,1,5],[2,1,1,3],[3,2,1,2]],[[0,0,1,5],[0,1,1,5],[0,2,1,5],[0,3,2,2],[0,4,1,1],[0,5,1,5],[0,6,1,5],[0,7,1,5],[2,3,1,3],[3,4,1,2]],[[0,0,1,5],[0,1,1,5],[0,2,1,5],[0,3,1,5],[0,4,1,5],[0,5,1,5],[0,6,2,2],[0,7,1,1],[2,6,1,3],[3,7,1,2]],[[0,0,5,1],[0,1,5,1],[0,2,3,1],[0,3,2,1],[0,4,5,1],[0,5,5,1],[0,6,5,1],[0,7,5,1],[2,5,2,2],[4,7,1,1]],[[0,0,1,5],[0,1,1,5],[0,2,1,2],[0,3,1,3],[0,4,1,5],[0,5,1,5],[0,6,1,5],[0,7,1,5],[2,2,2,2],[4,2,1,1]],[[0,0,1,5],[0,1,1,5],[0,2,2,2],[0,3,1,1],[0,4,1,5],[0,5,1,5],[0,6,1,5],[0,7,1,5],[2,2,1,3],[3,3,1,2]],[[0,0,1,5],[0,1,1,2],[0,2,1,3],[0,3,1,5],[0,4,1,5],[0,5,1,5],[0,6,1,5],[0,7,1,5],[2,1,2,2],[4,1,1,1]],[[0,0,1,5],[0,1,1,5],[0,2,1,5],[0,3,1,2],[0,4,1,3],[0,5,1,5],[0,6,1,5],[0,7,1,5],[2,3,2,2],[4,3,1,1]],[[0,0,1,3],[0,1,1,5],[0,2,1,5],[0,3,1,5],[0,4,1,5],[0,5,1,5],[0,6,1,5],[0,7,1,2],[2,7,2,2],[4,7,1,1]],[[0,0,5,1],[0,1,5,1],[0,2,5,1],[0,3,5,1],[0,4,5,1],[0,5,5,1],[0,6,3,1],[0,7,2,1],[2,1,2,2],[4,3,1,1]],[[0,0,1,5],[0,1,1,5],[0,2,1,5],[0,3,1,5],[0,4,1,5],[0,5,1,5],[0,6,1,2],[0,7,1,3],[2,6,2,2],[4,6,1,1]],[[0,0,2,1],[0,1,5,1],[0,2,5,1],[0,3,5,1],[0,4,5,1],[0,5,5,1],[0,6,5,1],[0,7,3,1],[2,2,2,2],[4,4,1,1]],[[0,0,5,1],[0,1,5,1],[0,2,5,1],[0,3,5,1],[0,4,5,1],[0,5,1,1],[0,6,2,2],[0,7,5,1],[2,0,3,1],[3,0,2,1]],[[0,0,1,2],[0,1,1,3],[0,2,1,5],[0,3,1,5],[0,4,1,5],[0,5,1,5],[0,6,1,5],[0,7,1,5],[2,0,2,2],[4,0,1,1]],[[0,0,3,1],[0,1,2,1],[0,2,5,1],[0,3,5,1],[0,4,5,1],[0,5,5,1],[0,6,5,1],[0,7,5,1],[2,3,2,2],[4,5,1,1]],[[0,0,5,1],[0,1,5,1],[0,2,5,1],[0,3,5,1],[0,4,1,1],[0,5,2,2],[0,6,5,1],[0,7,5,1],[2,7,3,1],[3,7,2,1]],[[0,0,5,1],[0,1,5,1],[0,2,5,1],[0,3,1,1],[0,4,2,2],[0,5,5,1],[0,6,5,1],[0,7,5,1],[2,6,3,1],[3,6,2,1]],[[0,0,5,1],[0,1,3,1],[0,2,2,1],[0,3,5,1],[0,4,5,1],[0,5,5,1],[0,6,5,1],[0,7,5,1],[2,4,2,2],[4,6,1,1]],[[0,0,5,1],[0,1,5,1],[0,2,5,1],[0,3,5,1],[0,4,5,1],[0,5,5,1],[0,6,1,1],[0,7,2,2],[2,1,3,1],[3,1,2,1]],[[0,0,2,2],[0,1,5,1],[0,2,5,1],[0,3,5,1],[0,4,5,1],[0,5,5,1],[0,6,5,1],[0,7,1,1],[2,2,3,1],[3,2,2,1]]],"medium":[[[0,0,1,6],[0,1,1,6],[0,2,1,6],[0,3,1,4],[0,4,1,6],[0,5,1,6],[0,6,1,6],[0,7,1,6],[0,8,2,2],[0,9,1,1],[2,8,2,3],[4,3,1,2],[5,8,1,1]],[[0,0,2,2],[0,1,1,1],[0,2,1,6],[0,3,1,6],[0,4,1,6],[0,5,1,6],[0,6,1,6],[0,7,1,6],[0,8,1,6],[0,9,1,4],[2,0,2,3],[4,9,1,2],[5,0,1,1]],[[0,0,1,6],[0,1,1,4],[0,2,1,6],[0,3,1,6],[0,4,2,3],[0,5,1,1],[0,6,1,6],[0,7,1,6],[0,8,1,6],[0,9,1,6],[3,4,2,2],[4,1,1,2],[5,4,1,1]],[[0,0,6,1],[0,1,6,1],[0,2,6,1],[0,3,6,1],[0,4,6,1],[0,5,6,1],[0,6,6,1],[0,7,2,1],[0,8,1,1],[0,9,6,1],[1,9,2,2],[3,1,2,2],[5,3,1,1]],[[0,0,6,1],[0,1,6,1],[0,2,6,1],[0,3,1,1],[0,4,2,2],[0,5,6,1],[0,6,6,1],[0,7,6,1],[0,8,6,1],[0,9,2,1],[2,1,4,1],[2,6,3,2],[5,9,1,1]],[[0,0,1,1],[0,1,1,6],[0,2,1,6],[0,3,1,6],[0,4,1,6],[0,5,1,6],[0,6,1,6],[0,7,1,6],[0,8,2,3],[0,9,2,1],[2,0,1,4],[3,8,2,2],[5,8,1,1]],[[0,0,6,1],[0,1,6,1],[0,2,2,1],[0,3,6,1],[0,4,6,1],[0,5,1,1],[0,6,2,2],[0,7,6,1],[0,8,6,1],[0,9,6,1],[2,4,4,1],[2,8,3,2],[5,1,1,1]],[[0,0,1,1],[0,1,3,2],[0,2,6,1],[0,3,6,1],[0,4,6,1],[0,5,6,1],[0,6,6,1],[0,7,3,1],[0,8,6,1],[0,9,6,1],[3,0,3,1],[3,4,2,2],[5,6,1,1]],[[0,0,6,1],[0,1,6,1],[0,2,6,1],[0,3,6,1],[0,4,6,1],[0,5,6,1],[0,6,4,1],[0,7,1,1],[0,8,3,2],[0,9,6,1],[3,1,2,2],[4,0,2,1],[5,3,1,1]],[[0,0,6,1],[0,1,6,1],[0,2,6,1],[0,3,6,1],[0,4,6,1],[0,5,6,1],[0,6,1,1],[0,7,3,2],[0,8,2,1],[0,9,6,1],[2,0,3,2],[4,0,2,1],[5,3,1,1]],[[0,0,6,1],[0,1,6,1],[0,2,6,1],[0,3,6,1],[0,4,6,1],[0,5,1,1],[0,6,1,2],[0,7,2,3],[0,8,6,1],[0,9,6,1],[2,9,3,2],[4,9,2,1],[5,2,1,1]],[[0,0,4,1],[0,1,1,1],[0,2,3,2],[0,3,6,1],[0,4,6,1],[0,5,6,1],[0,6,6,1],[0,7,6,1],[0,8,6,1],[0,9,6,1],[3,5,2,2],[4,4,2,1],[5,7,1,1]],[[0,0,2,2],[0,1,1,1],[0,2,1,6],[0,3,1,6],[0,4,1,6],[0,5,1,6],[0,6,1,6],[0,7,1,3],[0,8,1,6],[0,9,1,6],[2,0,2,3],[3,7,1,3],[5,0,1,1]],[[0,0,1,6],[0,1,1,6],[0,2,1,6],[0,3,1,2],[0,4,1,6],[0,5,1,6],[0,6,1,6],[0,7,1,6],[0,8,2,3],[0,9,1,1],[2,3,1,4],[3,8,2,2],[5,8,1,1]],[[0,0,6,1],[0,1,4,1],[0,2,6,1],[0,3,6,1],[0,4,6,1],[0,5,6,1],[0,6,1,1],[0,7,2,2],[0,8,6,1],[0,9,6,1],[2,9,3,2],[4,5,2,1],[5,2,1,1]],[[0,0,1,6],[0,1,1,6],[0,2,1,6],[0,3,1,6],[0,4,1,2],[0,5,1,6],[0,6,1,6],[0,7,2,2],[0,8,1,1],[0,9,1,6],[2,4,1,4],[2,7,2,3],[5,7,1,1]]],"hard":[[[0,0,2,1],[0,1,3,1],[0,2,3,1],[0,3,2,1],[0,4,3,1],[0,5,2,1],[0,6,1,1],[0,7,2,2],[0,8,1,1],[0,9,2,1],[0,10,3,1],[0,11,3,1],[1,9,2,2],[2,2,2,2],[2,5,2,2],[2,7,2,2],[2,11,2,2],[3,1,2,2],[3,4,2,2],[3,9,2,2],[4,7,2,2],[4,11,4,1],[5,1,3,1],[5,3,3,1],[5,4,3,1],[5,6,3,1],[5,9,1,3],[5,11,3,1],[6,3,2,1],[6,6,2,1],[6,10,2,1],[6,11,2,1],[7,10,1,1]],[[0,0,1,2],[0,1,2,2],[0,2,3,1],[0,3,2,1],[0,4,3,1],[0,5,3,1],[0,6,2,1],[0,7,2,1],[0,8,1,1],[0,9,1,3],[0,10,3,2],[0,11,1,1],[2,1,2,2],[2,3,3,2],[2,5,2,2],[2,8,2,2],[2,10,3,2],[3,7,2,2],[4,1,2,3],[4,3,1,4],[4,10,1,4],[5,4,1,3],[5,6,1,3],[5,7,1,3],[5,9,1,3],[5,11,3,1],[6,5,1,2],[6,8,1,2],[6,11,2,1],[7,11,1,1]],[[0,0,3,1],[0,1,1,1],[0,2,1,2],[0,3,1,2],[0,4,2,2],[0,5,3,1],[0,6,1,1],[0,7,1,2],[0,8,1,3],[0,9,1,2],[0,10,1,3],[0,11,2,2],[2,1,3,2],[2,3,2,2],[2,4,6,1],[2,6,2,2],[2,9,2,2],[2,11,2,3],[3,8,2,2],[4,1,2,3],[4,5,4,1],[5,4,1,3],[5,5,3,1],[5,8,3,1],[5,10,3,1],[5,11,3,1],[6,3,1,2],[6,5,2,1],[6,10,2,1],[7,5,1,1]],[[0,0,2,1],[0,1,1,1],[0,2,1,2],[0,3,1,3],[0,4,1,2],[0,5,1,3],[0,6,2,2],[0,7,3,1],[0,8,3,1],[0,9,2,1],[0,10,3,1],[0,11,3,1],[2,2,2,2],[2,4,2,2],[2,6,2,2],[2,8,2,2],[2,11,2,2],[3,1,2,2],[3,10,2,2],[4,4,4,1],[4,6,2,2],[4,8,2,1],[5,0,3,1],[5,1,3,1],[5,3,3,1],[5,4,3,1],[5,8,2,2],[5,10,1,3],[6,0,2,1],[6,3,2,1],[6,11,2,1],[7,8,1,1],[7,11,1,1]],[[0,0,3,1],[0,1,2,1],[0,2,1,1],[0,3,1,2],[0,4,1,3],[0,5,1,4],[0,6,1,3],[0,7,2,2],[0,8,4,1],[0,9,3,1],[0,10,4,1],[0,11,3,1],[2,3,2,2],[2,7,3,2],[2,9,3,2],[3,0,2,2],[3,2,2,2],[3,6,2,2],[4,5,4,1],[5,0,3,1],[5,2,2,2],[5,4,3,1],[5,5,3,1],[5,8,2,2],[5,10,3,1],[6,0,2,1],[6,4,1,2],[6,10,1,2],[7,5,1,1],[7,11,1,1]],[[0,0,2,2],[0,1,3,1],[0,2,2,1],[0,3,3,1],[0,4,4,1],[0,5,3,1],[0,6,3,1],[0,7,2,1],[0,8,2,1],[0,9,1,1],[0,10,1,3],[0,11,1,1],[1,11,2,2],[2,2,2,2],[2,4,2,2],[2,9,2,2],[3,1,2,2],[3,6,2,2],[3,8,2,2],[3,11,2,2],[4,4,2,2],[5,1,3,1],[5,3,3,1],[5,6,1,3],[5,8,3,1],[5,10,3,1],[5,11,3,1],[6,1,2,1],[6,3,2,1],[6,7,2,1],[6,8,2,1],[6,10,2,1],[7,7,1,1]],[[0,0,1,3],[0,1,1,4],[0,2,1,3],[0,3,1,2],[0,4,1,3],[0,5,1,3],[0,6,2,2],[0,7,1,1],[0,8,1,2],[0,9,1,3],[0,10,1,2],[0,11,1,3],[2,3,2,2],[2,6,1,2],[2,8,2,2],[2,10,2,2],[3,0,2,2],[3,2,2,2],[3,5,2,2],[3,7,2,2],[4,10,1,2],[5,0,3,1],[5,2,2,2],[5,4,1,3],[5,5,1,3],[5,7,3,1],[5,9,2,2],[5,11,1,3],[6,0,2,1],[6,6,1,2],[6,7,2,1],[7,0,1,1],[7,7,1,1]],[[0,0,1,2],[0,1,1,3],[0,2,1,2],[0,3,1,3],[0,4,1,3],[0,5,1,2],[0,6,1,2],[0,7,1,3],[0,8,1,3],[0,9,2,2],[0,10,1,1],[0,11,1,3],[2,0,2,2],[2,2,2,3],[2,5,2,2],[2,6,2,1],[2,9,2,2],[3,4,2,2],[3,8,2,2],[3,11,2,2],[4,7,2,2],[5,1,1,3],[5,2,3,1],[5,4,2,2],[5,6,1,3],[5,10,1,3],[5,11,1,3],[6,0,1,2],[6,2,2,1],[6,7,1,2],[6,9,1,2],[7,2,1,1],[7,8,1,1]],[[0,0,1,3],[0,1,1,2],[0,2,1,3],[0,3,2,2],[0,4,3,1],[0,5,3,1],[0,6,2,1],[0,7,1,1],[0,8,1,2],[0,9,1,3],[0,10,1,8],[0,11,1,2],[2,1,1,2],[2,3,2,2],[2,5,2,3],[2,8,2,2],[2,11,3,2],[3,2,2,2],[3,7,2,2],[4,11,1,4],[5,0,1,3],[5,2,2,2],[5,4,1,3],[5,5,3,1],[5,7,2,2],[5,9,1,3],[6,1,1,2],[6,5,1,2],[7,2,1,1],[7,6,1,1]],[[0,0,1,1],[0,1,1,3],[0,2,1,3],[0,3,2,2],[0,4,8,1],[0,5,3,1],[0,6,2,1],[0,7,3,1],[0,8,2,1],[0,9,1,1],[0,10,2,2],[0,11,2,1],[2,0,2,2],[2,3,3,2],[2,5,2,2],[2,8,2,2],[2,10,3,2],[3,2,2,2],[4,7,4,1],[4,10,1,2],[5,1,1,3],[5,2,1,3],[5,4,1,3],[5,6,3,1],[5,7,3,1],[5,11,2,2],[6,3,1,2],[6,5,1,2],[6,6,1,2],[7,7,1,1]],[[0,0,3,1],[0,1,3,1],[0,2,2,1],[0,3,2,1],[0,4,1,1],[0,5,1,3],[0,6,2,3],[0,7,1,1],[0,8,2,1],[0,9,3,1],[0,10,3,1],[0,11,2,1],[1,8,2,2],[2,1,2,2],[2,4,2,2],[2,10,2,2],[3,0,2,2],[3,3,2,2],[3,6,2,2],[3,8,2,2],[4,10,2,1],[5,0,1,3],[5,2,1,3],[5,3,1,3],[5,5,1,3],[5,6,2,2],[5,8,1,3],[5,10,1,3],[6,1,1,2],[6,4,1,2],[6,9,1,2],[6,11,1,2],[7,6,1,1]],[[0,0,3,1],[0,1,3,1],[0,2,2,1],[0,3,1,1],[0,4,2,2],[0,5,2,1],[0,6,1,1],[0,7,3,1],[0,8,2,1],[0,9,3,1],[0,10,3,1],[0,11,2,1],[1,7,2,2],[2,1,2,2],[2,4,2,2],[2,6,1,4],[2,10,2,2],[3,0,2,2],[3,3,2,2],[3,7,2,2],[3,9,2,2],[5,0,1,3],[5,2,1,3],[5,3,1,3],[5,5,1,3],[5,7,3,1],[5,9,2,2],[5,11,1,3],[6,1,1,2],[6,4,1,2],[6,6,1,2],[6,7,1,2],[7,8,1,1]],[[0,0,2,2],[0,1,1,1],[0,2,1,2],[0,3,1,3],[0,4,1,3],[0,5,1,2],[0,6,1,3],[0,7,1,2],[0,8,1,3],[0,9,1,2],[0,10,1,3],[0,11,1,8],[2,0,3,2],[2,2,2,2],[2,5,2,2],[2,7,2,2],[2,9,2,3],[3,4,2,2],[4,0,1,4],[4,7,2,2],[5,1,3,1],[5,3,3,1],[5,4,3,1],[5,6,3,1],[5,9,2,2],[6,1,1,2],[6,3,2,1],[6,6,2,1],[7,2,1,1],[7,9,1,1]],[[0,0,3,1],[0,1,2,1],[0,2,3,1],[0,3,1,1],[0,4,2,2],[0,5,1,1],[0,6,2,2],[0,7,3,1],[0,8,3,1],[0,9,1,1],[0,10,1,2],[0,11,2,2],[2,1,2,2],[2,3,2,2],[2,6,3,2],[2,8,2,2],[2,11,2,2],[3,5,2,2],[3,10,2,2],[4,1,2,1],[4,3,1,2],[5,0,1,3],[5,1,1,3],[5,4,1,3],[5,5,1,3],[5,7,1,3],[5,9,1,3],[5,10,1,3],[6,2,1,2],[6,3,1,2],[6,6,1,2],[6,8,1,2],[6,11,1,2]],[[0,0,1,3],[0,1,2,2],[0,2,1,1],[0,3,2,2],[0,4,3,1],[0,5,1,1],[0,6,1,2],[0,7,1,2],[0,8,1,3],[0,9,1,3],[0,10,1,2],[0,11,1,3],[2,1,2,2],[2,3,2,3],[2,5,2,2],[2,7,2,3],[2,10,2,2],[3,0,2,2],[3,9,1,5],[4,5,2,3],[4,10,1,4],[5,0,1,3],[5,2,1,3],[5,3,1,3],[5,7,1,3],[5,11,1,3],[6,1,1,2],[6,4,1,2],[6,8,1,2],[7,5,1,1]],[[0,0,1,2],[0,1,1,3],[0,2,1,3],[0,3,1,2],[0,4,1,3],[0,5,3,1],[0,6,2,1],[0,7,1,1],[0,8,1,4],[0,9,1,2],[0,10,1,3],[0,11,1,3],[1,5,2,2],[2,0,2,2],[2,3,2,2],[2,9,2,2],[3,2,2,2],[3,5,2,2],[3,7,2,2],[3,11,2,2],[4,9,2,2],[5,1,1,3],[5,2,1,3],[5,4,1,3],[5,5,3,1],[5,7,3,1],[5,11,2,2],[6,3,1,2],[6,5,1,2],[6,7,2,1],[6,9,2,1],[7,6,1,1],[7,11,1,1]]],"expert":[[[0,0,1,3],[0,1,1,2],[0,2,1,3],[0,3,1,2],[0,4,1,3],[0,5,2,2],[0,6,1,1],[0,7,1,2],[0,8,1,3],[0,9,1,2],[0,10,1,3],[0,11,1,2],[0,12,1,3],[0,13,1,2],[2,1,2,2],[2,3,2,2],[2,5,2,2],[2,7,2,2],[2,9,2,2],[2,11,2,2],[2,13,2,2],[4,1,2,2],[4,3,2,2],[4,5,2,2],[4,7,2,2],[4,9,2,2],[4,11,2,2],[4,13,2,2],[6,1,3,1],[6,3,2,2],[6,5,1,3],[6,7,1,3],[6,9,1,3],[6,11,2,2],[6,13,1,3],[7,0,1,2],[7,1,1,2],[7,6,1,2],[7,8,1,2],[7,10,1,2],[8,2,1,1],[8,11,1,1]],[[0,0,2,2],[0,1,3,1],[0,2,2,1],[0,3,3,1],[0,4,2,1],[0,5,3,1],[0,6,2,1],[0,7,3,1],[0,8,2,1],[0,9,1,1],[0,10,1,2],[0,11,1,3],[0,12,2,2],[0,13,1,1],[2,0,2,2],[2,2,2,2],[2,4,2,2],[2,6,2,2],[2,8,2,2],[2,10,2,2],[2,12,2,2],[4,0,2,2],[4,2,2,2],[4,4,2,2],[4,6,2,2],[4,8,2,2],[4,10,2,2],[4,12,2,2],[6,0,3,1],[6,2,3,1],[6,4,3,1],[6,6,3,1],[6,8,2,2],[6,10,1,3],[6,12,3,1],[7,0,2,1],[7,2,2,1],[7,4,2,1],[7,6,2,1],[7,11,1,2],[7,12,1,2],[8,13,1,1]],[[0,0,1,3],[0,1,1,2],[0,2,1,3],[0,3,1,2],[0,4,1,3],[0,5,2,2],[0,6,3,1],[0,7,2,1],[0,8,3,1],[0,9,2,1],[0,10,3,1],[0,11,2,1],[0,12,1,1],[0,13,1,2],[2,1,2,2],[2,3,2,2],[2,5,2,2],[2,7,2,2],[2,9,2,2],[2,11,2,2],[2,13,2,2],[4,1,2,2],[4,3,2,2],[4,5,2,2],[4,7,2,2],[4,9,2,2],[4,11,2,2],[4,13,2,2],[6,1,1,3],[6,3,3,1],[6,5,2,2],[6,7,1,3],[6,9,3,1],[6,11,2,2],[6,13,1,3],[7,0,1,2],[7,2,2,1],[7,3,2,1],[7,8,2,1],[7,9,2,1],[8,2,1,1],[8,8,1,1]],[[0,0,2,1],[0,1,2,1],[0,2,1,1],[0,3,1,3],[0,4,1,2],[0,5,1,3],[0,6,2,2],[0,7,1,1],[0,8,2,2],[0,9,3,1],[0,10,2,1],[0,11,3,1],[0,12,2,1],[0,13,3,1],[2,0,2,2],[2,2,2,2],[2,4,2,2],[2,6,2,2],[2,8,2,2],[2,10,2,2],[2,12,2,2],[4,0,2,2],[4,2,2,2],[4,4,2,2],[4,6,2,2],[4,8,2,2],[4,10,2,2],[4,12,2,2],[6,0,3,1],[6,2,3,1],[6,4,3,1],[6,6,2,2],[6,8,1,3],[6,10,3,1],[6,12,3,1],[7,0,2,1],[7,2,2,1],[7,4,2,1],[7,9,2,1],[7,10,2,1],[7,12,2,1],[8,9,1,1]],[[0,0,2,2],[0,1,3,1],[0,2,1,1],[0,3,1,2],[0,4,2,2],[0,5,2,1],[0,6,1,1],[0,7,1,3],[0,8,2,2],[0,9,1,1],[0,10,1,2],[0,11,1,3],[0,12,1,2],[0,13,1,3],[2,0,2,2],[2,2,2,2],[2,4,2,2],[2,6,2,2],[2,8,2,2],[2,10,2,2],[2,12,2,2],[4,0,2,2],[4,2,2,2],[4,4,2,2],[4,6,2,2],[4,8,2,2],[4,10,2,2],[4,12,2,2],[6,0,1,3],[6,2,1,3],[6,4,1,3],[6,6,1,3],[6,8,1,3],[6,10,1,3],[6,12,1,3],[7,1,1,2],[7,3,1,2],[7,5,1,2],[7,7,1,2],[7,9,1,2],[7,11,1,2],[7,13,1,2]]],"master":[[[0,0,1,3],[0,1,1,4],[0,2,1,3],[0,3,3,2],[0,4,3,1],[0,5,2,1],[0,6,1,1],[0,7,1,2],[0,8,1,3],[0,9,1,4],[0,10,1,3],[0,11,1,2],[0,12,1,3],[0,13,1,2],[0,14,1,3],[0,15,1,2],[2,3,2,2],[2,7,2,2],[2,11,2,2],[2,13,2,2],[2,15,2,2],[3,2,2,2],[3,6,2,2],[3,10,2,2],[4,1,2,3],[4,5,3,2],[4,9,2,2],[4,13,2,2],[4,15,2,2],[5,4,2,2],[5,8,2,2],[5,12,2,2],[6,3,2,2],[6,11,3,2],[6,15,1,2],[7,0,1,3],[7,1,3,1],[7,6,1,3],[7,8,1,3],[7,10,3,1],[7,14,2,2],[8,1,2,1],[8,3,2,1],[8,5,1,2],[8,7,1,2],[8,9,2,1],[8,10,2,1],[9,1,1,1],[9,9,1,1],[9,14,1,1]],[[0,0,1,2],[0,1,1,3],[0,2,1,4],[0,3,1,2],[0,4,2,2],[0,5,3,1],[0,6,3,1],[0,7,2,1],[0,8,3,1],[0,9,1,1],[0,10,1,2],[0,11,1,2],[0,12,1,3],[0,13,1,2],[0,14,1,3],[0,15,1,3],[2,0,2,2],[2,3,1,3],[2,4,2,2],[2,6,2,2],[2,9,2,2],[2,11,2,2],[2,13,2,2],[3,8,2,2],[3,15,2,2],[4,2,3,2],[4,4,3,2],[4,6,3,2],[4,11,2,2],[4,13,2,2],[5,1,2,2],[5,8,5,1],[5,10,2,2],[5,15,2,2],[6,13,2,2],[7,1,3,1],[7,3,2,2],[7,5,1,3],[7,7,3,1],[7,9,2,2],[7,12,3,1],[7,15,1,3],[8,0,1,2],[8,1,1,2],[8,6,2,1],[8,7,2,1],[8,12,2,1],[9,2,1,1],[9,6,1,1],[9,11,1,1]],[[0,0,1,1],[0,1,2,2],[0,2,3,1],[0,3,3,1],[0,4,2,1],[0,5,3,1],[0,6,2,1],[0,7,4,1],[0,8,3,1],[0,9,2,1],[0,10,3,1],[0,11,3,1],[0,12,2,1],[0,13,3,1],[0,14,3,1],[0,15,2,1],[2,1,2,2],[2,3,2,2],[2,6,2,2],[2,8,2,2],[2,11,2,3],[2,14,2,2],[3,0,2,2],[3,5,2,2],[3,13,3,2],[4,3,2,2],[4,8,2,2],[4,10,2,2],[5,0,2,2],[5,2,2,2],[5,5,2,2],[5,7,1,5],[5,13,2,2],[6,8,2,1],[6,10,2,1],[6,12,3,2],[7,0,1,3],[7,2,2,2],[7,4,1,3],[7,5,2,2],[7,8,1,3],[7,10,3,1],[7,15,1,3],[8,1,2,1],[8,9,1,2],[8,10,1,2],[8,12,2,1],[9,1,1,1],[9,5,1,1],[9,11,1,1]],[[0,0,1,3],[0,1,1,3],[0,2,2,2],[0,3,1,1],[0,4,1,3],[0,5,2,2],[0,6,1,1],[0,7,2,2],[0,8,3,1],[0,9,2,1],[0,10,2,1],[0,11,1,1],[0,12,1,3],[0,13,1,2],[0,14,1,3],[0,15,1,2],[2,2,2,2],[2,5,2,2],[2,7,3,2],[2,9,2,2],[2,11,3,2],[2,13,2,2],[2,15,2,2],[3,1,2,2],[3,4,2,2],[4,7,2,2],[4,11,2,2],[4,15,2,2],[5,1,2,2],[5,3,5,1],[5,4,2,1],[5,6,2,2],[5,10,2,2],[5,14,2,2],[6,3,1,4],[6,9,1,2],[6,13,1,4],[7,0,1,3],[7,1,1,3],[7,4,1,3],[7,6,3,1],[7,8,2,2],[7,10,1,3],[7,12,1,3],[7,14,1,3],[8,2,1,2],[8,5,1,2],[8,11,1,2],[8,15,1,2],[9,6,1,1]],[[0,0,1,3],[0,1,1,2],[0,2,1,3],[0,3,1,3],[0,4,1,4],[0,5,1,2],[0,6,1,3],[0,7,1,3],[0,8,1,2],[0,9,1,3],[0,10,1,3],[0,11,2,2],[0,12,2,1],[0,13,1,1],[0,14,1,3],[0,15,1,2],[2,1,2,2],[2,5,2,2],[2,8,2,2],[2,11,2,2],[2,13,2,3],[2,15,2,3],[3,3,2,2],[3,7,2,2],[3,10,2,2],[4,1,2,2],[4,5,2,3],[5,3,2,2],[5,7,2,2],[5,9,1,5],[5,10,2,2],[5,12,1,3],[5,13,2,2],[5,15,2,2],[6,1,1,2],[7,2,1,3],[7,3,1,3],[7,5,3,1],[7,7,2,2],[7,10,2,2],[7,13,1,3],[7,15,2,2],[8,1,1,2],[8,4,2,1],[8,5,2,1],[8,12,1,2],[8,14,2,1],[9,4,1,1],[9,10,1,1],[9,14,1,1]],[[0,0,1,3],[0,1,2,2],[0,2,3,1],[0,3,2,1],[0,4,3,1],[0,5,2,1],[0,6,1,1],[0,7,1,2],[0,8,2,3],[0,9,3,1],[0,10,3,1],[0,11,2,1],[0,12,3,1],[0,13,2,1],[0,14,2,1],[0,15,1,1],[2,1,2,2],[2,3,2,2],[2,5,1,2],[2,7,3,2],[2,10,2,2],[2,13,2,2],[2,15,2,2],[3,6,2,2],[3,12,2,2],[4,1,2,2],[4,3,2,3],[4,5,1,4],[4,10,2,3],[4,15,3,2],[5,6,2,2],[5,8,2,2],[5,12,2,2],[5,14,2,2],[7,0,1,3],[7,2,1,3],[7,3,1,3],[7,6,1,3],[7,8,1,3],[7,10,3,1],[7,12,2,2],[7,14,2,2],[8,1,1,2],[8,4,1,2],[8,5,1,2],[8,7,1,2],[8,9,2,1],[8,10,2,1],[9,9,1,1],[9,14,1,1]],[[0,0,1,3],[0,1,1,3],[0,2,1,2],[0,3,1,3],[0,4,2,2],[0,5,3,1],[0,6,2,1],[0,7,1,1],[0,8,2,2],[0,9,3,1],[0,10,3,1],[0,11,2,1],[0,12,1,1],[0,13,1,2],[0,14,1,3],[0,15,1,2],[2,2,2,2],[2,4,2,2],[2,6,3,2],[2,8,2,2],[2,10,2,2],[2,13,1,2],[2,15,2,2],[3,1,2,2],[3,12,2,2],[3,14,2,2],[4,4,2,2],[4,6,2,2],[4,10,2,2],[5,0,1,3],[5,1,2,2],[5,3,2,2],[5,9,2,2],[5,12,2,2],[5,14,2,2],[6,6,4,1],[6,8,2,1],[7,1,1,3],[7,3,3,1],[7,5,3,1],[7,6,3,1],[7,8,3,1],[7,11,2,2],[7,12,3,1],[7,14,2,2],[8,0,1,2],[8,2,1,2],[8,3,1,2],[8,5,2,1],[8,10,2,1],[9,4,1,1],[9,13,1,1]],[[0,0,1,2],[0,1,1,2],[0,2,1,3],[0,3,1,2],[0,4,1,3],[0,5,1,2],[0,6,1,3],[0,7,2,2],[0,8,3,1],[0,9,3,1],[0,10,2,1],[0,11,10,1],[0,12,10,1],[0,13,3,1],[0,14,1,1],[0,15,1,2],[2,0,2,2],[2,1,3,1],[2,3,2,2],[2,5,2,2],[2,7,2,2],[2,9,2,2],[2,12,3,2],[3,11,2,2],[4,2,2,2],[4,5,2,2],[4,7,2,2],[4,9,2,3],[5,4,2,2],[5,11,2,2],[5,13,2,2],[5,15,2,2],[6,7,1,2],[7,1,3,1],[7,4,3,1],[7,6,2,2],[7,8,1,3],[7,9,1,3],[7,11,2,2],[7,13,2,2],[7,15,3,1],[8,1,2,1],[8,10,1,2],[8,15,2,1],[9,11,1,1],[9,13,1,1],[9,15,1,1]],[[0,0,3,1],[0,1,2,1],[0,2,3,1],[0,3,3,1],[0,4,1,1],[0,5,1,2],[0,6,1,2],[0,7,1,3],[0,8,1,3],[0,9,1,2],[0,10,1,3],[0,11,2,2],[0,12,3,1],[0,13,2,1],[0,14,3,1],[0,15,2,1],[2,1,2,2],[2,3,2,2],[2,6,2,2],[2,9,2,2],[2,11,2,2],[2,13,8,1],[2,15,2,2],[3,5,4,2],[3,8,2,2],[3,13,2,2],[4,1,3,2],[4,3,2,2],[4,11,2,2],[5,5,4,2],[5,8,5,1],[5,10,2,2],[5,13,2,2],[5,15,2,2],[7,1,2,2],[7,4,3,1],[7,5,3,1],[7,9,2,2],[7,12,3,1],[7,13,3,1],[7,15,3,1],[8,4,2,1],[8,12,2,1],[8,15,2,1],[9,3,1,1],[9,9,1,1],[9,11,1,1]]]});
+window.BloomCore.setMaster([[[21,2],[20,3],[53,4],[18,5],[17,4],[31,3],[30,3],[29,2],[28,3],[11,1],[27,2],[26,2],[25,3],[24,2],[6,3],[22,3],[71,4],[83,10],[65,4],[78,8],[60,4],[91,8],[64,4],[73,8],[103,6],[68,6],[97,5],[96,4],[123,4],[109,4],[122,3],[153,4],[135,3],[148,3],[130,4],[143,3],[141,3],[140,2],[156,2],[150,2],[149,2],[128,2],[155,1],[151,1],[146,1]],[[26,3],[25,3],[24,2],[6,3],[5,4],[4,3],[3,2],[2,1],[34,4],[32,3],[47,3],[30,2],[13,1],[29,2],[28,3],[27,2],[90,8],[72,8],[70,6],[68,4],[33,8],[79,6],[61,4],[92,8],[113,8],[111,5],[110,4],[85,4],[82,4],[105,4],[103,4],[128,3],[157,3],[155,3],[154,3],[136,3],[117,4],[116,3],[114,4],[143,2],[159,2],[156,2],[158,1],[149,1]],[[39,3],[40,3],[25,4],[10,1],[43,3],[45,14],[13,1],[30,4],[15,3],[0,2],[1,2],[2,1],[19,3],[20,2],[37,3],[22,2],[41,4],[44,4],[65,4],[50,6],[69,8],[38,4],[56,4],[76,4],[111,6],[99,4],[88,4],[141,5],[125,5],[110,8],[118,4],[138,4],[100,4],[119,3],[136,3],[123,3],[145,3],[147,3],[117,3],[137,2],[156,2],[146,2],[134,2],[157,1]],[[41,3],[6,4],[22,3],[20,10],[35,3],[18,2],[1,1],[17,2],[33,3],[31,4],[30,3],[29,2],[45,3],[27,2],[26,3],[8,2],[54,4],[51,4],[63,4],[60,4],[75,8],[88,8],[65,4],[90,6],[87,6],[115,10],[127,6],[100,4],[113,4],[123,6],[143,3],[125,3],[137,3],[118,3],[116,3],[145,4],[158,2],[156,2],[136,2],[134,2],[149,2],[159,1],[151,1],[146,1]],[[22,2],[23,2],[40,3],[9,2],[26,3],[27,2],[12,3],[48,8],[14,3],[33,3],[0,2],[137,10],[36,10],[3,3],[4,1],[21,2],[55,4],[73,3],[41,4],[59,4],[78,8],[34,6],[100,8],[72,4],[109,6],[79,6],[90,8],[98,4],[101,4],[136,3],[122,3],[142,3],[127,3],[146,4],[115,4],[134,3],[135,2],[128,2],[133,2],[145,1],[147,1],[149,1]],[[12,2],[11,2],[27,3],[26,2],[25,3],[7,2],[23,3],[5,4],[4,3],[35,3],[18,2],[17,10],[96,10],[15,3],[14,1],[30,2],[63,8],[61,3],[60,4],[74,4],[56,4],[53,4],[66,6],[52,4],[75,6],[90,4],[71,6],[142,8],[136,8],[84,8],[82,4],[146,3],[127,3],[140,3],[122,3],[116,3],[131,2],[138,2],[149,2],[154,1],[152,1],[150,1]],[[4,3],[3,8],[2,3],[17,2],[16,3],[31,2],[14,1],[13,2],[45,6],[43,3],[42,3],[25,2],[40,3],[7,2],[22,2],[5,1],[35,10],[101,8],[63,6],[61,4],[58,4],[39,4],[66,4],[91,8],[87,4],[96,6],[89,6],[100,4],[114,4],[158,8],[140,3],[138,3],[120,3],[134,3],[115,3],[129,3],[127,4],[139,2],[136,2],[133,2],[147,2],[146,2],[148,1],[159,1]],[[35,3],[20,2],[21,3],[38,3],[39,4],[24,2],[9,3],[42,3],[11,2],[44,3],[13,3],[63,8],[15,2],[0,1],[33,3],[2,2],[53,4],[57,4],[43,4],[32,6],[67,6],[54,4],[74,4],[78,4],[101,4],[121,6],[102,4],[139,8],[92,5],[110,4],[143,5],[80,4],[98,4],[100,4],[133,3],[118,3],[154,3],[142,4],[128,3],[114,4],[152,2],[153,2],[146,2],[151,1],[157,1],[145,1]],[[22,3],[55,4],[20,3],[35,10],[17,3],[16,2],[15,1],[31,2],[30,3],[63,4],[28,3],[27,2],[26,3],[25,2],[24,3],[23,2],[53,4],[65,8],[77,4],[59,8],[57,4],[54,4],[95,4],[72,6],[68,6],[74,4],[86,4],[98,4],[111,4],[121,6],[113,6],[125,2],[124,3],[139,3],[135,3],[133,3],[114,3],[143,4],[156,2],[153,2],[134,2],[132,2],[131,2],[157,1],[149,1],[144,1]],[[28,3],[27,8],[9,3],[24,2],[23,3],[22,2],[5,1],[4,2],[19,6],[18,3],[17,3],[16,2],[15,3],[30,2],[29,2],[12,1],[75,4],[142,8],[71,6],[52,4],[49,4],[63,4],[73,8],[67,8],[111,4],[76,6],[102,6],[80,6],[121,4],[99,8],[131,3],[129,3],[128,3],[124,3],[139,3],[120,3],[151,4],[130,2],[143,2],[140,2],[154,2],[153,2],[155,1],[150,1]],[[12,2],[29,3],[62,4],[47,5],[51,8],[1,3],[36,3],[20,2],[21,3],[5,1],[22,2],[23,2],[8,3],[25,2],[42,3],[43,3],[60,10],[49,4],[70,4],[55,8],[74,4],[52,4],[109,8],[64,6],[82,6],[104,4],[101,5],[86,4],[107,4],[138,4],[142,3],[127,4],[113,3],[132,3],[134,4],[120,3],[155,3],[140,2],[141,2],[130,2],[131,2],[153,2],[158,1],[146,1],[151,1]],[[21,2],[22,2],[7,3],[24,2],[25,3],[10,2],[43,3],[79,8],[13,3],[32,3],[15,2],[119,10],[18,10],[36,3],[3,1],[20,2],[54,4],[55,3],[73,4],[75,4],[44,8],[84,10],[65,4],[88,4],[108,6],[94,6],[106,8],[113,4],[82,4],[152,3],[121,3],[157,3],[142,3],[145,4],[130,4],[133,3],[134,2],[143,2],[132,2],[144,1],[146,1],[148,1]],[[32,3],[33,3],[2,2],[35,3],[21,4],[22,3],[23,2],[7,1],[57,8],[43,3],[44,3],[28,2],[12,1],[29,4],[30,3],[31,2],[68,8],[53,4],[54,6],[75,4],[64,4],[83,8],[125,8],[78,4],[87,4],[107,4],[80,3],[114,4],[106,8],[94,4],[136,4],[104,4],[145,3],[149,3],[134,3],[135,3],[137,3],[124,3],[126,4],[144,2],[146,2],[147,2],[150,2],[148,1],[157,1]],[[30,2],[31,2],[32,3],[17,2],[2,3],[3,2],[36,3],[22,4],[40,3],[7,3],[8,2],[129,10],[44,10],[45,3],[12,1],[29,2],[80,8],[65,3],[50,4],[51,4],[70,8],[72,10],[59,6],[74,4],[84,6],[99,4],[122,4],[108,8],[110,4],[128,3],[114,3],[116,4],[134,3],[135,3],[138,4],[159,3],[143,2],[136,2],[141,2],[153,1],[155,1],[157,1]],[[43,3],[44,3],[30,4],[14,1],[15,3],[17,4],[1,1],[2,8],[3,3],[4,2],[22,2],[6,1],[23,3],[24,2],[41,3],[26,2],[62,4],[66,10],[67,6],[72,6],[57,4],[42,4],[93,8],[80,4],[86,4],[74,4],[146,5],[130,5],[131,8],[102,4],[106,4],[126,4],[120,4],[155,3],[124,3],[127,3],[133,3],[135,3],[121,3],[157,2],[144,2],[134,2],[138,2],[145,1]],[[25,2],[24,2],[23,3],[22,2],[21,3],[20,2],[2,3],[52,8],[0,3],[31,3],[30,2],[157,10],[60,10],[27,3],[10,1],[26,2],[58,4],[57,3],[56,4],[71,8],[66,10],[63,6],[48,4],[74,4],[102,4],[106,4],[99,4],[80,4],[110,4],[103,2],[158,3],[139,3],[138,4],[136,3],[135,3],[133,4],[131,4],[128,3],[143,2],[134,2],[129,2],[150,1],[148,1],[146,1]],[[17,3],[16,2],[31,3],[30,3],[29,4],[28,2],[27,3],[26,3],[25,2],[41,3],[6,3],[21,4],[20,2],[3,1],[19,3],[18,2],[83,8],[78,4],[58,4],[72,4],[87,6],[85,10],[81,4],[77,4],[108,8],[80,6],[98,4],[128,8],[126,5],[123,5],[105,4],[152,4],[151,3],[116,3],[146,3],[141,4],[156,3],[137,4],[148,2],[147,2],[138,2],[149,1],[159,1],[155,1]],[[44,3],[61,4],[46,3],[16,10],[34,3],[18,2],[2,1],[19,2],[20,3],[53,4],[38,3],[23,2],[8,3],[9,2],[42,3],[11,2],[47,4],[68,4],[56,4],[58,4],[59,4],[113,8],[70,8],[94,6],[82,6],[85,4],[90,4],[75,4],[100,4],[128,4],[136,6],[123,2],[124,3],[142,3],[114,3],[148,3],[135,3],[155,4],[158,2],[144,2],[145,2],[131,2],[133,2],[134,2],[157,1],[149,1],[154,1]],[[3,1],[54,8],[39,3],[40,3],[24,2],[25,3],[26,2],[44,4],[45,3],[12,2],[30,3],[31,3],[16,2],[17,3],[18,3],[19,2],[69,4],[74,4],[75,10],[62,6],[50,4],[51,4],[105,8],[65,6],[103,4],[77,4],[83,8],[85,4],[90,5],[113,4],[144,4],[127,6],[131,3],[135,3],[120,4],[155,3],[142,3],[146,3],[132,2],[156,2],[141,2],[148,1],[152,1],[158,1]],[[42,3],[43,8],[29,3],[30,2],[31,3],[16,2],[0,1],[17,2],[34,6],[3,3],[38,3],[22,2],[23,3],[7,2],[8,2],[9,1],[45,4],[95,8],[83,6],[69,4],[39,4],[58,8],[81,4],[70,4],[126,6],[101,6],[107,6],[97,4],[98,4],[103,8],[121,8],[154,3],[124,3],[125,3],[144,3],[130,3],[116,3],[155,2],[142,2],[129,2],[148,2],[149,2],[147,1],[152,1]],[[44,3],[45,3],[30,2],[31,3],[16,4],[35,3],[19,2],[3,1],[21,8],[22,3],[23,3],[24,2],[8,1],[25,2],[26,3],[27,2],[63,4],[48,4],[84,6],[52,4],[58,6],[60,4],[110,8],[105,8],[64,4],[99,4],[86,4],[108,5],[96,4],[119,8],[155,8],[132,4],[134,4],[141,3],[145,3],[147,3],[114,3],[133,3],[120,3],[142,2],[143,2],[146,2],[144,1],[153,1]],[[25,2],[24,2],[23,3],[22,2],[21,3],[20,2],[36,3],[49,8],[0,3],[15,3],[30,2],[77,10],[140,10],[11,3],[10,1],[26,2],[59,4],[41,3],[56,4],[70,8],[35,4],[78,6],[64,4],[91,4],[69,4],[84,6],[106,4],[131,8],[80,4],[127,4],[120,2],[142,3],[139,3],[138,4],[136,3],[135,3],[132,4],[112,3],[143,2],[134,2],[129,2],[150,1],[148,1],[146,1]],[[25,3],[24,2],[40,3],[39,3],[55,4],[20,2],[19,3],[18,3],[17,2],[16,3],[31,3],[30,4],[12,2],[11,1],[27,3],[26,2],[74,8],[54,4],[34,4],[47,4],[78,6],[77,6],[56,4],[69,4],[65,12],[121,6],[107,4],[119,8],[152,5],[149,5],[113,4],[110,4],[109,4],[125,3],[124,3],[154,3],[131,3],[145,4],[156,2],[155,2],[130,2],[157,1],[151,1],[147,1]],[[1,3],[17,3],[31,8],[14,1],[30,3],[79,8],[11,1],[43,4],[25,3],[24,2],[7,2],[6,1],[22,3],[21,2],[3,3],[2,2],[44,6],[75,4],[57,6],[54,4],[69,4],[68,4],[48,4],[110,6],[91,4],[86,4],[85,4],[147,5],[82,2],[112,8],[125,4],[105,4],[100,4],[157,4],[154,3],[136,3],[150,3],[130,3],[144,3],[141,3],[156,3],[152,2],[149,2],[142,2],[155,2],[148,1]],[[20,3],[38,4],[23,3],[24,2],[25,3],[26,2],[10,1],[27,2],[12,6],[30,3],[32,3],[16,2],[17,3],[18,2],[19,2],[3,1],[54,4],[72,4],[41,2],[93,6],[63,4],[50,4],[68,8],[107,8],[113,8],[87,6],[105,6],[94,6],[83,6],[108,4],[82,4],[132,3],[134,3],[135,3],[154,3],[156,3],[143,3],[128,4],[114,4],[133,2],[136,2],[155,2],[141,2],[159,2],[157,1],[146,1]],[[15,3],[31,3],[29,4],[12,1],[11,3],[26,4],[9,1],[24,4],[39,3],[22,2],[21,2],[4,1],[20,3],[19,2],[35,3],[17,2],[64,4],[77,10],[75,6],[40,4],[70,10],[52,8],[50,4],[49,4],[110,8],[88,4],[100,4],[113,5],[80,5],[107,4],[98,4],[138,4],[135,3],[134,3],[131,3],[159,4],[158,3],[156,3],[137,3],[150,2],[147,2],[157,2],[136,2],[146,1]],[[35,3],[16,4],[31,3],[30,2],[29,3],[28,2],[11,1],[27,2],[26,6],[24,3],[39,3],[22,2],[21,3],[20,2],[19,2],[2,1],[34,8],[116,10],[110,10],[60,6],[57,4],[38,4],[69,4],[72,4],[98,6],[125,6],[119,6],[96,4],[107,8],[88,4],[154,3],[118,3],[117,3],[114,3],[129,3],[158,3],[140,4],[153,2],[150,2],[130,2],[144,2],[159,2],[145,1],[156,1]],[[42,3],[11,4],[44,3],[63,6],[32,3],[15,2],[0,1],[17,2],[18,3],[3,4],[36,3],[5,2],[6,3],[7,2],[24,3],[25,2],[45,4],[33,4],[37,4],[72,4],[73,8],[77,4],[82,8],[68,4],[92,6],[79,6],[84,4],[121,6],[94,4],[119,8],[125,4],[117,6],[138,3],[123,3],[144,3],[130,3],[133,3],[156,2],[158,2],[143,2],[129,2],[131,2],[149,2],[155,1],[147,1],[152,1]],[[32,3],[17,3],[18,4],[3,1],[20,3],[21,4],[6,1],[7,8],[8,3],[9,2],[27,2],[11,1],[44,3],[29,2],[30,3],[31,2],[50,4],[37,4],[73,6],[59,6],[45,4],[63,4],[82,8],[68,6],[104,6],[91,4],[79,4],[151,5],[102,8],[90,4],[111,4],[131,4],[109,4],[112,3],[113,3],[132,3],[152,3],[154,3],[124,3],[142,3],[146,2],[133,2],[139,2],[143,2],[150,1]],[[28,3],[27,4],[9,3],[40,6],[7,3],[22,2],[5,1],[4,2],[20,3],[53,4],[18,3],[17,2],[16,3],[31,2],[47,3],[29,2],[59,10],[38,4],[51,4],[49,4],[62,4],[109,8],[73,4],[68,8],[94,6],[86,4],[83,4],[97,4],[121,4],[127,6],[151,6],[115,2],[148,3],[145,3],[141,3],[139,3],[136,3],[149,4],[130,2],[144,2],[140,2],[138,2],[137,2],[147,1],[155,1],[150,1]],[[47,3],[29,2],[45,3],[44,3],[26,4],[25,2],[24,3],[23,3],[22,2],[4,3],[37,3],[35,8],[17,2],[0,1],[33,3],[31,2],[63,8],[59,4],[56,4],[84,10],[66,6],[94,8],[74,4],[71,4],[92,6],[91,4],[106,5],[88,4],[137,5],[116,4],[98,2],[131,3],[113,3],[127,3],[125,4],[139,4],[119,3],[150,4],[149,2],[129,2],[128,2],[151,2],[146,1],[156,1],[152,1]],[[21,3],[22,3],[40,4],[8,1],[9,3],[94,10],[11,1],[45,4],[47,3],[14,2],[15,2],[0,1],[33,3],[18,2],[35,3],[4,2],[72,4],[59,10],[62,4],[48,6],[85,8],[36,4],[71,4],[73,6],[97,4],[103,4],[122,5],[108,8],[96,4],[83,4],[136,4],[98,4],[133,3],[134,3],[121,3],[157,3],[143,3],[129,3],[131,3],[135,2],[154,2],[128,2],[132,2],[155,1]],[[25,2],[42,3],[43,4],[12,2],[47,8],[14,3],[16,3],[17,2],[18,3],[2,1],[19,2],[20,2],[21,3],[22,2],[39,3],[40,3],[74,4],[44,3],[45,4],[51,4],[69,4],[54,12],[65,4],[89,4],[109,6],[111,6],[113,6],[85,4],[123,4],[132,5],[99,4],[121,4],[122,3],[157,4],[142,3],[146,3],[114,4],[117,3],[152,3],[137,2],[154,2],[143,2],[128,2],[150,2],[155,1],[159,1],[148,1]],[[33,3],[14,3],[64,8],[12,1],[45,3],[42,10],[9,1],[41,4],[39,3],[22,2],[21,2],[4,1],[37,3],[19,2],[35,3],[17,2],[44,4],[57,4],[54,6],[36,4],[101,8],[66,4],[78,8],[125,6],[89,4],[83,4],[129,5],[128,5],[106,4],[103,4],[98,4],[155,4],[135,3],[117,3],[148,3],[143,4],[158,3],[122,3],[154,3],[133,2],[130,2],[157,2],[136,2],[146,1]],[[42,3],[24,3],[23,2],[5,3],[38,8],[19,3],[18,2],[1,1],[33,4],[47,3],[14,3],[13,2],[12,1],[62,4],[44,3],[9,2],[73,4],[85,6],[67,4],[65,8],[59,4],[91,4],[96,8],[77,4],[105,4],[87,4],[127,5],[108,4],[123,4],[116,8],[146,8],[104,4],[134,4],[144,3],[124,3],[138,3],[137,3],[119,3],[115,3],[159,2],[141,2],[139,2],[157,1],[148,1]],[[19,3],[20,3],[21,2],[22,3],[23,4],[8,3],[9,2],[10,1],[44,4],[46,3],[47,3],[31,2],[15,1],[16,2],[17,3],[18,2],[54,4],[56,8],[74,6],[76,4],[61,4],[65,6],[34,4],[84,8],[64,8],[71,4],[93,4],[147,5],[119,4],[92,8],[111,8],[105,4],[141,4],[148,3],[152,3],[154,3],[121,3],[140,3],[127,3],[149,2],[134,2],[153,2],[151,1],[144,1]],[[11,3],[44,4],[45,3],[65,10],[16,3],[17,2],[1,1],[2,2],[3,3],[52,4],[21,3],[22,2],[39,3],[8,2],[25,3],[10,2],[46,4],[68,8],[88,8],[56,4],[59,4],[94,4],[69,4],[93,6],[97,6],[107,4],[111,4],[83,4],[103,4],[126,4],[119,6],[106,2],[123,3],[124,3],[113,3],[115,3],[117,3],[137,4],[157,2],[159,2],[144,2],[146,2],[149,2],[150,2],[156,1],[148,1],[153,1]],[[38,3],[39,3],[24,8],[9,1],[26,3],[44,4],[12,1],[13,4],[14,3],[15,2],[0,2],[1,1],[18,3],[19,2],[20,3],[21,2],[76,4],[62,6],[81,8],[50,6],[68,4],[69,8],[71,8],[58,6],[110,6],[123,5],[109,4],[113,4],[84,4],[137,4],[115,4],[118,3],[119,3],[122,3],[158,3],[143,4],[128,3],[130,3],[148,3],[152,2],[155,2],[129,2],[149,2],[156,1]],[[26,3],[25,2],[41,3],[40,3],[39,4],[21,2],[37,3],[19,3],[18,2],[17,3],[15,3],[14,4],[13,2],[12,1],[28,3],[27,2],[59,4],[54,4],[52,4],[49,4],[79,10],[61,6],[74,8],[86,4],[83,4],[76,4],[89,6],[103,4],[136,5],[101,8],[82,5],[129,8],[110,4],[143,3],[125,3],[155,3],[154,4],[132,3],[141,2],[140,2],[147,2],[158,1],[152,1],[148,1]],[[20,3],[21,2],[22,3],[23,3],[56,4],[25,2],[26,3],[43,3],[12,2],[45,3],[14,3],[63,8],[17,2],[1,1],[18,3],[19,2],[70,4],[74,4],[77,4],[49,6],[67,6],[88,8],[76,4],[62,4],[86,4],[73,6],[124,4],[125,5],[126,8],[112,5],[98,4],[100,8],[133,4],[118,3],[119,3],[138,3],[156,4],[113,3],[136,2],[154,2],[130,2],[152,1],[158,1],[146,1]],[[32,3],[47,3],[12,2],[45,3],[26,8],[25,3],[24,2],[7,1],[39,4],[37,3],[36,3],[19,2],[2,1],[18,2],[17,3],[16,2],[46,4],[75,10],[73,4],[88,8],[52,6],[50,4],[80,8],[118,8],[78,4],[93,4],[83,5],[115,4],[103,4],[142,4],[108,4],[116,3],[130,3],[128,3],[143,3],[141,3],[139,4],[137,3],[119,4],[149,2],[148,2],[129,2],[147,1],[154,1]],[[21,2],[20,2],[19,3],[1,2],[17,3],[16,2],[31,3],[46,4],[28,3],[27,3],[26,2],[153,10],[8,10],[7,3],[6,1],[22,2],[55,4],[69,3],[68,4],[50,8],[63,4],[62,4],[91,6],[60,4],[87,4],[98,4],[96,6],[118,4],[127,8],[109,8],[106,4],[116,2],[154,3],[151,3],[134,4],[149,3],[131,3],[140,3],[155,2],[130,2],[157,2],[146,1],[144,1],[158,1]],[[14,3],[15,4],[32,3],[51,6],[19,3],[20,2],[4,1],[21,2],[22,3],[55,4],[24,3],[9,2],[42,3],[11,2],[28,3],[29,2],[33,4],[70,8],[57,8],[43,4],[77,8],[81,4],[85,4],[56,4],[79,6],[117,6],[115,4],[119,4],[107,4],[114,6],[155,6],[109,2],[142,3],[127,3],[116,3],[118,3],[154,3],[141,4],[144,2],[129,2],[149,2],[152,2],[153,2],[159,1],[151,1],[156,1]],[[24,3],[42,4],[27,3],[28,2],[29,3],[30,2],[14,1],[15,2],[32,6],[1,3],[19,3],[20,2],[21,3],[22,2],[23,2],[7,1],[74,4],[76,4],[45,2],[81,6],[34,10],[87,10],[72,4],[78,4],[69,8],[106,4],[124,6],[125,6],[94,4],[113,4],[116,8],[152,3],[138,3],[155,3],[126,3],[112,3],[114,3],[134,4],[153,2],[140,2],[159,2],[146,2],[147,2],[145,1],[150,1]],[[46,3],[28,4],[10,3],[25,2],[24,3],[23,2],[6,1],[22,2],[21,6],[35,3],[2,3],[1,2],[0,3],[15,2],[14,2],[13,1],[62,4],[60,4],[58,2],[71,6],[36,4],[114,10],[48,8],[57,4],[51,4],[111,6],[109,6],[120,6],[108,4],[89,4],[102,8],[83,4],[115,3],[113,3],[112,3],[142,3],[140,3],[137,3],[134,4],[131,2],[128,2],[141,2],[139,2],[138,2],[156,1],[151,1]],[[24,3],[42,4],[27,3],[11,2],[12,3],[13,2],[14,1],[15,2],[0,6],[1,3],[36,3],[20,2],[38,3],[5,2],[6,2],[7,1],[58,4],[124,10],[45,8],[47,6],[51,4],[54,4],[72,4],[95,4],[68,4],[106,4],[83,6],[88,6],[111,4],[96,4],[133,8],[118,8],[120,3],[138,3],[123,3],[158,3],[144,3],[148,3],[137,2],[140,2],[159,2],[129,2],[130,2],[145,1],[150,1]],[[0,1],[48,8],[14,3],[45,3],[12,2],[27,3],[26,2],[25,4],[40,3],[23,2],[22,3],[21,3],[20,2],[19,3],[18,3],[17,2],[98,8],[60,8],[75,4],[89,6],[53,4],[68,4],[78,4],[87,6],[90,6],[102,4],[100,8],[113,4],[111,5],[88,4],[110,2],[123,6],[136,3],[149,3],[147,4],[128,3],[157,3],[137,3],[135,2],[143,2],[142,2],[156,2],[152,1],[148,1],[158,1]],[[29,3],[30,3],[32,4],[0,1],[17,3],[19,4],[3,1],[20,4],[5,3],[6,2],[7,2],[8,1],[25,3],[26,2],[27,3],[28,2],[64,4],[51,4],[86,6],[71,4],[107,10],[58,4],[93,8],[78,8],[98,6],[101,6],[105,4],[97,5],[100,4],[87,4],[144,4],[138,4],[141,3],[142,3],[129,3],[132,3],[117,4],[135,3],[137,3],[123,3],[143,2],[130,2],[136,2],[140,2],[147,1]],[[33,3],[52,8],[3,3],[21,2],[22,3],[23,2],[7,1],[8,2],[42,6],[44,3],[11,3],[29,2],[30,3],[31,2],[15,2],[0,1],[50,8],[70,8],[56,6],[76,4],[63,4],[65,4],[55,4],[112,8],[101,6],[75,6],[80,6],[103,4],[89,4],[93,4],[113,3],[115,3],[116,3],[151,3],[121,3],[140,3],[125,4],[127,4],[130,2],[149,2],[136,2],[138,2],[139,2],[154,1],[159,1]],[[31,3],[13,4],[44,3],[27,2],[26,3],[25,2],[8,1],[7,2],[39,6],[21,3],[36,3],[19,2],[18,3],[17,2],[16,2],[15,1],[48,8],[45,4],[60,2],[74,6],[71,4],[68,4],[49,4],[59,8],[69,8],[97,6],[94,6],[105,6],[67,6],[107,4],[87,8],[151,3],[132,3],[148,3],[145,3],[125,3],[155,3],[136,4],[150,2],[130,2],[143,2],[157,2],[156,2],[158,1],[153,1]],[[24,3],[57,4],[39,3],[20,6],[35,3],[18,2],[1,1],[17,2],[33,3],[32,4],[30,3],[29,2],[28,3],[27,2],[26,3],[25,2],[38,4],[67,8],[63,8],[77,8],[75,4],[72,4],[69,4],[113,8],[124,6],[86,6],[88,4],[117,4],[155,6],[98,6],[127,2],[126,3],[157,3],[120,3],[135,3],[148,3],[128,4],[142,2],[156,2],[153,2],[134,2],[149,2],[159,1],[151,1],[146,1]],[[43,3],[28,3],[46,8],[14,1],[31,3],[48,8],[1,1],[35,4],[3,3],[4,2],[22,2],[6,1],[23,3],[24,2],[41,3],[26,2],[50,6],[52,4],[72,6],[57,4],[42,8],[125,8],[79,4],[83,6],[86,4],[111,5],[96,2],[114,4],[118,4],[89,4],[126,4],[120,4],[139,3],[124,3],[159,3],[130,3],[148,4],[133,3],[135,3],[137,3],[141,2],[144,2],[150,2],[154,2],[145,1]],[[44,3],[26,3],[25,2],[24,3],[23,8],[21,3],[20,2],[3,1],[35,4],[17,3],[16,3],[31,2],[14,1],[30,2],[46,3],[28,2],[59,4],[70,10],[69,4],[101,8],[79,6],[61,4],[127,8],[49,4],[91,4],[72,4],[113,5],[92,4],[83,4],[98,8],[106,4],[136,4],[146,3],[142,3],[124,3],[139,3],[137,3],[134,4],[149,3],[145,2],[144,2],[141,2],[159,1],[150,1]],[[31,3],[16,3],[34,4],[2,1],[3,3],[20,4],[5,1],[23,8],[41,3],[25,2],[26,2],[10,1],[27,3],[28,2],[29,3],[30,2],[66,4],[36,4],[72,6],[126,10],[60,4],[95,8],[81,4],[68,6],[86,6],[91,4],[97,4],[99,5],[118,4],[105,4],[130,4],[124,4],[159,3],[128,3],[147,3],[151,3],[152,4],[153,3],[139,3],[157,3],[129,2],[132,2],[138,2],[158,2],[149,1]],[[43,3],[42,3],[24,8],[6,1],[22,3],[21,4],[3,1],[2,4],[33,3],[16,2],[31,2],[14,1],[47,3],[12,2],[28,3],[27,2],[55,4],[68,6],[83,8],[49,6],[62,4],[77,8],[59,4],[104,8],[87,6],[110,4],[123,5],[90,2],[117,4],[96,4],[125,4],[98,4],[112,3],[145,3],[124,3],[154,3],[153,4],[135,3],[116,3],[114,3],[143,2],[157,2],[134,2],[147,2],[156,1]],[[16,2],[17,2],[18,3],[19,2],[20,3],[5,2],[38,3],[7,4],[8,3],[26,3],[27,2],[28,10],[64,10],[13,3],[14,1],[31,2],[32,4],[67,3],[52,4],[53,4],[55,8],[57,10],[111,10],[75,4],[66,4],[102,6],[135,8],[91,4],[126,4],[130,3],[133,3],[120,3],[121,3],[139,4],[142,4],[128,3],[129,2],[138,2],[144,2],[155,1],[157,1],[159,1]],[[4,2],[37,3],[19,4],[18,5],[33,4],[15,3],[14,3],[29,2],[44,3],[11,1],[27,2],[9,2],[25,3],[24,2],[23,3],[22,3],[102,10],[67,4],[65,4],[45,4],[91,8],[58,4],[96,8],[105,8],[84,6],[98,6],[77,4],[145,5],[123,4],[109,4],[138,3],[120,4],[135,3],[116,3],[131,4],[159,3],[124,3],[157,2],[139,2],[134,2],[133,2],[144,2],[155,1],[151,1],[146,1]],[[25,3],[58,4],[43,3],[12,6],[30,3],[31,2],[15,1],[16,2],[17,3],[50,4],[35,3],[20,2],[21,3],[22,2],[23,3],[24,2],[44,4],[65,4],[53,8],[71,4],[89,8],[75,4],[80,8],[68,8],[123,6],[112,6],[99,4],[126,4],[125,6],[117,6],[120,2],[137,3],[139,3],[127,3],[113,3],[115,3],[136,4],[138,2],[157,2],[144,2],[130,2],[131,2],[154,1],[146,1],[151,1]],[[45,3],[30,4],[15,3],[0,6],[1,3],[19,2],[3,1],[20,2],[21,3],[38,4],[23,3],[24,2],[41,3],[26,2],[43,3],[12,2],[49,4],[36,4],[73,4],[42,4],[61,4],[80,8],[67,4],[55,4],[94,6],[82,6],[87,4],[90,4],[93,4],[118,4],[105,8],[129,4],[120,6],[124,2],[157,3],[126,3],[131,3],[117,3],[153,3],[159,2],[145,2],[130,2],[132,2],[151,2],[135,2],[158,1],[150,1],[155,1]],[[13,3],[46,3],[28,8],[10,1],[43,3],[41,4],[7,1],[22,4],[21,3],[4,2],[19,2],[2,1],[18,3],[0,2],[16,3],[31,2],[58,4],[40,6],[54,4],[117,10],[51,8],[65,4],[64,4],[77,4],[90,6],[86,4],[81,4],[143,5],[110,5],[141,8],[121,4],[96,4],[136,4],[150,3],[115,3],[112,3],[122,3],[137,3],[135,3],[148,2],[128,2],[138,2],[151,2],[144,1]],[[27,3],[26,2],[42,3],[24,3],[57,4],[22,2],[38,3],[20,3],[19,2],[18,3],[0,3],[15,4],[30,2],[13,1],[29,3],[28,2],[60,4],[39,4],[53,4],[33,4],[65,6],[79,6],[75,4],[87,4],[118,12],[94,4],[123,6],[109,4],[104,8],[154,5],[100,5],[98,4],[147,8],[129,4],[128,3],[143,3],[156,3],[133,3],[158,2],[157,2],[132,2],[159,1],[153,1],[149,1]],[[25,2],[26,2],[27,3],[28,2],[29,3],[30,2],[31,3],[49,8],[18,3],[19,3],[20,2],[106,10],[5,10],[40,3],[7,1],[8,2],[41,4],[76,3],[77,4],[46,4],[51,4],[71,6],[52,4],[75,4],[112,6],[64,4],[82,6],[126,8],[117,8],[102,8],[121,4],[139,3],[125,3],[129,3],[130,3],[120,3],[138,2],[131,2],[136,2],[148,1],[150,1],[152,1]],[[42,3],[24,4],[40,3],[54,6],[20,3],[3,2],[2,1],[18,2],[34,3],[33,4],[32,3],[30,2],[46,3],[28,2],[27,3],[26,2],[55,4],[52,4],[64,4],[61,4],[110,8],[90,8],[53,4],[82,4],[92,6],[120,6],[100,10],[112,6],[101,4],[97,8],[140,6],[145,3],[158,3],[138,3],[119,3],[149,3],[159,2],[139,2],[137,2],[135,2],[134,2],[144,1],[152,1],[147,1]],[[20,2],[21,2],[38,3],[23,2],[40,3],[25,2],[42,3],[27,4],[29,3],[30,3],[31,2],[152,10],[51,10],[18,3],[2,1],[19,2],[53,8],[71,3],[56,4],[41,8],[43,4],[78,4],[66,6],[79,4],[123,6],[77,6],[88,4],[128,8],[81,8],[99,4],[134,3],[137,3],[122,4],[124,3],[141,3],[115,3],[133,2],[142,2],[148,2],[159,1],[145,1],[147,1]],[[17,3],[2,4],[19,3],[38,10],[39,3],[6,2],[7,1],[24,2],[9,3],[58,4],[27,3],[28,2],[45,3],[30,2],[15,3],[16,2],[36,4],[40,4],[60,8],[63,4],[65,4],[68,4],[93,8],[115,6],[87,6],[91,4],[81,4],[85,4],[122,4],[117,6],[108,6],[112,2],[145,3],[114,3],[119,3],[121,3],[157,3],[127,4],[147,2],[150,2],[152,2],[138,2],[139,2],[146,1],[154,1],[159,1]],[[29,3],[11,4],[44,3],[41,6],[24,3],[23,2],[6,1],[22,2],[38,3],[37,4],[19,3],[1,2],[17,3],[16,2],[32,3],[30,2],[76,4],[72,4],[68,4],[66,8],[47,4],[94,4],[106,8],[102,8],[79,6],[92,6],[104,4],[67,6],[126,4],[129,6],[103,6],[132,3],[130,3],[159,3],[140,3],[153,3],[150,4],[131,2],[143,2],[141,2],[155,2],[154,2],[148,1],[156,1],[151,1]],[[20,2],[21,2],[38,3],[23,2],[24,3],[25,2],[10,3],[59,8],[46,3],[47,3],[14,2],[152,10],[51,10],[1,3],[2,1],[19,2],[53,4],[71,3],[72,4],[74,4],[45,4],[66,6],[64,8],[70,4],[89,6],[108,4],[94,6],[104,8],[128,8],[83,4],[134,3],[154,3],[156,3],[141,3],[129,4],[115,3],[133,2],[158,2],[148,2],[159,1],[145,1],[147,1]],[[44,3],[26,4],[40,3],[23,2],[22,3],[21,2],[4,1],[20,2],[19,6],[33,3],[16,3],[15,2],[30,3],[13,2],[28,2],[11,1],[43,4],[92,10],[56,2],[37,6],[34,4],[47,4],[61,8],[88,4],[97,8],[107,6],[101,6],[95,6],[122,4],[120,4],[116,8],[113,3],[127,3],[144,3],[157,3],[155,3],[135,3],[115,4],[146,2],[159,2],[156,2],[153,2],[152,2],[154,1],[149,1]],[[18,3],[51,4],[36,3],[21,6],[6,3],[24,2],[8,1],[25,2],[26,3],[11,4],[28,3],[29,2],[30,3],[31,2],[16,3],[17,2],[70,10],[41,8],[78,4],[65,8],[33,4],[119,8],[56,4],[76,4],[100,6],[79,6],[107,4],[127,4],[101,6],[126,6],[130,3],[115,3],[120,3],[122,3],[158,3],[128,4],[148,2],[150,2],[137,2],[139,2],[140,2],[147,1],[155,1],[144,1]],[[42,3],[58,4],[40,3],[38,10],[36,3],[19,2],[2,1],[18,2],[34,3],[15,4],[31,3],[30,2],[12,3],[11,2],[44,3],[9,2],[39,4],[51,4],[47,4],[78,4],[76,4],[89,8],[82,8],[91,6],[88,6],[148,10],[95,4],[110,4],[101,4],[124,6],[112,2],[128,3],[142,3],[121,3],[119,3],[149,3],[130,4],[159,2],[157,2],[154,2],[135,2],[134,2],[144,1],[152,1],[147,1]],[[17,3],[16,3],[65,8],[13,1],[12,3],[27,4],[10,1],[57,12],[8,3],[23,2],[22,2],[5,1],[38,3],[20,2],[19,3],[18,2],[61,4],[92,6],[72,6],[53,4],[68,4],[83,8],[80,4],[94,6],[85,4],[98,5],[145,5],[112,4],[107,4],[103,4],[150,4],[156,4],[136,3],[118,3],[149,3],[128,4],[159,3],[123,3],[121,3],[151,2],[148,2],[141,2],[137,2],[147,1]],[[18,3],[34,3],[16,2],[31,3],[30,4],[12,3],[11,2],[10,1],[26,4],[40,3],[39,3],[22,2],[5,1],[21,2],[20,3],[19,2],[65,8],[80,8],[61,6],[43,4],[74,4],[70,6],[69,4],[84,8],[89,4],[91,4],[154,5],[99,4],[126,8],[155,8],[105,4],[97,4],[127,4],[136,3],[133,3],[147,3],[146,3],[128,3],[140,3],[135,2],[134,2],[132,2],[150,1],[157,1]],[[43,3],[44,4],[29,3],[32,6],[33,3],[17,2],[1,1],[2,2],[35,3],[4,4],[37,3],[22,2],[23,3],[24,2],[9,3],[10,2],[63,4],[50,4],[38,4],[56,4],[58,4],[78,8],[116,8],[69,4],[125,6],[81,6],[84,4],[88,6],[90,4],[103,4],[127,6],[118,6],[139,3],[124,3],[113,3],[147,3],[117,3],[154,4],[140,2],[142,2],[146,2],[132,2],[133,2],[156,1],[148,1],[153,1]],[[44,3],[45,3],[30,8],[15,1],[0,3],[1,4],[2,1],[19,4],[21,3],[22,2],[23,2],[7,1],[24,3],[25,2],[26,3],[27,2],[66,8],[68,6],[53,4],[55,6],[57,4],[59,8],[94,4],[64,6],[104,4],[126,4],[147,5],[116,8],[86,4],[90,4],[127,4],[101,2],[137,4],[140,3],[125,3],[128,3],[114,3],[134,3],[136,3],[122,3],[142,2],[129,2],[135,2],[139,2],[146,1]],[[23,3],[38,8],[20,3],[19,2],[18,3],[17,2],[0,1],[16,2],[48,6],[29,3],[28,3],[27,2],[42,3],[25,2],[24,2],[7,1],[104,10],[69,6],[49,6],[62,4],[43,4],[41,4],[51,8],[61,4],[73,4],[97,6],[92,6],[99,4],[111,8],[93,4],[142,3],[140,3],[122,3],[136,3],[134,3],[131,3],[146,4],[141,2],[138,2],[137,2],[135,2],[133,2],[132,2],[150,1],[145,1]],[[28,3],[61,4],[26,3],[8,6],[7,3],[6,2],[5,1],[21,2],[37,3],[36,4],[18,3],[17,2],[16,3],[31,2],[30,3],[29,2],[75,4],[55,14],[51,4],[65,8],[63,4],[76,4],[56,4],[101,8],[94,6],[90,6],[81,4],[92,4],[88,4],[127,6],[115,2],[114,3],[129,3],[141,3],[139,3],[136,3],[133,4],[146,2],[159,2],[140,2],[138,2],[137,2],[147,1],[155,1],[150,1]],[[32,3],[47,4],[12,3],[92,10],[10,3],[9,2],[8,1],[7,2],[40,3],[39,4],[38,3],[20,2],[19,3],[18,2],[34,3],[15,2],[45,4],[41,4],[37,4],[51,4],[33,8],[80,8],[72,4],[65,6],[77,6],[89,4],[102,6],[108,4],[103,8],[147,6],[122,6],[117,3],[116,3],[127,3],[142,3],[155,3],[149,2],[129,2],[143,2],[141,2],[140,2],[150,1],[158,1],[153,1]],[[44,3],[13,4],[46,3],[31,6],[0,3],[1,2],[2,1],[19,2],[20,3],[21,4],[22,3],[23,2],[40,3],[25,2],[42,3],[27,2],[82,10],[68,8],[39,4],[41,4],[60,4],[95,8],[83,4],[104,8],[109,6],[73,4],[92,4],[100,4],[129,6],[119,6],[107,2],[140,3],[125,3],[130,3],[132,3],[118,3],[139,4],[141,2],[144,2],[131,2],[150,2],[151,2],[157,1],[149,1],[154,1]],[[12,3],[11,3],[43,8],[9,1],[8,3],[7,4],[6,1],[22,4],[4,3],[3,2],[2,2],[1,1],[17,3],[16,2],[31,3],[13,2],[41,4],[72,10],[54,4],[35,6],[50,4],[81,8],[79,4],[108,8],[122,6],[102,4],[80,4],[94,5],[93,5],[99,4],[129,4],[118,4],[132,3],[114,3],[128,3],[140,4],[155,3],[153,3],[117,3],[130,2],[143,2],[154,2],[133,2],[159,1]],[[45,3],[46,3],[31,2],[16,3],[17,4],[2,3],[3,2],[4,1],[38,8],[23,3],[24,3],[25,2],[9,1],[26,2],[27,3],[28,2],[48,4],[67,8],[52,6],[55,8],[59,6],[61,4],[111,8],[74,4],[65,4],[109,5],[97,4],[153,8],[122,4],[91,4],[133,4],[135,4],[142,3],[146,3],[148,3],[115,3],[134,3],[121,3],[139,4],[159,2],[128,2],[147,2],[145,1],[154,1]],[[28,2],[29,3],[62,4],[15,2],[17,4],[18,3],[19,3],[20,2],[38,3],[5,1],[6,2],[7,2],[40,3],[25,2],[42,3],[43,3],[96,10],[47,3],[49,4],[51,4],[37,4],[39,8],[58,4],[52,4],[124,8],[97,6],[82,6],[71,4],[110,4],[101,5],[86,4],[122,4],[142,3],[127,4],[129,3],[115,3],[134,4],[137,3],[123,3],[156,2],[157,2],[130,2],[131,2],[136,2],[158,1],[146,1],[151,1]],[[27,2],[28,2],[29,3],[30,2],[47,3],[16,2],[17,3],[35,4],[20,3],[21,3],[22,2],[74,10],[109,10],[8,3],[9,1],[26,2],[76,4],[78,3],[79,4],[49,8],[51,4],[69,4],[73,6],[70,4],[93,4],[99,4],[84,6],[96,4],[119,8],[88,8],[123,4],[98,2],[124,3],[127,3],[130,4],[131,3],[132,3],[122,3],[157,2],[133,2],[138,2],[150,1],[152,1],[154,1]],[[4,3],[54,4],[36,3],[17,6],[16,3],[15,2],[14,1],[13,2],[12,3],[28,4],[44,3],[26,2],[25,3],[24,2],[40,3],[5,2],[35,4],[95,8],[59,4],[74,4],[89,8],[69,4],[66,8],[93,8],[87,6],[100,6],[107,6],[101,4],[136,6],[112,6],[140,3],[138,3],[151,3],[115,3],[113,3],[141,4],[139,2],[137,2],[133,2],[147,2],[146,2],[156,1],[148,1],[159,1]],[[21,3],[6,4],[41,3],[25,2],[26,3],[27,2],[11,1],[28,2],[13,6],[14,3],[16,3],[17,2],[18,3],[19,2],[20,2],[4,1],[54,4],[40,4],[106,8],[94,6],[64,10],[67,4],[52,8],[59,4],[66,4],[121,6],[102,6],[91,4],[110,4],[146,8],[99,8],[117,3],[135,3],[152,3],[139,3],[141,3],[145,3],[134,2],[137,2],[140,2],[142,2],[143,2],[158,1],[147,1]],[[27,3],[43,8],[8,3],[23,2],[22,3],[21,2],[4,1],[3,2],[18,6],[17,3],[32,3],[31,2],[46,3],[29,2],[28,2],[11,1],[57,10],[56,2],[70,6],[51,4],[64,4],[78,4],[72,8],[100,8],[94,4],[141,6],[101,6],[96,6],[103,4],[81,4],[130,3],[127,3],[126,3],[140,3],[138,3],[135,3],[150,4],[115,4],[146,2],[142,2],[139,2],[137,2],[136,2],[154,1],[149,1]],[[18,3],[19,2],[36,3],[37,3],[22,4],[23,2],[24,3],[25,3],[26,2],[27,3],[28,3],[30,4],[31,2],[15,1],[16,3],[17,2],[84,8],[72,4],[75,4],[78,4],[80,6],[49,6],[69,4],[57,4],[60,4],[87,6],[85,4],[106,8],[139,5],[141,8],[142,5],[129,8],[114,4],[99,4],[132,3],[133,3],[153,3],[143,3],[151,2],[152,2],[128,2],[150,1],[156,1],[144,1]],[[37,3],[22,2],[23,3],[24,3],[57,4],[26,2],[27,3],[12,3],[29,2],[14,3],[47,3],[0,4],[1,2],[2,1],[19,3],[20,2],[86,8],[58,4],[78,4],[48,4],[66,10],[85,6],[56,4],[93,8],[64,4],[91,6],[88,4],[142,5],[96,4],[97,5],[132,8],[118,2],[135,3],[120,3],[156,3],[141,4],[128,4],[130,3],[150,2],[137,2],[155,2],[131,2],[153,1],[159,1],[147,1]],[[19,2],[35,3],[17,4],[50,5],[47,4],[45,3],[28,3],[27,2],[42,3],[9,1],[25,2],[24,2],[23,3],[22,2],[21,3],[20,3],[53,4],[48,4],[63,4],[76,4],[91,8],[39,8],[94,4],[88,8],[68,6],[99,6],[97,6],[86,4],[143,5],[110,4],[140,4],[120,3],[134,4],[133,3],[130,3],[128,4],[141,3],[122,3],[155,2],[137,2],[132,2],[147,2],[142,2],[153,1],[149,1],[144,1]],[[23,2],[22,3],[55,4],[20,2],[18,4],[33,3],[32,3],[31,2],[30,3],[13,1],[29,2],[28,2],[27,3],[26,2],[25,3],[24,3],[88,10],[37,3],[52,4],[50,4],[64,4],[94,8],[60,4],[65,4],[90,8],[86,6],[85,6],[96,4],[99,5],[97,4],[92,4],[128,4],[140,3],[155,4],[137,3],[150,3],[132,4],[129,3],[126,3],[142,2],[141,2],[136,2],[135,2],[130,2],[157,1],[153,1],[148,1]],[[22,3],[38,4],[37,3],[18,6],[17,3],[16,2],[15,1],[31,2],[30,3],[29,4],[28,3],[27,2],[26,3],[25,2],[24,3],[23,2],[36,4],[65,4],[76,8],[75,4],[73,4],[71,4],[50,8],[78,8],[72,6],[85,6],[145,10],[107,4],[103,4],[121,6],[108,2],[141,3],[139,3],[118,3],[116,3],[130,3],[142,4],[140,2],[154,2],[134,2],[132,2],[131,2],[157,1],[149,1],[144,1]]]);
+
+</script>
+<script>// Bloom game screen.
+(function () {
+'use strict';
+var BC = window.BloomCore, LG = window.Logic;
+BC.setLogic(LG);
+
+var ROOT = document.getElementById('gB');
+function $(id) { return document.getElementById('bl-' + id); }
+function fx(n) { if (window.FX) window.FX.play(n); }
+function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+function fmt(s) { return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+
+var NS = 'http://www.w3.org/2000/svg';
+var HUES = [205, 150, 35, 285, 340, 90];
+var STEER = { easy: { max: 1 }, medium: { min: 2, max: 2 }, hard: { min: 3 }, expert: { min: 3 } };
+var svg = $('svg'), gCells = $('cells'), gBlocks = $('blocks'), gCand = $('cand'), gDraft = $('draft'), gNums = $('nums'), statusEl = $('status');
+var S = null, level = BC.LEVELS[lsGet('shikaku-bloom-level')] ? lsGet('shikaku-bloom-level') : 'easy', drag = null, timer = null, busy = false, RP = null, pend = null;
+
+function setStatus(html, win) { statusEl.innerHTML = html; statusEl.className = 'status' + (win ? ' win' : ''); }
+function el(tag, cls, parent) { var e = document.createElementNS(NS, tag); if (cls) e.setAttribute('class', cls); if (parent) parent.appendChild(e); return e; }
+
+/* ---------- geometry: lattice coordinates to the flower ---------- */
+// The flower sits in a 200 x 200 box. Level s of the lattice is a ring at radius R_IN + k*s; one step of (i - j) turns by half a petal.
+var CX = 100, CY = 100, R_OUT = 96, R_IN = 13;
+function geo(P, L) { return { P: P, L: L, d: Math.PI / P, k: (R_OUT - R_IN) / (L + 1) }; }
+function pt(g, i, j) {
+  var r = R_IN + g.k * (i + j), a = g.d * (i - j);
+  return [CX + r * Math.sin(a), CY - r * Math.cos(a)];
+}
+function f1(n) { return Math.round(n * 10) / 10; }
+function seg(g, i1, j1, i2, j2, steps, out) {
+  for (var q = 1; q <= steps; q++) { var u = q / steps, p = pt(g, i1 + (i2 - i1) * u, j1 + (j2 - j1) * u); out.push(f1(p[0]) + ' ' + f1(p[1])); }
+}
+// Outline of an A x B block: four spiral edges.
+function rectPath(g, i0, j0, A, B) {
+  var p0 = pt(g, i0, j0), out = [f1(p0[0]) + ' ' + f1(p0[1])];
+  seg(g, i0, j0, i0 + A, j0, 4 * A, out); seg(g, i0 + A, j0, i0 + A, j0 + B, 4 * B, out);
+  seg(g, i0 + A, j0 + B, i0, j0 + B, 4 * A, out); seg(g, i0, j0 + B, i0, j0, 4 * B, out);
+  return 'M' + out.join('L') + 'Z';
+}
+function lift(P, id) { var s = Math.floor(id / P), a = id % P; return { i: a, j: s - a, s: s }; }
+function cellPath(g, id) { var c = lift(g.P, id); return rectPath(g, c.i, c.j, 1, 1); }
+
+/* ---------- puzzle state ---------- */
+function makeState(lv, res, seed) {
+  var cfg = BC.LEVELS[lv], N = cfg.P * cfg.L, rated = LG.rate(N, res.cands, []);
+  return {
+    lv: lv, P: cfg.P, L: cfg.L, g: geo(cfg.P, cfg.L), nums: res.nums, solution: res.solution, cands: res.cands, numAt: BC.buildNumAt(N, res.nums),
+    rating: rated.tier, trials: rated.steps[4], order: rated.order, steps: rated.steps, logicOk: rated.solved,
+    id: '', shared: false, master: !!cfg.master, seed: seed, code: -1,
+    blocks: [], undo: [], sel: -1, solved: false, hints: 0, elapsed: 0, started: false, t0: 0, nextHue: 0, hint: null, hintOn: false, pauses: 0, paused: false
+  };
+}
+function idOf(st) { return st.master ? (st.code >= 0 ? 'BL-MA-' + st.code : '') : 'BL-' + BC.LEVELS[st.lv].code + '-' + st.seed; }
+
+function buildBoard() {
+  var g = S.g;
+  gCells.innerHTML = ''; gBlocks.innerHTML = ''; gCand.innerHTML = ''; gDraft.innerHTML = ''; gNums.innerHTML = '';
+  for (var id = 0; id < S.P * S.L; id++) el('path', 'bcell', gCells).setAttribute('d', cellPath(g, id));
+  var fsMax = Math.min(10, g.k * 1.02);
+  S.nums.forEach(function (n, k) {
+    var c = lift(S.P, n.id), p = pt(g, c.i + 0.5, c.j + 0.5), grp = el('g', 'bn', gNums);
+    var fs = Math.min(fsMax, Math.max(4.4, 2 * g.d * Math.hypot(p[0] - CX, p[1] - CY) * 1.2));
+    var ring = el('circle', 'bring', grp); ring.setAttribute('cx', f1(p[0])); ring.setAttribute('cy', f1(p[1])); ring.setAttribute('r', f1(fs * 0.82));
+    var tx = el('text', 'btxt', grp); tx.setAttribute('x', f1(p[0])); tx.setAttribute('y', f1(p[1] + fs * 0.04)); tx.setAttribute('font-size', f1(fs)); tx.textContent = n.v;
+    grp.dataset.k = k;
+  });
+}
+function showFresh() {
+  resetView();
+  S.id = idOf(S);
+  $('rating').textContent = LG.names[S.rating];
+  $('stage').classList.remove('solved');
+  buildBoard(); render();
+  $('time').textContent = fmt(S.elapsed);
+  updateButtons();
+}
+
+/* ---------- blocks ---------- */
+function mk(i0, j0, A, B, hue) {
+  var cells = BC.blockCells(S.P, S.L, i0, j0, A, B);
+  return cells ? { i0: i0, j0: j0, A: A, B: B, hue: hue, cells: cells, key: cells.join(',') } : null;
+}
+function info(b) {
+  var found = [];
+  b.cells.forEach(function (c) { var k = S.numAt[c]; if (k >= 0) found.push(k); });
+  return { ok: found.length === 1 && S.nums[found[0]].v === b.cells.length, nums: found };
+}
+function overlap(a, b) {
+  var i = 0, j = 0;
+  while (i < a.length && j < b.length) { if (a[i] === b[j]) return true; if (a[i] < b[j]) i++; else j++; }
+  return false;
+}
+function pushUndo() { S.undo.push(JSON.stringify(S.blocks.map(function (b) { return [b.i0, b.j0, b.A, b.B, b.hue]; }))); if (S.undo.length > 100) S.undo.shift(); }
+function popUndo() {
+  var a = JSON.parse(S.undo.pop());
+  S.blocks = a.map(function (x) { return mk(x[0], x[1], x[2], x[3], x[4]); }).filter(Boolean);
+}
+
+function render() {
+  var g = S.g, good = 0;
+  gBlocks.innerHTML = '';
+  Array.prototype.forEach.call(gNums.children, function (n) { n.classList.remove('bad', 'sel'); });
+  S.blocks.forEach(function (b, idx) {
+    var inf = info(b);
+    if (inf.ok) good++;
+    var p = el('path', 'bblk' + ((inf.ok || S.master) ? '' : ' bad'), gBlocks);
+    p.setAttribute('d', rectPath(g, b.i0, b.j0, b.A, b.B));
+    p.style.setProperty('--h', b.hue); p.style.setProperty('--i', idx);
+    if (!inf.ok && !S.master) inf.nums.forEach(function (k) { gNums.children[k].classList.add('bad'); });
+  });
+  gCand.innerHTML = '';
+  if (S.sel >= 0 && !S.master) {
+    gNums.children[S.sel].classList.add('sel');
+    S.cands[S.sel].forEach(function (cd) { el('path', 'bcand', gCand).setAttribute('d', rectPath(g, cd.i0, cd.j0, cd.A, cd.B)); });
+  }
+  if (S.hint && S.hintOn) {
+    el('path', 'bhint' + (S.hint.kind === 'remove' ? ' rm' : ''), gCand).setAttribute('d', rectPath(g, S.hint.b.i0, S.hint.b.j0, S.hint.b.A, S.hint.b.B));
+    if (S.hint.cell != null) el('path', 'bhint cellm', gCand).setAttribute('d', cellPath(g, S.hint.cell));
+  }
+  $('count').textContent = (S.master ? S.blocks.length : good) + '/' + S.nums.length;
+  $('countlabel').textContent = S.master ? 'Placed' : 'Correct';
+  $('hints').textContent = S.master ? S.hints + '/3' : S.hints;
+}
+
+function defaultStatus() {
+  if (S && S.master) setStatus('<strong>Master.</strong> Drag from one diamond to another to draw a block. Tap a block to remove it. No previews, no error marks, three hints.');
+  else setStatus('');
+}
+function describeSel() {
+  var nm = S.nums[S.sel], cds = S.cands[S.sel], seen = {}, shapes = [];
+  cds.forEach(function (cd) { var a = Math.min(cd.A, cd.B), b = Math.max(cd.A, cd.B), s = a + '×' + b; if (!seen[s]) { seen[s] = 1; shapes.push(s); } });
+  if (cds.length === 1) setStatus('<strong>' + nm.v + '</strong> has only one placement, so it is forced (' + shapes[0] + '). Drag it in.');
+  else setStatus('<strong>' + nm.v + '</strong> can be ' + shapes.join(' or ') + '. ' + cds.length + ' placements avoid other numbers. Darker areas are covered by more of them.');
+}
+
+/* ---------- timer and pause ---------- */
+function startTimer() { if (S.started) return; S.started = true; S.t0 = Date.now() - S.elapsed * 1000; runTimer(); }
+function runTimer() {
+  stopTimer();
+  timer = setInterval(function () { S.elapsed = Math.floor((Date.now() - S.t0) / 1000); $('time').textContent = fmt(S.elapsed); }, 500);
+}
+function stopTimer() { if (timer) { clearInterval(timer); timer = null; } }
+function pauseInfo() { return { can: !!S && !S.solved && S.started && !S.paused, paused: !!S && S.paused, used: S ? S.pauses : 0 }; }
+function pauseGame() {
+  if (!pauseInfo().can) return false;
+  S.elapsed = Math.floor((Date.now() - S.t0) / 1000);
+  stopTimer(); S.paused = true; S.pauses++;
+  $('time').textContent = fmt(S.elapsed);
+  clearHint();
+  updateButtons();
+  return true;
+}
+function resumeGame() {
+  if (!S || !S.paused) return;
+  S.paused = false; S.t0 = Date.now() - S.elapsed * 1000; runTimer(); updateButtons();
+}
+// Board cleared and clock back to zero. Hints already used stay counted.
+function resetRun() {
+  if (!S || S.solved) return;
+  stopTimer(); clearHint();
+  S.blocks = []; S.undo = []; S.sel = -1; drag = null; gDraft.innerHTML = '';
+  S.started = false; S.elapsed = 0; S.t0 = 0; S.paused = false; S.pauses = 0;
+  $('time').textContent = fmt(0);
+  afterChange();
+}
+
+/* ---------- placing ---------- */
+function placeBlock(b) {
+  pushUndo();
+  b.hue = HUES[S.nextHue++ % HUES.length];
+  S.blocks = S.blocks.filter(function (x) { return !overlap(x.cells, b.cells); });
+  S.blocks.push(b);
+  startTimer();
+  afterChange();
+  if (!S.solved) fx(info(b).ok ? 'place' : 'bad');
+}
+function afterChange() {
+  S.sel = -1; clearHint(); render(); updateButtons();
+  var area = 0, allOk = true, bad = 0;
+  S.blocks.forEach(function (b) { area += b.cells.length; if (!info(b).ok) { allOk = false; bad++; } });
+  if (allOk && area === S.P * S.L && S.blocks.length === S.nums.length) { win(); return; }
+  if (S.master) { if (bad && area === S.P * S.L) setStatus('The flower is full, but at least one block is wrong.'); else defaultStatus(); }
+  else if (bad) setStatus('Striped blocks break a rule. Each needs exactly one number, equal to its size.');
+  else defaultStatus();
+}
+function win() {
+  S.solved = true; fx('win'); stopTimer();
+  S.elapsed = Math.max(S.elapsed, Math.floor((Date.now() - S.t0) / 1000));
+  $('time').textContent = fmt(S.elapsed);
+  $('stage').classList.add('solved');
+  updateButtons();
+  var msg = '<strong>Solved in ' + fmt(S.elapsed) + '.</strong>';
+  if (S.shared) msg += ' Shared puzzle: no best time is recorded.' + (S.hints ? ' Hints used: ' + S.hints + '.' : '');
+  else if (S.hints) msg += ' You used ' + S.hints + (S.hints === 1 ? ' hint' : ' hints') + ', so this time does not count as a best.';
+  else {
+    var key = 'shikaku-bloom-best-' + S.lv, raw = lsGet(key), best = raw ? parseInt(raw, 10) : null;
+    if (best === null || S.elapsed < best) { lsSet(key, String(S.elapsed)); msg += best === null ? ' First time on this level.' : ' New best (was ' + fmt(best) + ').'; }
+    else msg += ' Best on this level: ' + fmt(best) + '.';
+  }
+  if (window.Progress && !S.shared) msg += Progress.message('bl', S.lv, S.rating, S.hints);
+  setStatus(msg + ' Start a new puzzle when you are ready.', true);
+}
+
+/* ---------- building puzzles ---------- */
+function steered(lv, seed) {
+  var spec = STEER[lv] || {}, best = null, bg = 99, t0 = Date.now();
+  for (var a = 0; a < 12; a++) {
+    var sd = seed + a * 104729, res = BC.makePuzzle(lv, sd);
+    if (!res) continue;
+    var st = makeState(lv, res, sd), g = LG.gap(spec, st.rating);
+    if (g < bg) { bg = g; best = st; }
+    if (!g || Date.now() - t0 > (lv === 'expert' ? 6000 : 1500)) break;
+  }
+  return best;
+}
+function masterPuzzle() {
+  var n = BC.masterCount();
+  for (var tries = 0; n && tries < 6; tries++) {
+    var code = Math.floor(Math.random() * n), res = BC.masterBuild(code);
+    if (res) { var st = makeState('master', res, 0); st.code = code; return st; }
+  }
+  // no bank (should not happen): the closest live hardened puzzle, with no ID
+  var best = null, t0 = Date.now();
+  for (var a = 0; a < 40; a++) {
+    var sd = Math.floor(Math.random() * 90000) + 10000, r2 = BC.makePuzzle('master', sd);
+    if (!r2) continue;
+    var s2 = makeState('master', r2, sd);
+    if (!best || s2.trials > best.trials) best = s2;
+    if (s2.trials >= 1 || Date.now() - t0 > 5000) break;
+  }
+  return best;
+}
+function setLevel(lv) { level = lv; lsSet('shikaku-bloom-level', lv); }
+function newPuzzle(lv) {
+  if (busy) return;
+  if (window.Progress) lv = Progress.clamp('bl', lv);
+  busy = true; stopTimer();
+  setLevel(lv);
+  setStatus(lv === 'master' ? 'Building a Master puzzle…' : 'Building a puzzle…');
+  setTimeout(function () {
+    var seed = Math.floor(Math.random() * 90000) + 10000;
+    S = lv === 'master' ? masterPuzzle() : steered(lv, seed);
+    showFresh(); defaultStatus();
+    busy = false;
+    if (window.__shell) window.__shell.changed();
+    drain();
+  }, 30);
+}
+// An ID that arrived while a puzzle was still being built waits its turn.
+function drain() { if (pend) { var q = pend; pend = null; loadId(q); } }
+// Opens a puzzle by ID. Returns '' when it starts, or a message. Shared puzzles record no best time.
+function loadId(p) {
+  if (!p || p.dim !== 'bl' || !BC.LEVELS[p.lv]) return 'That ID is not a Bloom puzzle.';
+  if (p.master && p.seed >= BC.masterCount()) return 'That Master ID does not exist.';
+  if (busy) { pend = p; return ''; }
+  busy = true; stopTimer(); setLevel(p.lv);
+  setStatus('Building that puzzle…');
+  setTimeout(function () {
+    var res = p.master ? BC.masterBuild(p.seed) : BC.makePuzzle(p.lv, p.seed);
+    if (!res) { busy = false; setStatus('That puzzle could not be built.'); drain(); return; }
+    S = makeState(p.lv, res, p.seed);
+    if (p.master) S.code = p.seed;
+    S.shared = true;
+    showFresh();
+    setStatus('<strong>Shared puzzle ' + S.id + '.</strong> No best time is recorded for shared puzzles.' + (S.master ? ' Master rules apply: no previews, no error marks, three hints.' : ''));
+    busy = false;
+    if (window.__shell) window.__shell.changed();
+    drain();
+  }, 30);
+  return '';
+}
+
+/* ---------- logic replay ---------- */
+function canReplay() { return !!S && S.solved && S.logicOk && !!S.order && S.order.length > 0; }
+function replayOpen() {
+  if (!canReplay()) return null;
+  RP = { s: S, blocks: S.blocks };
+  return { total: S.order.length, steps: S.steps, tiers: S.order.map(function (x) { return x.tier; }) };
+}
+function replayShow(p) {
+  if (!RP || RP.s !== S) return null;
+  var o = S.order, T = o.length, g = S.g;
+  S.blocks = o.slice(0, p).map(function (x, i) { return mk(x.piece.i0, x.piece.j0, x.piece.A, x.piece.B, HUES[i % HUES.length]); });
+  S.hint = null; S.hintOn = false; S.sel = -1;
+  render();
+  if (p >= T) return { step: null };
+  var x = o[p];
+  el('path', 'bhint', gCand).setAttribute('d', rectPath(g, x.piece.i0, x.piece.j0, x.piece.A, x.piece.B));
+  if (x.kind === 'spot' && x.cell != null) el('path', 'bhint cellm', gCand).setAttribute('d', cellPath(g, x.cell));
+  if (x.kind === 'trial') (x.tried || []).filter(function (t) { return t.k === x.k; }).slice(0, 4).forEach(function (t) { el('path', 'bhint rm', gCand).setAttribute('d', rectPath(g, t.piece.i0, t.piece.j0, t.piece.A, t.piece.B)); });
+  return { step: { tier: x.tier, html: LG.describe(x, S.nums[x.k].v, 'block') } };
+}
+function replayClose() {
+  if (RP && RP.s === S) { S.blocks = RP.blocks; S.hint = null; S.hintOn = false; render(); }
+  RP = null;
+}
+
+function updateButtons() {
+  var pz = $('pause');
+  if (pz) {
+    pz.disabled = !S || S.solved || !S.started;
+    pz.classList.toggle('used', !!S && S.pauses >= 1);
+    pz.classList.toggle('paused', !!S && S.paused);
+    pz.setAttribute('aria-label', S && S.paused ? 'Resume the clock' : S && S.pauses >= 1 ? 'Pause again. This resets the puzzle' : 'Pause the clock');
+  }
+  $('undo').disabled = !S || S.solved || !S.undo.length;
+  $('clear').disabled = !S || S.solved || !S.blocks.length;
+  var left = S && S.master ? Math.max(0, 3 - S.hints) : 0;
+  $('hint').disabled = !S || S.solved || (S.master && left === 0 && !S.hint);
+  $('hint').textContent = S && S.master ? 'Hint ' + left : 'Hint';
+  if (window.__shell) window.__shell.changed();
+}
+
+/* ---------- pointer input ---------- */
+/* ---------- zoom: two-finger pinch and pan (the viewBox moves; the puzzle geometry never does) ---------- */
+var view = { x: 0, y: 0, w: 200 }, ptrs = {}, pinch = null, zoomBtn = $('zoom');
+function toSvg(cx, cy) { var b = svg.getBoundingClientRect(); return [view.x + (cx - b.left) / b.width * view.w, view.y + (cy - b.top) / b.height * view.w]; }
+function setView(x, y, w) {
+  w = Math.max(45, Math.min(200, w));
+  view.w = w; view.x = Math.max(0, Math.min(200 - w, x)); view.y = Math.max(0, Math.min(200 - w, y));
+  svg.setAttribute('viewBox', f1(view.x) + ' ' + f1(view.y) + ' ' + f1(w) + ' ' + f1(w));
+  if (zoomBtn) zoomBtn.hidden = w >= 199.5;
+}
+function resetView() { setView(0, 0, 200); }
+if (zoomBtn) zoomBtn.addEventListener('click', resetView);
+function zoomAt(cx, cy, w2) {
+  var b = svg.getBoundingClientRect(), qx = (cx - b.left) / b.width, qy = (cy - b.top) / b.height, q = toSvg(cx, cy);
+  setView(q[0] - qx * w2, q[1] - qy * w2, w2);
+}
+function pinchState() {
+  var k = Object.keys(ptrs), a = ptrs[k[0]], b = ptrs[k[1]];
+  return { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2 };
+}
+function locate(e) {
+  var q = toSvg(e.clientX, e.clientY), x = q[0], y = q[1];
+  var dx = x - CX, dy = CY - y, g = S.g;
+  return { sc: (Math.sqrt(dx * dx + dy * dy) - R_IN) / g.k, tc: Math.atan2(dx, dy) / g.d };
+}
+function cellAt(sc, tc) {
+  var g = S.g, i = Math.floor((sc + tc) / 2), j = Math.floor((sc - tc) / 2), s = i + j;
+  if (s < 0 || s > g.L - 1) return null;
+  return { i: i, j: j, id: BC.cellId(g.P, i, j) };
+}
+function draftBlock() {
+  var a = drag.a, b = drag.b;
+  return { i0: Math.min(a.i, b.i), j0: Math.min(a.j, b.j), A: Math.abs(a.i - b.i) + 1, B: Math.abs(a.j - b.j) + 1 };
+}
+function drawDraft() {
+  gDraft.innerHTML = '';
+  if (!drag || !drag.moved) return;
+  var d = draftBlock(), cells = BC.blockCells(S.P, S.L, d.i0, d.j0, d.A, d.B);
+  el('path', 'bdraft' + (cells ? '' : ' off'), gDraft).setAttribute('d', rectPath(S.g, d.i0, d.j0, d.A, d.B));
+  if (cells) setStatus('<strong>' + d.A + '×' + d.B + ' = ' + cells.length + '</strong> diamonds. Release to place it.');
+  else setStatus('That block would leave the flower.');
+}
+function tap(c) {
+  var hit = -1;
+  for (var i = S.blocks.length - 1; i >= 0; i--) if (S.blocks[i].cells.indexOf(c.id) >= 0) { hit = i; break; }
+  if (hit >= 0) { pushUndo(); S.blocks.splice(hit, 1); fx('remove'); afterChange(); return; }
+  var ni = S.numAt[c.id];
+  if (ni >= 0) {
+    if (S.nums[ni].v === 1) { var l = lift(S.P, c.id), b1 = mk(l.i, l.j, 1, 1, 0); if (b1) placeBlock(b1); return; }
+    if (S.master) return;
+    S.sel = S.sel === ni ? -1 : ni; fx('tap'); render();
+    if (S.sel >= 0) describeSel(); else defaultStatus();
+  } else if (S.sel >= 0) { S.sel = -1; render(); defaultStatus(); }
+}
+svg.addEventListener('pointerdown', function (e) {
+  if (!S || S.solved || busy || S.paused) return;
+  if (e.pointerType === 'mouse' && e.button !== 0) return;
+  e.preventDefault();
+  ptrs[e.pointerId] = { x: e.clientX, y: e.clientY };
+  try { svg.setPointerCapture(e.pointerId); } catch (err) {}
+  if (Object.keys(ptrs).length >= 2) {
+    drag = null; gDraft.innerHTML = ''; defaultStatus();
+    var ps = pinchState(); pinch = { d: ps.d, w: view.w, anchor: toSvg(ps.mx, ps.my) };
+    return;
+  }
+  var l = locate(e), c = cellAt(l.sc, l.tc);
+  if (!c) return;
+  drag = { a: c, b: c, tc: l.tc, moved: false };
+});
+svg.addEventListener('pointermove', function (e) {
+  if (ptrs[e.pointerId]) { ptrs[e.pointerId].x = e.clientX; ptrs[e.pointerId].y = e.clientY; }
+  if (pinch && Object.keys(ptrs).length >= 2) {
+    var ps = pinchState(), w2 = Math.max(45, Math.min(200, pinch.w * pinch.d / ps.d));
+    var b = svg.getBoundingClientRect(), qx = (ps.mx - b.left) / b.width, qy = (ps.my - b.top) / b.height;
+    setView(pinch.anchor[0] - qx * w2, pinch.anchor[1] - qy * w2, w2);
+    return;
+  }
+  if (!drag) return;
+  var l = locate(e), P2 = 2 * S.P, tc = l.tc + P2 * Math.round((drag.tc - l.tc) / P2), c = cellAt(l.sc, tc);
+  if (!c || (c.i === drag.b.i && c.j === drag.b.j)) return;
+  drag.b = c;
+  drag.moved = c.i !== drag.a.i || c.j !== drag.a.j;
+  if (drag.moved) fx('tick');
+  drawDraft();
+  if (!drag.moved) gDraft.innerHTML = '';
+});
+function endPtr(e) { delete ptrs[e.pointerId]; if (Object.keys(ptrs).length < 2) pinch = null; }
+svg.addEventListener('wheel', function (e) {
+  if (!e.ctrlKey && !e.shiftKey) return;
+  e.preventDefault(); zoomAt(e.clientX, e.clientY, view.w * (e.deltaY > 0 ? 1.15 : 1 / 1.15));
+}, { passive: false });
+svg.addEventListener('pointerup', function (e) {
+  endPtr(e);
+  if (!drag) return;
+  var d = drag; drag = null; gDraft.innerHTML = '';
+  if (!d.moved) { tap(d.a); return; }
+  drag = d; var db = draftBlock(); drag = null;
+  var b = mk(db.i0, db.j0, db.A, db.B, 0);
+  if (b) placeBlock(b); else { fx('bad'); setStatus('That block would leave the flower. Blocks have to fit inside it.'); }
+});
+svg.addEventListener('pointercancel', function (e) { endPtr(e); drag = null; gDraft.innerHTML = ''; defaultStatus(); });
+svg.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+
+/* ---------- buttons and hints ---------- */
+$('undo').addEventListener('click', function () { if (!S || S.solved || !S.undo.length) return; popUndo(); fx('undo'); afterChange(); });
+$('clear').addEventListener('click', function () { if (!S || S.solved || !S.blocks.length) return; pushUndo(); S.blocks = []; fx('remove'); afterChange(); });
+function clearHint() {
+  if (!S) return;
+  clearTimeout(S.hintTimer); S.hint = null; S.hintOn = false;
+  if (statusEl.querySelector('.hintmsg')) defaultStatus();
+}
+function hintHtml(h) {
+  var lead = '<span class="hintmsg"><strong>Hint' + (h.why && h.why.tier ? ' · ' + LG.names[h.why.tier] : '') + ':</strong> ';
+  if (h.kind === 'remove') return lead + 'this block sits where the <strong>' + h.why.v + '</strong> must go. Tap it to remove it.</span>';
+  var body = h.why && h.why.kind ? LG.explain(h.why, h.why.v, 'block') : 'A block fits in the outline. No simple deduction is left, so this one comes from the answer.';
+  return lead + body + '</span> Drag across the outline to place it.';
+}
+function showHint() {
+  var me = S;
+  me.hintOn = true; clearTimeout(me.hintTimer);
+  me.hintTimer = setTimeout(function () { if (S !== me || !me.hint) return; me.hintOn = false; render(); }, 5000);
+  setStatus(hintHtml(me.hint)); render();
+}
+function asBlock(p) { return { i0: p.i0, j0: p.j0, A: p.A, B: p.B, cells: p.cells, key: p.key }; }
+// The easiest logical step from the current board. Wrong blocks are ignored for the reasoning.
+function logicHint() {
+  var st = LG.newState(S.P * S.L, S.cands), wrong = [];
+  S.blocks.forEach(function (x) {
+    var i = -1, p = null;
+    S.solution.forEach(function (cd, k) { if (cd.key === x.key) i = k; });
+    if (i < 0) { wrong.push(x); return; }
+    S.cands[i].forEach(function (q) { if (q.key === x.key) p = q; });
+    if (p) LG.decide(st, i, p);
+  });
+  var d = LG.next(st, 4);
+  if (!d) return null;
+  var v = S.nums[d.k].v, blocker = null;
+  wrong.forEach(function (x) { if (!blocker && overlap(x.cells, d.piece.cells)) blocker = x; });
+  if (blocker) return { kind: 'remove', b: asBlock(blocker), why: { v: v } };
+  var h = { kind: 'place', b: asBlock(d.piece), why: { kind: d.kind, tier: d.tier, v: v } };
+  if (d.kind === 'spot') h.cell = d.cell;
+  return h;
+}
+$('hint').addEventListener('click', function () {
+  if (!S || S.solved || busy) return;
+  if (S.hint) { showHint(); return; }
+  if (S.master && S.hints >= 3) return;
+  var missing = [];
+  S.solution.forEach(function (cd, i) { if (!S.blocks.some(function (x) { return x.key === cd.key; })) missing.push({ cd: cd, i: i }); });
+  if (!missing.length) return;
+  var h = logicHint();
+  if (!h) {
+    var free = missing.filter(function (m) { return !S.blocks.some(function (x) { return overlap(x.cells, m.cd.cells); }); });
+    if (free.length) {
+      var best = null, bn = 1e9;
+      free.forEach(function (m) { var n = S.cands[m.i].length; if (n < bn) { bn = n; best = m; } });
+      h = { kind: 'place', b: asBlock(best.cd) };
+    } else {
+      var blocker = null, bv = 0;
+      missing.forEach(function (m) { S.blocks.forEach(function (x) { if (!blocker && overlap(x.cells, m.cd.cells)) { blocker = x; bv = S.nums[m.i].v; } }); });
+      if (!blocker) return;
+      h = { kind: 'remove', b: asBlock(blocker), why: { v: bv } };
+    }
+  }
+  S.hint = h; S.hints++; fx('hint'); startTimer(); updateButtons(); showHint();
+});
+$('pause').addEventListener('click', function () { if (window.__ui) window.__ui.pauseClick('bl'); else if (S && S.paused) resumeGame(); else pauseGame(); });
+$('new').addEventListener('click', function () { newPuzzle(level); });
+
+/* ---------- start ---------- */
+window.__games = window.__games || {};
+window.__games.bl = {
+  inProgress: function () { return !!S && !S.solved && S.blocks.length > 0; },
+  show: function () { if (!S && !busy) newPuzzle(level); },
+  pauseInfo: pauseInfo, pause: pauseGame, resume: resumeGame, resetRun: resetRun,
+  getId: function () { return S ? S.id : ''; }, loadId: loadId,
+  canReplay: canReplay, replayOpen: replayOpen, replayShow: replayShow, replayClose: replayClose, replayActive: function () { return !!RP && RP.s === S; },
+  level: function () { return level; }, start: function (lv) { if (BC.LEVELS[lv]) newPuzzle(lv); },
+  levels: function () { return BC.ORDER.map(function (k) { var c = BC.LEVELS[k]; return { k: k, n: c.n, t: c.t, size: c.L + '×' + c.P }; }); }
+};
+})();
+</script>
 <script>
 (function () {
 'use strict';
 var KEY = 'shikaku-dim', cur = '2d', noteTimer = 0;
-var LEDE = { '2d': 'Split the grid into rectangles. Each rectangle holds one number, and that number is its area.',
-             '3d': 'Fill the cube with boxes. Each box holds one number, and that number is its volume.' };
-var LOCKMSG = { '2d': 'A 2D puzzle is in progress. Solve it, or clear the board, to switch to 3D.',
-                '3d': 'A 3D puzzle is in progress. Solve it, undo your boxes, or start a new puzzle to switch to 2D.' };
+var MODES = ['2d', '3d', 'bl'], GID = { '2d': 'g2', '3d': 'g3', 'bl': 'gB' }, GK = { '2d': 'd2', '3d': 'd3', 'bl': 'bl' };
+var LOCKMSG = { '2d': 'A 2D puzzle is in progress. Solve it, or clear the board, to switch.',
+                '3d': 'A 3D puzzle is in progress. Solve it, undo your boxes, or start a new puzzle to switch.',
+                'bl': 'A Bloom puzzle is in progress. Solve it, or clear the board, to switch.' };
 var sw = document.getElementById('dimsw'), note = document.getElementById('dimnote');
 var btns = Array.prototype.slice.call(sw.querySelectorAll('button'));
 var subs = {}; btns.forEach(function (b) { var sm = b.querySelector('small'); subs[b.dataset.dim] = sm ? sm.textContent : ''; });
-function game(d) { return (window.__games || {})[d === '2d' ? 'd2' : 'd3']; }
+function game(d) { return (window.__games || {})[GK[d]]; }
 function locked() { var g = game(cur); return !!(g && g.inProgress()); }
 function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
 function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
@@ -3276,13 +4160,10 @@ function paint() {
   if (window.__ui) window.__ui.refresh();
 }
 function apply(d, animate) {
-  var g2 = document.getElementById('g2'), g3 = document.getElementById('g3');
   cur = d;
-  g2.hidden = d !== '2d';
-  g3.hidden = d !== '3d';
-  var shown = d === '2d' ? g2 : g3;
+  MODES.forEach(function (m) { document.getElementById(GID[m]).hidden = m !== d; });
+  var shown = document.getElementById(GID[d]);
   if (animate) { shown.classList.remove('enter'); void shown.offsetWidth; shown.classList.add('enter'); }
-  var le = document.getElementById('lede'); if (le) le.textContent = LEDE[d];
   var g = game(d); if (g) g.show();
   paint();
 }
@@ -3304,9 +4185,11 @@ btns.forEach(function (b) {
   });
 });
 window.__shell = { changed: paint, mode: function () { return cur; } };
-apply(lsGet(KEY) === '3d' ? '3d' : '2d', false);
+var saved = lsGet(KEY);
+apply(MODES.indexOf(saved) >= 0 ? saved : '2d', false);
 })();
 </script>
+
 <script>
 (function () {
 'use strict';
@@ -3400,18 +4283,20 @@ var Progress = (function () {
   var MAX_HINTS = 1; // a badge needs at most this many hints, except on Master (its own cap of 3 applies)
   var LV = {
     d2: [{ k: 'easy', n: 'Easy', t: 1 }, { k: 'medium', n: 'Medium', t: 2 }, { k: 'hard', n: 'Hard', t: 3 }, { k: 'expert', n: 'Expert', t: 3 }, { k: 'master', n: 'Master', t: 4 }],
-    d3: [{ k: 'easy', n: 'Easy', t: 1 }, { k: 'medium', n: 'Medium', t: 2 }, { k: 'hard', n: 'Hard', t: 3 }, { k: 'master', n: 'Master', t: 4 }]
+    d3: [{ k: 'easy', n: 'Easy', t: 1 }, { k: 'medium', n: 'Medium', t: 2 }, { k: 'hard', n: 'Hard', t: 3 }, { k: 'expert', n: 'Expert', t: 3 }, { k: 'master', n: 'Master', t: 4 }],
+    bl: [{ k: 'easy', n: 'Easy', t: 1 }, { k: 'medium', n: 'Medium', t: 2 }, { k: 'hard', n: 'Hard', t: 3 }, { k: 'expert', n: 'Expert', t: 3 }, { k: 'master', n: 'Master', t: 4 }]
   };
   // what each level needs: [mode, tier, lowest level the badge must come from]
   var NEED = {
     d2: { easy: [], medium: [['d2', 1]], hard: [['d2', 2]], expert: [['d2', 3]], master: [['d2', 3, 'expert']] },
-    d3: { easy: [], medium: [['d3', 1]], hard: [['d3', 2]], master: [['d3', 3], ['d2', 4]] }
+    d3: { easy: [], medium: [['d3', 1]], hard: [['d3', 2]], expert: [['d3', 3]], master: [['d3', 3, 'expert'], ['d2', 4]] },
+    bl: { easy: [], medium: [['bl', 1]], hard: [['bl', 2]], expert: [['bl', 3]], master: [['bl', 3, 'expert']] }
   };
-  var SIZE = { d2: { 5: 'easy', 7: 'medium', 10: 'hard', 13: 'expert' }, d3: { 3: 'easy', 4: 'medium', 5: 'hard' } };
-  var data = { d2: {}, d3: {} };
+  var SIZE = { d2: { 5: 'easy', 7: 'medium', 10: 'hard', 13: 'expert' }, d3: { 3: 'easy', 4: 'medium', 5: 'hard', 6: 'expert' } };
+  var data = { d2: {}, d3: {}, bl: {} };
   try {
     var o = JSON.parse(localStorage.getItem(KEY) || '{}');
-    ['d2', 'd3'].forEach(function (m) { if (o[m] && typeof o[m] === 'object') [1, 2, 3, 4].forEach(function (t) { if (Array.isArray(o[m][t])) data[m][t] = o[m][t].filter(function (k) { return idx(m, k) >= 0; }); }); });
+    ['d2', 'd3', 'bl'].forEach(function (m) { if (o[m] && typeof o[m] === 'object') [1, 2, 3, 4].forEach(function (t) { if (Array.isArray(o[m][t])) data[m][t] = o[m][t].filter(function (k) { return idx(m, k) >= 0; }); }); });
   } catch (e) {}
   function save() { try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {} }
   function idx(m, k) { for (var i = 0; i < LV[m].length; i++) if (LV[m][i].k === k) return i; return -1; }
@@ -3470,7 +4355,7 @@ var Progress = (function () {
   }
 
   function emit() { try { window.dispatchEvent(new Event('shikaku-progress')); } catch (e) {} }
-  function reset() { data = { d2: {}, d3: {} }; save(); emit(); }
+  function reset() { data = { d2: {}, d3: {}, bl: {} }; save(); emit(); }
 
   // ---- level buttons: lock marks and the denial note
   var noteTimer = 0;
@@ -3513,14 +4398,14 @@ var Progress = (function () {
   function render() {
     var el = document.getElementById('badgeTable');
     if (!el) return;
-    var rows = [1, 2, 3, 4].map(function (t) { return '<tr><th scope="row">' + names()[t] + '</th>' + cell('d2', t) + cell('d3', t) + '</tr>'; }).join('');
-    el.innerHTML = '<table class="btab"><thead><tr><th></th><th>2D grid</th><th>3D cube</th></tr></thead><tbody>' + rows + '</tbody></table>';
+    var rows = [1, 2, 3, 4].map(function (t) { return '<tr><th scope="row">' + names()[t] + '</th>' + cell('d2', t) + cell('d3', t) + cell('bl', t) + '</tr>'; }).join('');
+    el.innerHTML = '<table class="btab"><thead><tr><th></th><th>2D grid</th><th>3D cube</th><th>Bloom</th></tr></thead><tbody>' + rows + '</tbody></table>';
     var note = document.getElementById('badgeNote');
     if (note) note.textContent = enabled()
       ? 'Ticked levels are earned. Each level unlocks when you hold the badge before it.'
       : 'Level locks are off in Settings. Badges are still recorded.';
     var cnt = document.getElementById('badgeCount');
-    if (cnt) cnt.textContent = [1, 2, 3, 4].reduce(function (a, t) { return a + (has('d2', t) ? 1 : 0) + (has('d3', t) ? 1 : 0); }, 0) + '/8';
+    if (cnt) cnt.textContent = [1, 2, 3, 4].reduce(function (a, t) { return a + (has('d2', t) ? 1 : 0) + (has('d3', t) ? 1 : 0) + (has('bl', t) ? 1 : 0); }, 0) + '/12';
   }
   function levels(m) { return LV[m].slice(); }
   function current(m) {
@@ -3544,9 +4429,11 @@ if (typeof module !== 'undefined') module.exports = Progress;
 var $ = function (id) { return document.getElementById(id); };
 var SZ = {
   d2: { easy: '5×5', medium: '7×7', hard: '10×10', expert: '13×13', master: '13×13' },
-  d3: { easy: '3×3×3', medium: '4×4×4', hard: '5×5×5', master: '5×5×5' }
+  d3: { easy: '3×3×3', medium: '4×4×4', hard: '5×5×5', expert: '6×6×6', master: '5×5×5' },
+  bl: { easy: '5×8', medium: '6×10', hard: '8×12', expert: '9×14', master: '10×16' }
 };
-function mid() { return window.__shell && window.__shell.mode() === '3d' ? 'd3' : 'd2'; }
+function mid() { var m = window.__shell && window.__shell.mode(); return m === '3d' ? 'd3' : m === 'bl' ? 'bl' : 'd2'; }
+var GID = { d2: 'g2', d3: 'g3', bl: 'gB' };
 function isDaily() { var b = document.querySelector('#g2 [data-mode="daily"]'); return !!b && b.getAttribute('aria-pressed') === 'true'; }
 function isDaily3() { var g = window.__games && window.__games.d3; return !!(g && g.isDaily && g.isDaily()); }
 function bars(t) { var h = ''; for (var i = 1; i <= 4; i++) h += '<i' + (i <= t ? ' class="on"' : '') + '></i>'; return '<span class="bars" aria-hidden="true">' + h + '</span>'; }
@@ -3555,8 +4442,11 @@ function tech(t) { return Logic.names[t]; }
 // ---- the chip beside the 2D/3D switch
 function refresh() {
   var chip = $('lvlchip'); if (!chip) return;
-  var m = mid(), html, label;
-  if (m === 'd2' ? isDaily() : isDaily3()) {
+  var m = mid(), html = '', label = '';
+  if (m === 'bl') {
+    var bg = game('bl'), bk = bg ? bg.level() : 'easy', bl = bg ? bg.levels().filter(function (x) { return x.k === bk; })[0] : null;
+    if (bl) { html = bars(bl.t) + '<span class="nm"><b>' + bl.n + '</b><small>' + bl.size + '</small></span>'; label = bl.n + ' ' + bl.size; }
+  } else if (m === 'd2' ? isDaily() : isDaily3()) {
     var lab = (m === 'd2' ? $('d2-dailyLabel').textContent : game('d3').dailyLabel()).split('·'), sz = (lab[1] || '').trim();
     html = bars(0) + '<span class="nm"><b>Daily</b><small>' + sz + '</small></span>'; label = 'Daily ' + sz;
   } else {
@@ -3581,7 +4471,7 @@ function copyText(t) {
   });
 }
 function syncIds() {
-  ['d2', 'd3'].forEach(function (m) {
+  ['d2', 'd3', 'bl'].forEach(function (m) {
     var g = game(m); if (!g) return;
     var pid = $(m + '-pid'), watch = $(m + '-watch'), id = g.getId ? g.getId() : '';
     if (pid) {
@@ -3592,7 +4482,7 @@ function syncIds() {
     if (watch) watch.hidden = !(g.canReplay && g.canReplay()) || !!(RPL && RPL.m === m);
   });
 }
-['d2', 'd3'].forEach(function (m) {
+['d2', 'd3', 'bl'].forEach(function (m) {
   var pid = $(m + '-pid');
   pid.addEventListener('click', function () {
     var id = pid.dataset.id; if (!id) return;
@@ -3712,8 +4602,8 @@ $('bHelp').addEventListener('click', function () { open('help', this); });
 // ---- pause: the pause screen over a game, and the warning before a second pause
 var PLAY_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.2v13.6a.7.7 0 0 0 1.06.6l11-6.8a.7.7 0 0 0 0-1.2l-11-6.8a.7.7 0 0 0-1.06.6z" fill="currentColor"/></svg>';
 var veils = {};
-['d2', 'd3'].forEach(function (m) {
-  var g = $(m === 'd2' ? 'g2' : 'g3'), v = document.createElement('div');
+['d2', 'd3', 'bl'].forEach(function (m) {
+  var g = $(GID[m]), v = document.createElement('div');
   v.className = 'pveil'; v.hidden = true;
   v.innerHTML = '<div class="pbox" role="status"><span class="sr">Paused. </span><button type="button" class="playbtn" aria-label="Resume">' + PLAY_SVG + '</button><p class="pnote warn">Your next Pause will reset the game</p></div>';
   g.appendChild(v); veils[m] = v;
@@ -3722,7 +4612,7 @@ var veils = {};
 function game(m) { return window.__games && window.__games[m]; }
 // The frosted screen starts under the stats row, so the frozen time and the clock button stay visible.
 function placeVeil(m) {
-  var g = $(m === 'd2' ? 'g2' : 'g3'), box = g.querySelector('.board, .stage'), v = veils[m];
+  var g = $(GID[m]), box = g.querySelector('.board, .stage'), v = veils[m];
   if (!box) return;
   var gr = g.getBoundingClientRect(), br = box.getBoundingClientRect();
   v.style.top = (br.top - gr.top - 4) + 'px'; v.style.left = (br.left - gr.left - 4) + 'px';
@@ -3731,11 +4621,11 @@ function placeVeil(m) {
 // While paused only the play button works: everything else on the page is inert.
 function lock(on) {
   var els = [document.querySelector('.top'), document.querySelector('.ctl')];
-  ['g2', 'g3'].forEach(function (id) { Array.prototype.forEach.call($(id).children, function (c) { if (!c.classList.contains('pveil')) els.push(c); }); });
+  ['g2', 'g3', 'gB'].forEach(function (id) { Array.prototype.forEach.call($(id).children, function (c) { if (!c.classList.contains('pveil')) els.push(c); }); });
   els.forEach(function (el) { if (!el) return; if (on) el.setAttribute('inert', ''); else el.removeAttribute('inert'); });
 }
 function renderVeils() {
-  ['d2', 'd3'].forEach(function (m) {
+  ['d2', 'd3', 'bl'].forEach(function (m) {
     var g = game(m), info = g && g.pauseInfo ? g.pauseInfo() : null, v = veils[m], was = v.hidden;
     if (!info) return;
     v.hidden = !info.paused;
@@ -3760,7 +4650,18 @@ $('warnReset').addEventListener('click', function () {
 });
 
 // ---- Play sheet: daily plus the practice levels of the current mode
+function buildPlayBl() {
+  var g = game('bl'), cur = g.level(), h = '';
+  $('playTitle').textContent = 'Bloom puzzles'; $('playMsg').textContent = ''; $('idMsg').textContent = '';
+  g.levels().forEach(function (l) {
+    var isCur = cur === l.k, locked = !Progress.open('bl', l.k), got = Progress.earnedLevel('bl', l.k);
+    h += '<button type="button" class="lv' + (isCur ? ' cur' : '') + (locked ? ' locked' : '') + '" data-k="' + l.k + '"' + (locked ? ' aria-disabled="true"' : '') + '>' + bars(l.t) + '<span class="lt"><b>' + l.n + ' <small>' + l.size + '</small></b><em>' + tech(l.t) + (got && !isCur ? ' · badge earned' : '') + '</em></span><span class="rt">' + (locked ? 'Locked' : isCur ? 'Playing' : got ? '<span class="tick">✓</span>' : '') + '</span></button>';
+  });
+  $('playList').innerHTML = h;
+  $('playNote').textContent = 'Size is rings × petals. Bloom puzzles are new every time. Hard and Expert need Elimination and Master needs Trial. Each level opens when you hold the badge before it. Bloom has no daily puzzle yet.';
+}
 function buildPlay() {
+  if (mid() === 'bl') { buildPlayBl(); return; }
   var m = mid(), daily = m === 'd2' ? isDaily() : isDaily3(), cur = daily ? 'daily' : Progress.current(m), h = '';
   $('playTitle').textContent = m === 'd2' ? '2D puzzles' : '3D puzzles';
   $('playMsg').textContent = '';
@@ -3782,12 +4683,12 @@ function buildPlay() {
 function playId() {
   var msg = $('idMsg'), p = window.ShikakuId.parse($('idIn').value);
   function bad(t) { msg.textContent = t; if (window.FX) window.FX.play('bad'); }
-  if (!p) return bad('That is not a puzzle ID. IDs look like 2D-H-104729 or 3D-MA-250.');
-  var want = p.dim === 2 ? 'd2' : 'd3', here = mid();
+  if (!p) return bad('That is not a puzzle ID. IDs look like 2D-H-104729, 3D-MA-250 or BL-H-104729.');
+  var want = p.dim === 2 ? 'd2' : p.dim === 3 ? 'd3' : 'bl', here = mid(), LBL = { d2: '2D', d3: '3D', bl: 'Bloom' };
   if (want !== here) {
     var gh = game(here);
-    if (gh && gh.inProgress()) return bad('A ' + (here === 'd2' ? '2D' : '3D') + ' puzzle is in progress. Solve it, or start over, then switch.');
-    var sb = document.querySelector('#dimsw button[data-dim="' + (p.dim === 2 ? '2d' : '3d') + '"]');
+    if (gh && gh.inProgress()) return bad('A ' + LBL[here] + ' puzzle is in progress. Solve it, or start over, then switch.');
+    var sb = document.querySelector('#dimsw button[data-dim="' + (p.dim === 2 ? '2d' : p.dim === 3 ? '3d' : 'bl') + '"]');
     if (sb) sb.click();
   }
   var err = game(want).loadId(p);
@@ -3801,6 +4702,10 @@ $('idIn').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.
 $('playList').addEventListener('click', function (e) {
   var b = e.target.closest('.lv'); if (!b) return;
   var m = mid(), k = b.dataset.k;
+  if (m === 'bl') {
+    if (!Progress.open('bl', k)) { $('playMsg').textContent = Progress.needText('bl', k); if (window.FX) window.FX.play('bad'); return; }
+    close(); game('bl').start(k); setTimeout(refresh, 80); setTimeout(refresh, 400); return;
+  }
   if (k === 'daily') {
     if (m === 'd2') document.querySelector('#g2 [data-mode="daily"]').click(); else game('d3').loadDaily();
     close(); setTimeout(refresh, 80); return;
@@ -3822,7 +4727,8 @@ function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return n
 function buildProg() {
   var rows = [];
   [['shikaku-best-5', '2D Easy 5×5'], ['shikaku-best-7', '2D Medium 7×7'], ['shikaku-best-10', '2D Hard 10×10'], ['shikaku-best-13', '2D 13×13'],
-   ['shikaku-cube-best-3', '3D Easy 3×3×3'], ['shikaku-cube-best-4', '3D Medium 4×4×4'], ['shikaku-cube-best-5', '3D Hard 5×5×5'], ['shikaku-cube-best-m', '3D Master 5×5×5']].forEach(function (x) {
+   ['shikaku-cube-best-3', '3D Easy 3×3×3'], ['shikaku-cube-best-4', '3D Medium 4×4×4'], ['shikaku-cube-best-5', '3D Hard 5×5×5'], ['shikaku-cube-best-6', '3D Expert 6×6×6'], ['shikaku-cube-best-m', '3D Master 5×5×5'],
+   ['shikaku-bloom-best-easy', 'Bloom Easy 5×8'], ['shikaku-bloom-best-medium', 'Bloom Medium 6×10'], ['shikaku-bloom-best-hard', 'Bloom Hard 8×12'], ['shikaku-bloom-best-expert', 'Bloom Expert 9×14'], ['shikaku-bloom-best-master', 'Bloom Master 10×16']].forEach(function (x) {
     var v = lsGet(x[0]); if (v && /^\d+$/.test(v)) rows.push('<div class="best"><span>' + x[1] + '</span><b>' + mmss(+v) + '</b></div>');
   });
   $('bests').innerHTML = rows.length ? rows.join('') : '<p class="snote">No times yet. A time counts when you solve without hints.</p>';
@@ -3845,14 +4751,14 @@ function moveHelp() {
   var rec = document.querySelector('#g2 .record'); if (rec) $('recWrap').appendChild(rec);
 }
 function helpTab(m) {
-  $('helpBody2').hidden = m !== 'd2'; $('helpBody3').hidden = m !== 'd3';
+  $('helpBody2').hidden = m !== 'd2'; $('helpBody3').hidden = m !== 'd3'; $('helpBodyB').hidden = m !== 'bl';
   Array.prototype.forEach.call($('helpTabs').querySelectorAll('button'), function (b) { b.setAttribute('aria-pressed', String(b.dataset.m === m)); });
 }
 function buildHelp() { moveHelp(); helpTab(mid()); }
 $('helpTabs').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) helpTab(b.dataset.m); });
 moveHelp();
 
-buildReplay('d2'); buildReplay('d3');
+buildReplay('d2'); buildReplay('d3'); buildReplay('bl');
 window.__ui = { refresh: refresh, close: close, pauseClick: pauseClick };
 window.addEventListener('shikaku-progress', function () { refresh(); });
 refresh();
