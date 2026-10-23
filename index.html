@@ -152,6 +152,24 @@ body { padding-block: 14px 40px; }
 .lv.cur .rt { color: var(--accent); font-weight: 600; }
 .lv.locked { opacity: 0.55; }
 .lvmsg:empty { display: none; }
+/* puzzle ID row, watch button, logic replay panel, ID entry */
+.pidrow { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; min-height: 34px; }
+.pidrow:not(:has(:not([hidden]))) { min-height: 0; }
+.pidbtn { font: 600 12px var(--font-mono); color: var(--muted); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; min-height: 34px; cursor: pointer; }
+.pidbtn b { color: var(--ink); font-weight: 600; }
+.pidbtn.watch { font: 600 13px var(--font-body); color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
+.replay { display: flex; flex-direction: column; gap: 8px; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.rtop { display: flex; align-items: center; justify-content: space-between; gap: 8px; font: 500 12px var(--font-mono); color: var(--muted); }
+.rtag { display: inline-block; padding: 2px 9px; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font: 600 12px var(--font-body); }
+.rtxt { margin: 0; min-height: 4.2em; color: var(--ink); text-wrap: pretty; }
+.rsum { margin: 0; font-size: 12px; color: var(--muted); }
+.rctl { display: grid; grid-template-columns: 52px 1fr 52px auto; gap: 8px; }
+.rctl button { min-height: 44px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); font-size: 18px; font-weight: 600; cursor: pointer; padding: 0 12px; color: var(--ink); }
+.rctl button:disabled { opacity: 0.4; cursor: default; }
+.rctl .rclose { font-size: 14px; }
+.idrow { display: flex; gap: 8px; align-items: stretch; }
+.idrow input { flex: 1 1 auto; min-width: 0; font: 600 16px var(--font-mono); text-transform: uppercase; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); }
+.idrow input:focus-visible { outline: 3px solid var(--accent); outline-offset: 1px; }
 .lvmsg { margin: 0; font-size: 13px; color: var(--bad); text-wrap: pretty; }
 .helptabs { margin: 0; }
 .helpbody { display: flex; flex-direction: column; gap: 12px; }
@@ -438,6 +456,11 @@ body { padding-block: 14px 40px; }
     <button type="button" id="d2-new" class="primary" hidden>New puzzle</button>
   </div>
 
+  <div class="pidrow" id="d2-pidrow">
+    <button type="button" class="pidbtn" id="d2-pid" hidden></button>
+    <button type="button" class="pidbtn watch" id="d2-watch" hidden>▶ Watch the logic</button>
+  </div>
+
   <p class="status" id="d2-status" aria-live="polite"></p>
 
   <section class="record" aria-label="Your record">
@@ -560,6 +583,11 @@ body { padding-block: 14px 40px; }
     <button type="button" id="d3-new" class="primary">New puzzle</button>
   </div>
 
+  <div class="pidrow" id="d3-pidrow">
+    <button type="button" class="pidbtn" id="d3-pid" hidden></button>
+    <button type="button" class="pidbtn watch" id="d3-watch" hidden>▶ Watch the logic</button>
+  </div>
+
   <p class="status" id="d3-status" aria-live="polite"></p>
 
   <details>
@@ -647,6 +675,12 @@ body { padding-block: 14px 40px; }
     <div class="lvlist" id="playList"></div>
     <p class="lvmsg" id="playMsg" role="status"></p>
     <p class="snote" id="playNote"></p>
+    <div class="sgroup idbox">
+      <h3>Play a puzzle ID</h3>
+      <div class="idrow"><input id="idIn" type="text" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="2D-H-104729" aria-label="Puzzle ID"><button type="button" class="done" id="idGo">Play</button></div>
+      <p class="lvmsg" id="idMsg" role="status"></p>
+      <p class="snote">Every practice puzzle shows its ID under the buttons. Send it to a friend and they get exactly the same puzzle. Shared puzzles record no best time and earn no badge.</p>
+    </div>
   </section>
 </div>
 <div class="sheet" id="sheet-prog" hidden>
@@ -655,6 +689,7 @@ body { padding-block: 14px 40px; }
     <div class="shead"><h2 id="t-prog">Progress</h2><button type="button" class="done">Done</button></div>
     <div class="sgroup"><h3>Technique badges</h3><div id="badgeTable"></div><p class="snote" id="badgeNote"></p><span id="badgeCount" hidden></span></div>
     <div class="sgroup g2s" id="recWrap"><h3>Daily record</h3></div>
+    <div class="sgroup"><h3>3D daily record</h3><div id="rec3"></div></div>
     <div class="sgroup"><h3>Best times</h3><div id="bests"></div></div>
   </section>
 </div>
@@ -663,8 +698,8 @@ body { padding-block: 14px 40px; }
   <section class="sheetbody" role="dialog" aria-modal="true" aria-labelledby="t-help" tabindex="-1">
     <div class="shead"><h2 id="t-help">Help</h2><button type="button" class="done">Done</button></div>
     <div class="seg helptabs mini" id="helpTabs" role="group" aria-label="Which game"><button type="button" data-m="d2" aria-pressed="true">2D grid</button><button type="button" data-m="d3" aria-pressed="false">3D cube</button></div>
-    <div class="helpbody g2s" id="helpBody2"><p><strong>Goal.</strong> Split the grid into rectangles. Each rectangle holds exactly one number, and that number is its area.</p><p><strong>Controls.</strong> Drag across cells to draw a rectangle. Tap a rectangle to remove it. Tap a number to see where it could go.</p><p><strong>Pause.</strong> Tap the clock to take a break. The clock stops and the board is hidden until you resume. Each puzzle allows <strong>one pause</strong>. A second pause <strong>resets the puzzle</strong>: the board is cleared and the clock goes back to 0:00, and hints you used stay counted. You get a warning first, and the pause icon turns amber once your pause is used. Closing the page does not count as a pause; for the daily, your time so far and your pause are saved.</p></div>
-    <div class="helpbody g3s" id="helpBody3" hidden><p><strong>Goal.</strong> Fill the cube with boxes. Each box holds exactly one number, and that number is its volume.</p><p><strong>Controls.</strong> Tap a number to see where its box could go; blue circles show the cells its options would cover. Pick a shape, step through placements, then Place box. Drag the cube to rotate it, pinch to zoom.</p><p><strong>Pause.</strong> Tap the clock to take a break. The clock stops and the board is hidden until you resume. Each puzzle allows <strong>one pause</strong>. A second pause <strong>resets the puzzle</strong>: the board is cleared and the clock goes back to 0:00, and hints you used stay counted. You get a warning first, and the pause icon turns amber once your pause is used. Closing the page does not count as a pause; for the daily, your time so far and your pause are saved.</p></div>
+    <div class="helpbody g2s" id="helpBody2"><p><strong>Goal.</strong> Split the grid into rectangles. Each rectangle holds exactly one number, and that number is its area.</p><p><strong>Controls.</strong> Drag across cells to draw a rectangle. Tap a rectangle to remove it. Tap a number to see where it could go.</p><p><strong>Pause.</strong> Tap the clock to take a break. The clock stops and the board is hidden until you resume. Each puzzle allows <strong>one pause</strong>. A second pause <strong>resets the puzzle</strong>: the board is cleared and the clock goes back to 0:00, and hints you used stay counted. You get a warning first, and the pause icon turns amber once your pause is used. Closing the page does not count as a pause; for the daily, your time so far and your pause are saved.</p><p><strong>Puzzle ID.</strong> Every practice puzzle shows an ID such as 2D-H-104729 under the buttons. Tap it to copy. Open the level chip, type or paste an ID under Play a puzzle ID, and you get exactly the same puzzle. Shared puzzles record no best time and earn no badge, so a friend can race you on the same board.</p><p><strong>Watch the logic.</strong> After you solve a puzzle, tap Watch the logic. The solver places each rectangle in the order it would find them, and names the technique for every step. A Trial step shows the options that fail in red.</p></div>
+    <div class="helpbody g3s" id="helpBody3" hidden><p><strong>Goal.</strong> Fill the cube with boxes. Each box holds exactly one number, and that number is its volume.</p><p><strong>Controls.</strong> Tap a number to see where its box could go; blue circles show the cells its options would cover. Pick a shape, step through placements, then Place box. Drag the cube to rotate it, pinch to zoom.</p><p><strong>Pause.</strong> Tap the clock to take a break. The clock stops and the board is hidden until you resume. Each puzzle allows <strong>one pause</strong>. A second pause <strong>resets the puzzle</strong>: the board is cleared and the clock goes back to 0:00, and hints you used stay counted. You get a warning first, and the pause icon turns amber once your pause is used. Closing the page does not count as a pause; for the daily, your time so far and your pause are saved.</p><p><strong>Daily cube.</strong> Open the level chip and pick Daily for today's cube, the same for everyone. Its size follows the weekday: Mon 3, Tue 4, Wed 4, Thu 5, Fri 5, Sat 5, Sun 4. Your boxes, clock and pause are saved, so a reload brings the cube back as you left it. Streaks are kept separately from the 2D daily. Practice cubes you leave unfinished also come back after a reload.</p><p><strong>Puzzle ID.</strong> Every practice cube shows an ID such as 3D-H-933546 under the buttons. Tap it to copy. Type or paste an ID under Play a puzzle ID in the level chip to get exactly the same cube. Shared puzzles record no best time and earn no badge.</p><p><strong>Watch the logic.</strong> After you solve a cube, tap Watch the logic to see each box placed in the order the solver would find it, with the technique named. On a Trial step the dashed box is an option that fails.</p></div>
   </section>
 </div>
 <div class="sheet" id="sheet-warn" hidden>
@@ -854,12 +889,12 @@ var Logic = (function () {
   // { tier, k, piece, kind, cell? } or null when even trial cannot move.
   function next(st, maxTier) {
     maxTier = maxTier || 4;
-    var usedElim = false, usedTrial = false;
+    var usedElim = false, usedTrial = false, tried = [];
     for (var guard = 0; guard < 400; guard++) {
       var k = findSingle(st);
-      if (k >= 0) return { tier: usedTrial ? 4 : usedElim ? 3 : 1, k: k, piece: st.S[k][0], kind: usedTrial ? 'trial' : usedElim ? 'elim' : 'single' };
+      if (k >= 0) return { tier: usedTrial ? 4 : usedElim ? 3 : 1, k: k, piece: st.S[k][0], kind: usedTrial ? 'trial' : usedElim ? 'elim' : 'single', tried: tried };
       var sp = findOnlySpot(st);
-      if (sp) return { tier: usedTrial ? 4 : usedElim ? 3 : 2, k: sp.k, piece: sp.p, kind: usedTrial ? 'trial' : usedElim ? 'elim' : 'spot', cell: sp.cell };
+      if (sp) return { tier: usedTrial ? 4 : usedElim ? 3 : 2, k: sp.k, piece: sp.p, kind: usedTrial ? 'trial' : usedElim ? 'elim' : 'spot', cell: sp.cell, tried: tried };
       if (maxTier >= 3 && eliminate(st)) { usedElim = true; continue; }
       if (maxTier < 4) return null;
       var removed = false;
@@ -868,7 +903,7 @@ var Logic = (function () {
         for (var j = st.S[k].length - 1; j >= 0; j--) {
           var tr = cloneState(st);
           decide(tr, k, st.S[k][j]);
-          if (contradicts(tr)) { st.S[k].splice(j, 1); removed = true; }
+          if (contradicts(tr)) { tried.push({ k: k, piece: st.S[k][j] }); st.S[k].splice(j, 1); removed = true; }
         }
       }
       if (!removed) return null;
@@ -885,7 +920,7 @@ var Logic = (function () {
       if (st.decided.every(Boolean)) break;
       var d = next(st, 4);
       if (!d) return { tier: 5, steps: steps, solved: false, order: order };
-      steps[d.tier]++; if (d.tier > max) max = d.tier; order.push({ k: d.k, sig: sig(d.piece), tier: d.tier });
+      steps[d.tier]++; if (d.tier > max) max = d.tier; order.push({ k: d.k, sig: sig(d.piece), tier: d.tier, piece: d.piece, kind: d.kind, cell: d.cell, tried: d.tried || [] });
       decide(st, d.k, d.piece);
     }
     return { tier: max, steps: steps, solved: true, order: order };
@@ -910,9 +945,34 @@ var Logic = (function () {
     return 'The ' + n + ' fits here.';
   }
 
-  return { sig: sig, newState: newState, decide: decide, next: next, rate: rate, dead: dead, names: names, gap: gap, explain: explain };
+  // Replay wording for one step of rate().order. A Trial step says what was tried, using the real record of the options that failed.
+  function describe(x, v, noun) {
+    var nv = '<strong>' + v + '</strong>';
+    if (x.kind === 'trial') {
+      var own = (x.tried || []).filter(function (t) { return t.k === x.k; }).length;
+      if (own) return 'Try the other ' + noun + 's for the ' + nv + '. ' + (own === 1 ? 'The red one' : own + ' of them') + ' ' + (own === 1 ? 'leads' : 'lead') + ' to a contradiction: some cell or number is left with nowhere to go. Only this one survives.';
+      return 'Assume certain placements elsewhere and follow what they force. Each ends in a contradiction, and ruling them out leaves only one ' + noun + ' for the ' + nv + '.';
+    }
+    return explain(x, v, noun);
+  }
+
+  return { sig: sig, newState: newState, decide: decide, next: next, rate: rate, dead: dead, names: names, gap: gap, explain: explain, describe: describe };
 })();
 if (typeof module !== 'undefined') module.exports = Logic;
+</script>
+<script>
+// Puzzle IDs: "2D-H-104729" = mode, level, seed. 3D Master carries a bank code instead of a seed.
+window.ShikakuId = (function () {
+  var N2 = { E: 5, M: 7, H: 10, X: 13, MA: 13 }, N3 = { E: 3, M: 4, H: 5, MA: 5 };
+  function parse(s) {
+    var m = /^\s*([23])\s*D\s*[-_ ]\s*(E|M|H|X|MA)\s*[-_ ]\s*(\d{1,9})\s*$/i.exec(String(s == null ? '' : s));
+    if (!m) return null;
+    var dim = +m[1], code = m[2].toUpperCase(), tbl = dim === 2 ? N2 : N3;
+    if (!tbl[code]) return null;
+    return { dim: dim, n: tbl[code], master: code === 'MA', seed: +m[3] };
+  }
+  return { parse: parse };
+})();
 </script>
 <script>
 (function () {
@@ -1111,7 +1171,7 @@ function dateInfo(str) {
 var Store = { history: {}, cloudRef: null, cloud: false };
 
 function cleanRec(v) {
-  if (!v || typeof v !== 'object' || typeof v.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(v.date)) return null;
+  if (!v || typeof v !== 'object' || v.m || typeof v.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(v.date)) return null;
   var n = +v.size, s = +v.secs, h = +v.hints;
   if (!(n >= 3 && n <= 20 && s >= 0 && s < 1e6 && h >= 0 && h < 1e4)) return null;
   return { date: v.date, size: n, secs: Math.floor(s), hints: Math.floor(h) };
@@ -1220,13 +1280,17 @@ function makeState(n, res, seed) {
   var cands = res.nums.map(function (_, i) { return candidatesFor(n, n, res.nums, numAt, i); });
   var rated = Logic.rate(n * n, cands, []), rating = rated.tier;
   return {
-    cands: cands, rating: rating, trials: rated.steps[4],
+    cands: cands, rating: rating, trials: rated.steps[4], order: rated.order, steps: rated.steps, id: '', shared: false,
     n: n, nums: res.nums, solution: res.solution, numAt: numAt,
     rects: [], undo: [], sel: -1, solved: false, hints: 0, elapsed: 0, started: false, t0: 0,
     seed: seed, nextHue: 0, cellEls: [], daily: false, date: null, hint: null, master: false, pauses: 0, paused: false
   };
 }
+// Puzzle ID: mode, level, and the seed that built this exact puzzle. The seed is the final one after steering, so an ID never depends on the clock.
+var ID_CODE2 = { 5: 'E', 7: 'M', 10: 'H', 13: 'X' };
+function idOf(st) { return st.master ? '2D-MA-' + st.seed : ID_CODE2[st.n] ? '2D-' + ID_CODE2[st.n] + '-' + st.seed : ''; }
 function showFresh() {
+  S.id = S.daily ? '' : idOf(S);
   $('rating').textContent = Logic.names[S.rating];
   board.classList.remove('solved');
   buildBoard();
@@ -1281,6 +1345,31 @@ function newPuzzle(n, master) {
     refreshRecord();
     busy = false;
   }, 30);
+}
+
+// Opens a puzzle by ID. Returns '' when it starts, or a message. Shared puzzles record no best time and earn no badge.
+function loadId(p) {
+  if (busy) return 'Still building the last puzzle. Try again in a moment.';
+  if (!p || p.dim !== 2 || !LEVELS[p.n]) return 'That ID is not a 2D puzzle.';
+  if (S && S.daily) saveDraft();
+  stopTimer();
+  mode = 'practice'; lsSet('shikaku-mode', 'practice'); applyModeUi();
+  practiceSize = p.n; practiceMaster = !!p.master;
+  Array.prototype.forEach.call($('levels').querySelectorAll('button'), function (b) {
+    b.setAttribute('aria-pressed', String(b.dataset.master ? !!p.master : (!p.master && parseInt(b.dataset.size, 10) === p.n)));
+  });
+  busy = true;
+  setStatus('Building that puzzle…');
+  setTimeout(function () {
+    S = makeState(p.n, makePuzzle(p.n, p.seed), p.seed);
+    S.master = !!p.master; S.shared = true;
+    showFresh();
+    setStatus('<strong>Shared puzzle ' + S.id + '.</strong> No best time or badge is recorded for shared puzzles.' + (S.master ? ' Master rules apply: no previews, no error marks, three hints.' : ''));
+    refreshRecord();
+    busy = false;
+    if (window.__shell) window.__shell.changed();
+  }, 30);
+  return '';
 }
 
 function loadDaily() {
@@ -1531,7 +1620,9 @@ function win() {
     return;
   }
   var msg = '<strong>Solved in ' + fmt(S.elapsed) + '.</strong>';
-  if (S.hints) {
+  if (S.shared) {
+    msg += ' Shared puzzle: no best time or badge is recorded.' + (S.hints ? ' Hints used: ' + S.hints + '.' : '');
+  } else if (S.hints) {
     msg += ' You used ' + S.hints + (S.hints === 1 ? ' hint' : ' hints') + ', so this time does not count as a best.';
   } else {
     var key = 'shikaku-best-' + S.n, raw = lsGet(key), best = raw ? parseInt(raw, 10) : null;
@@ -1540,8 +1631,34 @@ function win() {
       msg += best === null ? ' First time on this size.' : ' New best (was ' + fmt(best) + ').';
     } else msg += ' Best on this size: ' + fmt(best) + '.';
   }
-  if (window.Progress) msg += Progress.message('d2', Progress.key('d2', S.n, S.master), S.rating, S.hints);
+  if (window.Progress && !S.shared) msg += Progress.message('d2', Progress.key('d2', S.n, S.master), S.rating, S.hints);
   setStatus(msg + ' Start a new puzzle when you are ready.', true);
+}
+
+/* ---------- logic replay: after solving, walk through the solver's order step by step ---------- */
+var RP = null;
+function canReplay() { return !!S && S.solved && !!S.order && S.order.length > 0; }
+function replayOpen() {
+  if (!canReplay()) return null;
+  RP = { s: S, rects: S.rects };
+  return { total: S.order.length, steps: S.steps, tiers: S.order.map(function (x) { return x.tier; }) };
+}
+function replayShow(p) {
+  if (!RP || RP.s !== S) return null;
+  var o = S.order, T = o.length;
+  S.rects = o.slice(0, p).map(function (x, i) { return { r: x.piece.r, c: x.piece.c, h: x.piece.h, w: x.piece.w, hue: HUES[i % HUES.length] }; });
+  S.hint = null; S.hintOn = false; S.sel = -1;
+  render();
+  if (p >= T) return { step: null };
+  var x = o[p];
+  candEl.appendChild(makeRect(x.piece, 'hintr'));
+  if (x.kind === 'spot' && x.cell != null) candEl.appendChild(makeRect({ r: Math.floor(x.cell / S.n), c: x.cell % S.n, h: 1, w: 1 }, 'hintr cellm'));
+  if (x.kind === 'trial') (x.tried || []).filter(function (t) { return t.k === x.k; }).slice(0, 4).forEach(function (t) { candEl.appendChild(makeRect(t.piece, 'hintr rm')); });
+  return { step: { tier: x.tier, html: Logic.describe(x, S.nums[x.k].v, 'rectangle') } };
+}
+function replayClose() {
+  if (RP && RP.s === S) { S.rects = RP.rects; S.hint = null; S.hintOn = false; render(); }
+  RP = null;
 }
 
 function updateButtons() {
@@ -1803,7 +1920,9 @@ refreshRecord();
 if (mode === 'daily') loadDaily(); else newPuzzle(practiceSize, practiceMaster);
 initCloud();
 window.__games = window.__games || {};
-window.__games.d2 = { inProgress: function () { return !!S && !S.solved && S.rects.length > 0; }, show: function () {}, pauseInfo: pauseInfo, pause: pauseGame, resume: resumeGame, resetRun: resetRun };
+window.__games.d2 = { inProgress: function () { return !!S && !S.solved && S.rects.length > 0; }, show: function () {}, pauseInfo: pauseInfo, pause: pauseGame, resume: resumeGame, resetRun: resetRun,
+  getId: function () { return S ? S.id : ''; }, loadId: loadId, canReplay: canReplay, replayOpen: replayOpen, replayShow: replayShow, replayClose: replayClose,
+  replayActive: function () { return !!RP && RP.s === S; } };
 })();
 </script>
 <script>
@@ -2366,39 +2485,94 @@ function pickStarter(res) {
   return gi;
 }
 function candOf(cands, i, box) { var s = Logic.sig(box), p = null; cands[i].forEach(function (q) { if (!p && Logic.sig(q) === s) p = q; }); return p; }
+// Everything a puzzle needs, built from one finished tiling: starter box, rating, and the solver's step order (for the replay).
+function pickFor(n, res, sd) {
+  var gi = n >= 4 ? pickStarter(res) : -1;
+  var given = gi >= 0 ? [{ k: gi, p: candOf(res.cands, gi, res.solution[gi]) }] : [];
+  var rated = Logic.rate(n * n * n, res.cands, given);
+  return { res: res, gi: gi, tier: rated.tier, order: rated.order, steps: rated.steps, sd: sd };
+}
+// The same seed always gives the same puzzle: no clock and no Math.random. The seed is part of the puzzle ID.
+function pickFromSeed(n, sd) {
+  if (!CFG[n]) return null;
+  var res = generate3(n, mulberry32(sd), CFG[n]);
+  return res ? pickFor(n, res, sd) : null;
+}
 function steeredGenerate(n, seed) {
   var spec = STEER[n] || {}, best = null, bg = 99, t0 = Date.now();
   for (var a = 0; a < 10; a++) {
-    var res = null, round = 0;
-    while (!res && round < 8) { res = generate3(n, mulberry32(seed + (a * 8 + round) * 7919), CFG[n]); round++; }
-    var gi = n >= 4 ? pickStarter(res) : -1;
-    var given = gi >= 0 ? [{ k: gi, p: candOf(res.cands, gi, res.solution[gi]) }] : [];
-    var tier = Logic.rate(n * n * n, res.cands, given).tier, g = Logic.gap(spec, tier);
-    if (g < bg) { bg = g; best = { res: res, gi: gi, tier: tier }; }
+    var pk = null, round = 0;
+    while (!pk && round < 8) { pk = pickFromSeed(n, seed + (a * 8 + round) * 7919); round++; }
+    if (!pk) continue;
+    var g = Logic.gap(spec, pk.tier);
+    if (g < bg) { bg = g; best = pk; }
     if (!g || Date.now() - t0 > 1200) break;
   }
   return best;
 }
+// The daily is not steered (steering depends on the clock), so every device builds the same puzzle.
+function dailyPick(n, seed) {
+  for (var round = 0; round < 8; round++) { var pk = pickFromSeed(n, seed + round * 7919); if (pk) return pk; }
+  return null;
+}
 
-// Master: a banked 5x5x5 puzzle that needs a Trial step, turned by a random rotation or mirror of the cube
+// Master: a banked 5x5x5 puzzle that needs a Trial step, turned by a rotation or mirror of the cube
 // (48 variants), so it looks new each time and still has exactly one answer. No starter box.
+// code = bank index * 48 + axis permutation * 8 + mirror bits; it is the number in a 3D Master puzzle ID.
+var PERMS3 = [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]];
+function masterBuild(code) {
+  var n = 5, bi = Math.floor(code / 48), base = MASTER3[bi];
+  if (!base || !(code >= 0)) return null;
+  var perm = PERMS3[Math.floor((code % 48) / 8)], fl = code % 8, flip = [!!(fl & 1), !!(fl & 2), !!(fl & 4)];
+  var nums = base.map(function (a) {
+    var o = [a[perm[0]], a[perm[1]], a[perm[2]]];
+    return { x: flip[0] ? n - 1 - o[0] : o[0], y: flip[1] ? n - 1 - o[1] : o[1], z: flip[2] ? n - 1 - o[2] : o[2], v: a[3] };
+  });
+  var res = solve3(n, nums, 2, 400000);
+  if (res.count !== 1 || res.aborted) return null;
+  var out = { nums: nums, solution: res.solution, cands: res.cands }, rated = Logic.rate(n * n * n, out.cands, []);
+  return { res: out, gi: -1, tier: rated.tier, order: rated.order, steps: rated.steps, code: code };
+}
 function masterPick() {
-  var n = 5;
   for (var guard = 0; guard < 12; guard++) {
-    var base = MASTER3[Math.floor(Math.random() * MASTER3.length)];
-    var perm = [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]][Math.floor(Math.random() * 6)];
-    var flip = [Math.random() < 0.5, Math.random() < 0.5, Math.random() < 0.5];
-    var nums = base.map(function (a) {
-      var o = [a[perm[0]], a[perm[1]], a[perm[2]]];
-      return { x: flip[0] ? n - 1 - o[0] : o[0], y: flip[1] ? n - 1 - o[1] : o[1], z: flip[2] ? n - 1 - o[2] : o[2], v: a[3] };
-    });
-    var res = solve3(n, nums, 2, 400000);
-    if (res.count === 1 && !res.aborted) {
-      var out = { nums: nums, solution: res.solution, cands: res.cands };
-      return { res: out, gi: -1, tier: Logic.rate(n * n * n, out.cands, []).tier };
-    }
+    var pk = masterBuild(Math.floor(Math.random() * MASTER3.length) * 48 + Math.floor(Math.random() * 48));
+    if (pk) return pk;
   }
-  return steeredGenerate(n, Math.floor(Math.random() * 900000) + 100000);
+  return steeredGenerate(5, Math.floor(Math.random() * 900000) + 100000);
+}
+
+var ID_CODE3 = { 3: 'E', 4: 'M', 5: 'H' };
+// Starts a puzzle from a pick. opts: { daily, date, shared }.
+function beginPuzzle(n, master, pick, opts) {
+  opts = opts || {};
+  if (S && S.daily && !S.solved && !S.noSave) saveDraft3();
+  if (!opts.daily) { level = n; levelMaster = !!master; }
+  stopTimer();
+  var res = pick.res, N = n * n * n;
+  var id = opts.daily ? '' : pick.code != null ? '3D-MA-' + pick.code : (!master && pick.sd != null && ID_CODE3[n]) ? '3D-' + ID_CODE3[n] + '-' + pick.sd : '';
+  S = {
+    n: n, nums: res.nums, numAt: buildNumAt3(n, res.nums), solution: res.solution, cands: res.cands, rating: pick.tier,
+    order: pick.order, steps: pick.steps, id: id, shared: !!opts.shared, daily: !!opts.daily, date: opts.date || null, noSave: !!opts.daily,
+    boxes: res.nums.map(function () { return null; }), boxOf: new Int16Array(N).fill(-1),
+    sel: -1, given: -1, hint: null, unlock: false, ghost: null, heat: null, dead: {}, unreach: null, rem: {}, nDead: 0, nUn: 0,
+    groups: null, shapeKey: null, pi: 0, undo: [], hints: 0, elapsed: 0, started: false, t0: 0, solved: false, master: !!master, pauses: 0, paused: false
+  };
+  $('rating').textContent = Logic.names[S.rating];
+  Array.prototype.forEach.call($('levels').querySelectorAll('button'), function (b) { b.setAttribute('aria-pressed', String(!opts.daily && (b.dataset.master ? !!master : (!master && +b.dataset.n === n)))); });
+  occupy(); analyze();
+  $('time').textContent = '0:00';
+  defaultStatus();
+  var note = '';
+  if (pick.gi >= 0) {
+    var gi = pick.gi;
+    S.boxes[gi] = S.solution[gi]; S.given = gi;
+    occupy(); analyze();
+    note = 'We placed the <strong>' + S.nums[gi].v + '</strong> to get you started. Tap another number to continue.';
+  }
+  if (S.shared) note = '<strong>Shared puzzle ' + S.id + '.</strong> No best time or badge is recorded for shared puzzles. ' + note;
+  if (note) setStatus(note);
+  refreshUi();
+  request();
 }
 
 function newPuzzle(n, master) {
@@ -2406,29 +2580,18 @@ function newPuzzle(n, master) {
     var k0 = Progress.key('d3', n, master), k1 = Progress.clamp('d3', k0);
     if (k1 !== k0) { master = k1 === 'master'; n = { easy: 3, medium: 4, hard: 5, master: 5 }[k1]; }
   }
-  level = n; levelMaster = !!master;
-  stopTimer();
-  var seed = Math.floor(Math.random() * 900000) + 100000, pick = master ? masterPick() : steeredGenerate(n, seed), res = pick.res;
-  var N = n * n * n;
-  S = {
-    n: n, nums: res.nums, numAt: buildNumAt3(n, res.nums), solution: res.solution, cands: res.cands, rating: pick.tier,
-    boxes: res.nums.map(function () { return null; }), boxOf: new Int16Array(N).fill(-1),
-    sel: -1, given: -1, hint: null, unlock: false, ghost: null, heat: null, dead: {}, unreach: null, rem: {}, nDead: 0, nUn: 0,
-    groups: null, shapeKey: null, pi: 0, undo: [], hints: 0, elapsed: 0, started: false, t0: 0, solved: false, master: !!master, pauses: 0, paused: false
-  };
-  $('rating').textContent = Logic.names[S.rating];
-  Array.prototype.forEach.call($('levels').querySelectorAll('button'), function (b) { b.setAttribute('aria-pressed', String(b.dataset.master ? !!master : (!master && +b.dataset.n === n))); });
-  occupy(); analyze();
-  $('time').textContent = '0:00';
-  defaultStatus();
-  if (pick.gi >= 0) {
-    var gi = pick.gi;
-    S.boxes[gi] = S.solution[gi]; S.given = gi;
-    occupy(); analyze();
-    setStatus('We placed the <strong>' + S.nums[gi].v + '</strong> to get you started. Tap another number to continue.');
-  }
-  refreshUi();
-  request();
+  lsSet('shikaku-mode3', 'practice');
+  beginPuzzle(n, master, master ? masterPick() : steeredGenerate(n, Math.floor(Math.random() * 900000) + 100000));
+}
+
+// Opens a puzzle by ID. Returns '' when it starts, or a message.
+function loadId(p) {
+  if (!p || p.dim !== 3) return 'That ID is not a 3D puzzle.';
+  var pick = p.master ? masterBuild(p.seed) : pickFromSeed(p.n, p.seed);
+  if (!pick) return 'That ID does not match a puzzle.';
+  lsSet('shikaku-mode3', 'practice');
+  beginPuzzle(p.n, p.master, pick, { shared: true });
+  return '';
 }
 
 function occupy() {
@@ -2484,12 +2647,187 @@ function pushUndo() { S.undo.push(S.boxes.map(function (b) { return b ? b.id : -
 function startTimer() {
   if (S.started) return;
   S.started = true;
-  S.t0 = Date.now();
+  S.t0 = Date.now() - S.elapsed * 1000;
   runTimer();
 }
 function runTimer() {
   stopTimer();
   timer = setInterval(function () { S.elapsed = Math.floor((Date.now() - S.t0) / 1000); $('time').textContent = fmt(S.elapsed); }, 500);
+}
+
+/* ---------- 3D daily: record, streaks, draft (this device), cloud copy ---------- */
+var DAILY3 = { 0: 4, 1: 3, 2: 4, 3: 4, 4: 5, 5: 5, 6: 5 };   // weekday ramp, keyed by Date.getDay()
+var Store3 = { history: {}, cloudRef: null, cloud: false };
+function pad2(n) { return (n < 10 ? '0' : '') + n; }
+function todayStr3() { var d = new Date(); return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
+function shiftDate3(str, k) { var p = str.split('-').map(Number), d = new Date(p[0], p[1] - 1, p[2] + k); return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
+function dayNum3(str) { var p = str.split('-').map(Number); return Math.round(Date.UTC(p[0], p[1] - 1, p[2]) / 864e5); }
+function dateInfo3(str) {
+  var p = str.split('-').map(Number), dt = new Date(p[0], p[1] - 1, p[2]);
+  return { seed: p[0] * 10000 + p[1] * 100 + p[2], dow: dt.getDay(), label: dt.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }).replace(',', '') };
+}
+function cleanRec3(v) {
+  if (!v || typeof v !== 'object' || v.m !== '3' || typeof v.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(v.date)) return null;
+  var n = +v.size, s = +v.secs, h = +v.hints;
+  if (!(n >= 3 && n <= 5 && s >= 0 && s < 1e6 && h >= 0 && h < 1e4)) return null;
+  return { date: v.date, size: n, secs: Math.floor(s), hints: Math.floor(h), m: '3' };
+}
+function loadLocalHistory3() {
+  try {
+    var o = JSON.parse(lsGet('shikaku-history3') || '{}');
+    Object.keys(o).forEach(function (k) { var v = cleanRec3(o[k]); if (v) Store3.history[v.date] = v; });
+  } catch (e) {}
+}
+function saveLocalHistory3() { lsSet('shikaku-history3', JSON.stringify(Store3.history)); }
+function cloudWrite3(rec) {
+  if (!Store3.cloudRef) return Promise.resolve(false);
+  return Store3.cloudRef.doc('day3-' + rec.date).set({ date: rec.date, size: rec.size, secs: rec.secs, hints: rec.hints, m: '3' }).then(function () { return true; }, function () { return false; });
+}
+function streaks3() {
+  var dates = Object.keys(Store3.history).sort(), today = todayStr3(), h = Store3.history;
+  var cur = 0, cursor = h[today] ? today : shiftDate3(today, -1);
+  while (h[cursor]) { cur++; cursor = shiftDate3(cursor, -1); }
+  var best = 0, run = 0, prev = null;
+  dates.forEach(function (d) { run = (prev !== null && dayNum3(d) - dayNum3(prev) === 1) ? run + 1 : 1; if (run > best) best = run; prev = d; });
+  return { current: cur, longest: best, solved: dates.length };
+}
+function initCloud3() {
+  if (!window.claude || typeof window.claude.use !== 'function') return;
+  Promise.all([window.claude.use('db'), window.claude.use('user')]).then(function (r) {
+    var db = r[0], user = r[1];
+    if (!db || !user) return;
+    return user.id().then(function (uid) {
+      if (!uid) return;
+      var col = db.collection('data/users/' + uid);
+      return col.get().then(function (snap) {
+        var remote = {};
+        snap.docs.forEach(function (d) { var v = cleanRec3(d.data()); if (v) { remote[v.date] = 1; if (!Store3.history[v.date]) Store3.history[v.date] = v; } });
+        Store3.cloudRef = col; Store3.cloud = true;
+        saveLocalHistory3();
+        var chain = Promise.resolve();
+        Object.keys(Store3.history).forEach(function (k) { if (!remote[k]) chain = chain.then(function () { return cloudWrite3(Store3.history[k]); }); });
+        return chain;
+      });
+    });
+  }).then(function () {
+    // a daily finished on another device shows as done here
+    if (S && S.daily && !S.solved && S.date && Store3.history[S.date] && !S.boxes.some(function (b, i) { return b && i !== S.given; })) loadDaily3();
+    else if (window.__shell) window.__shell.changed();
+  }).catch(function () {});
+}
+
+function draftKey3() { return S.daily ? 'shikaku-draft3-' + S.date : 'shikaku-draft3-p'; }
+function clearDraft3() { if (S && S.daily) { try { localStorage.removeItem(draftKey3()); } catch (e) {} } }
+function clearPracticeDraft3() { try { localStorage.removeItem('shikaku-draft3-p'); } catch (e) {} }
+// Saves the boxes as candidate ids (the same form Undo uses). A practice draft also keeps its puzzle ID, so the exact cube can be rebuilt after a reload.
+function saveDraft3() {
+  if (!S || S.solved || S.noSave || S.replaying) return;
+  var el = S.elapsed;
+  if (S.started && !S.paused) el = Math.floor((Date.now() - S.t0) / 1000);
+  var d = { boxes: S.boxes.map(function (b) { return b ? b.id : -1; }), elapsed: el, hints: S.hints, pauses: S.pauses };
+  if (!S.daily) {
+    var placed = S.boxes.some(function (b, i) { return b && i !== S.given; });
+    if (!S.id || !placed) { clearPracticeDraft3(); return; }
+    d.id = S.id; d.shared = S.shared;
+  }
+  lsSet(draftKey3(), JSON.stringify(d));
+}
+function applyDraft3(d) {
+  if (!d || !Array.isArray(d.boxes) || d.boxes.length !== S.nums.length) return false;
+  var boxes = [], cover = new Uint8Array(S.n * S.n * S.n);
+  for (var i = 0; i < d.boxes.length; i++) {
+    var id = d.boxes[i];
+    if (id === -1 || id == null) { boxes.push(null); continue; }
+    if (!Number.isInteger(id) || id < 0 || id >= S.cands[i].length) return false;
+    var cd = S.cands[i][id];
+    for (var q = 0; q < cd.cells.length; q++) { if (cover[cd.cells[q]]) return false; cover[cd.cells[q]] = 1; }
+    boxes.push(cd);
+  }
+  if (S.given >= 0 && (!boxes[S.given] || boxes[S.given].id !== S.solution[S.given].id)) return false;
+  S.boxes = boxes;
+  S.elapsed = Math.max(0, Math.min(86400, Math.floor(+d.elapsed || 0)));
+  S.hints = Math.max(0, Math.min(999, Math.floor(+d.hints || 0)));
+  S.pauses = Math.max(0, Math.min(99, Math.floor(+d.pauses || 0)));
+  occupy(); analyze();
+  $('time').textContent = fmt(S.elapsed);
+  return true;
+}
+
+function dailyLabel3() { var i = dateInfo3(todayStr3()), n = DAILY3[i.dow]; return i.label + ' · ' + n + '×' + n + '×' + n; }
+function loadDaily3() {
+  var date = todayStr3(), info = dateInfo3(date), n = DAILY3[info.dow], pick = dailyPick(n, info.seed);
+  if (!pick) return;
+  lsSet('shikaku-mode3', 'daily');
+  beginPuzzle(n, false, pick, { daily: true, date: date });
+  var done = Store3.history[date];
+  if (done) {
+    S.boxes = S.solution.slice(); S.solved = true; S.hints = done.hints; S.elapsed = done.secs;
+    occupy(); analyze();
+    $('time').textContent = fmt(S.elapsed);
+    setStatus('<strong>Today is done: ' + fmt(done.secs) + '.</strong> ' + (done.hints ? done.hints + (done.hints === 1 ? ' hint' : ' hints') + ' used. ' : 'No hints. ') + 'Come back tomorrow, or start a practice cube.', 'win');
+  } else {
+    var raw = lsGet(draftKey3()), ok = false;
+    if (raw) { try { ok = applyDraft3(JSON.parse(raw)); } catch (e) { ok = false; } }
+    if (ok && S.boxes.some(function (b, i) { return b && i !== S.given; })) setStatus('Your unfinished daily is back where you left it.');
+  }
+  S.noSave = false;
+  try { for (var i = localStorage.length - 1; i >= 0; i--) { var k = localStorage.key(i); if (k && k.indexOf('shikaku-draft3-') === 0 && k !== 'shikaku-draft3-p' && k !== draftKey3()) localStorage.removeItem(k); } } catch (e) {}
+  refreshUi(); request();
+}
+// After a reload: bring back the practice cube that was in progress, by its ID plus the saved boxes.
+function restorePractice3() {
+  var raw = lsGet('shikaku-draft3-p');
+  if (!raw) return false;
+  try {
+    var d = JSON.parse(raw), p = window.ShikakuId && window.ShikakuId.parse(d.id);
+    if (!p || p.dim !== 3) return false;
+    var pick = p.master ? masterBuild(p.seed) : pickFromSeed(p.n, p.seed);
+    if (!pick) return false;
+    beginPuzzle(p.n, p.master, pick, { shared: !!d.shared });
+    if (!applyDraft3(d)) { clearPracticeDraft3(); beginPuzzle(p.n, p.master, pick, { shared: !!d.shared }); return true; }
+    setStatus('Your unfinished cube is back where you left it.');
+    refreshUi(); request();
+    return true;
+  } catch (e) { return false; }
+}
+
+/* ---------- logic replay: after solving, walk through the solver's order step by step ---------- */
+var RP = null;
+function canReplay() { return !!S && S.solved && !!S.order && S.order.length > 0; }
+function replayOpen() {
+  if (!canReplay()) return null;
+  RP = { s: S, boxes: S.boxes };
+  S.replaying = true;
+  return { total: S.order.length, steps: S.steps, tiers: S.order.map(function (x) { return x.tier; }) };
+}
+function replayShow(p) {
+  if (!RP || RP.s !== S) return null;
+  var o = S.order, T = o.length;
+  S.boxes = S.nums.map(function () { return null; });
+  if (S.given >= 0) S.boxes[S.given] = S.solution[S.given];
+  for (var i = 0; i < p && i < T; i++) S.boxes[o[i].k] = o[i].piece;
+  occupy();
+  clearTimeout(S.hintTimer);
+  S.hint = null; S.hintOn = false; S.ghost = null; S.sel = -1;
+  var info = { step: null };
+  if (p < T) {
+    var x = o[p];
+    S.sel = x.k;
+    if (x.kind === 'trial') { var tr = (x.tried || []).filter(function (t) { return t.k === x.k; })[0]; if (tr) S.ghost = tr.piece; }
+    S.hint = { kind: 'place', i: x.k, box: x.piece };
+    if (x.kind === 'spot' && x.cell != null) { var n = S.n, c = x.cell; S.hint.cell = { x: c % n, y: Math.floor(c / n) % n, z: Math.floor(c / (n * n)), a: 1, b: 1, c: 1 }; }
+    S.hintOn = true;
+    info.step = { tier: x.tier, html: Logic.describe(x, S.nums[x.k].v, 'box') };
+  }
+  refreshUi(); request();
+  return info;
+}
+function replayClose() {
+  if (RP && RP.s === S) {
+    S.boxes = RP.boxes; S.hint = null; S.hintOn = false; S.ghost = null; S.sel = -1; S.replaying = false;
+    occupy(); refreshUi(); request();
+  }
+  RP = null;
 }
 function stopTimer() { if (timer) { clearInterval(timer); timer = null; } }
 
@@ -2654,15 +2992,25 @@ function win() {
   stopTimer();
   S.elapsed = Math.max(S.elapsed, S.started ? Math.floor((Date.now() - S.t0) / 1000) : 0);
   $('time').textContent = fmt(S.elapsed);
-  var msg = '<strong>Solved in ' + fmt(S.elapsed) + '.</strong>';
-  if (S.hints) msg += ' You used ' + S.hints + (S.hints === 1 ? ' hint' : ' hints') + ', so this time does not count as a best.';
+  var msg = '<strong>Solved in ' + fmt(S.elapsed) + '.</strong>', tail = ' Start a new puzzle when you are ready.';
+  if (S.daily) {
+    var rec = { date: S.date, size: S.n, secs: S.elapsed, hints: S.hints, m: '3' };
+    Store3.history[S.date] = rec; saveLocalHistory3(); clearDraft3();
+    var st3 = streaks3();
+    msg += (S.hints ? ' ' + S.hints + (S.hints === 1 ? ' hint' : ' hints') + ' used.' : ' No hints.') + ' Streak: ' + st3.current + (st3.current === 1 ? ' day.' : ' days.');
+    tail = ' Come back tomorrow for the next cube.';
+    cloudWrite3(rec);
+  } else if (S.shared) {
+    msg += ' Shared puzzle: no best time or badge is recorded.' + (S.hints ? ' Hints used: ' + S.hints + '.' : '');
+  } else if (S.hints) msg += ' You used ' + S.hints + (S.hints === 1 ? ' hint' : ' hints') + ', so this time does not count as a best.';
   else {
     var key = 'shikaku-cube-best-' + (S.master ? 'm' : S.n), raw = lsGet(key), best = raw ? parseInt(raw, 10) : null;
     if (best === null || S.elapsed < best) { lsSet(key, String(S.elapsed)); msg += best === null ? ' First time on this size.' : ' New best (was ' + fmt(best) + ').'; }
     else msg += ' Best on this size: ' + fmt(best) + '.';
   }
-  if (window.Progress) msg += Progress.message('d3', Progress.key('d3', S.n, S.master), S.rating, S.hints);
-  setStatus(msg + ' Start a new puzzle when you are ready.', 'win');
+  if (window.Progress && !S.shared && !S.daily) msg += Progress.message('d3', Progress.key('d3', S.n, S.master), S.rating, S.hints);
+  setStatus(msg + tail, 'win');
+  if (!S.daily) clearPracticeDraft3();
   V.mode = 'glass';
   refreshModes();
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) spin = 140;
@@ -2746,6 +3094,7 @@ function refreshUi() {
   var multi = !!S.groups && S.groups.keys.length > 1;
   $('panel').hidden = !(!S.solved && i >= 0 && !S.boxes[i] && (S.dead[i] || multi));
   refreshOverlay();
+  saveDraft3();
   if (window.__shell) window.__shell.changed();
 }
 
@@ -2877,9 +3226,25 @@ if (typeof ResizeObserver !== 'undefined') new ResizeObserver(resize).observe(st
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { T = readTheme(); request(); });
 resize();
 window.addEventListener('shikaku-settings', request);
-newPuzzle(3);
+loadLocalHistory3();
+if (lsGet('shikaku-mode3') === 'daily') loadDaily3();
+else if (!restorePractice3()) newPuzzle(3);
+initCloud3();
+// leaving or hiding the page keeps the daily (and the practice cube) exactly as it stands
+document.addEventListener('visibilitychange', function () {
+  if (document.hidden) saveDraft3();
+  else checkRollover3();
+});
+window.addEventListener('pagehide', saveDraft3);
+function checkRollover3() {
+  if (S && S.daily && S.date !== todayStr3() && (S.solved || !S.boxes.some(function (b, i) { return b && i !== S.given; }))) loadDaily3();
+}
+setInterval(checkRollover3, 30000);
 window.__games = window.__games || {};
-window.__games.d3 = { inProgress: function () { return !!S && !S.solved && S.boxes.filter(Boolean).length > (S.given >= 0 ? 1 : 0); }, show: function () { resize(); }, pauseInfo: pauseInfo, pause: pauseGame, resume: resumeGame, resetRun: resetRun };
+window.__games.d3 = { inProgress: function () { return !!S && !S.solved && S.boxes.filter(Boolean).length > (S.given >= 0 ? 1 : 0); }, show: function () { resize(); }, pauseInfo: pauseInfo, pause: pauseGame, resume: resumeGame, resetRun: resetRun,
+  getId: function () { return S ? S.id : ''; }, loadId: loadId, loadDaily: loadDaily3, isDaily: function () { return !!S && !!S.daily; }, dailyLabel: dailyLabel3,
+  dailyDone: function () { return !!Store3.history[todayStr3()]; }, record: function () { var s = streaks3(); s.cloud = Store3.cloud; return s; },
+  canReplay: canReplay, replayOpen: replayOpen, replayShow: replayShow, replayClose: replayClose, replayActive: function () { return !!RP && RP.s === S; } };
 })();
 </script>
 <script>
@@ -3183,6 +3548,7 @@ var SZ = {
 };
 function mid() { return window.__shell && window.__shell.mode() === '3d' ? 'd3' : 'd2'; }
 function isDaily() { var b = document.querySelector('#g2 [data-mode="daily"]'); return !!b && b.getAttribute('aria-pressed') === 'true'; }
+function isDaily3() { var g = window.__games && window.__games.d3; return !!(g && g.isDaily && g.isDaily()); }
 function bars(t) { var h = ''; for (var i = 1; i <= 4; i++) h += '<i' + (i <= t ? ' class="on"' : '') + '></i>'; return '<span class="bars" aria-hidden="true">' + h + '</span>'; }
 function tech(t) { return Logic.names[t]; }
 
@@ -3190,8 +3556,8 @@ function tech(t) { return Logic.names[t]; }
 function refresh() {
   var chip = $('lvlchip'); if (!chip) return;
   var m = mid(), html, label;
-  if (m === 'd2' && isDaily()) {
-    var lab = $('d2-dailyLabel').textContent.split('·'), sz = (lab[1] || '').trim();
+  if (m === 'd2' ? isDaily() : isDaily3()) {
+    var lab = (m === 'd2' ? $('d2-dailyLabel').textContent : game('d3').dailyLabel()).split('·'), sz = (lab[1] || '').trim();
     html = bars(0) + '<span class="nm"><b>Daily</b><small>' + sz + '</small></span>'; label = 'Daily ' + sz;
   } else {
     var k = Progress.current(m), l = Progress.levels(m).filter(function (x) { return x.k === k; })[0];
@@ -3201,6 +3567,106 @@ function refresh() {
   chip.setAttribute('aria-label', 'Puzzle: ' + label + '. Change puzzle');
   renderVeils();
   var pc = document.querySelector('#bProg .cnt'); if (pc) pc.textContent = $('badgeCount') ? $('badgeCount').textContent : '';
+  syncIds();
+}
+
+// ---- puzzle ID button and the "Watch the logic" button under each game
+function copyText(t) {
+  var p = navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(t) : Promise.reject();
+  return p.catch(function () {
+    var ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+  });
+}
+function syncIds() {
+  ['d2', 'd3'].forEach(function (m) {
+    var g = game(m); if (!g) return;
+    var pid = $(m + '-pid'), watch = $(m + '-watch'), id = g.getId ? g.getId() : '';
+    if (pid) {
+      pid.hidden = !id;
+      if (id && pid.dataset.id !== id) { pid.dataset.id = id; pid.innerHTML = 'ID <b>' + id + '</b> · copy'; pid.setAttribute('aria-label', 'Puzzle ID ' + id + '. Tap to copy'); }
+    }
+    if (RPL && RPL.m === m && !(g.replayActive && g.replayActive())) closeReplay();
+    if (watch) watch.hidden = !(g.canReplay && g.canReplay()) || !!(RPL && RPL.m === m);
+  });
+}
+['d2', 'd3'].forEach(function (m) {
+  var pid = $(m + '-pid');
+  pid.addEventListener('click', function () {
+    var id = pid.dataset.id; if (!id) return;
+    copyText(id).then(function () {
+      pid.innerHTML = 'Copied <b>' + id + '</b>';
+      setTimeout(function () { if (pid.dataset.id === id) pid.innerHTML = 'ID <b>' + id + '</b> · copy'; }, 1500);
+    });
+  });
+});
+
+// ---- logic replay: a step-through of the solver's order, after solving
+var RPL = null;
+function summaryHtml(steps, tiers, p) {
+  var done = [0, 0, 0, 0, 0], parts = [];
+  tiers.slice(0, p).forEach(function (t) { done[t]++; });
+  for (var t = 1; t <= 4; t++) if (steps[t]) parts.push(Logic.names[t] + ' ' + done[t] + '/' + steps[t]);
+  return 'Techniques used: ' + parts.join(' · ');
+}
+function buildReplay(m) {
+  var el = document.createElement('div');
+  el.className = 'replay'; el.id = m + '-replay'; el.hidden = true;
+  el.innerHTML = '<div class="rtop"><span class="rtag" id="' + m + '-rtag"></span><span id="' + m + '-rcnt"></span></div>' +
+    '<p class="rtxt" id="' + m + '-rtxt" aria-live="polite"></p><p class="rsum" id="' + m + '-rsum"></p>' +
+    '<div class="rctl"><button type="button" id="' + m + '-rprev" aria-label="Previous step">‹</button><button type="button" id="' + m + '-rplay">Pause</button>' +
+    '<button type="button" id="' + m + '-rnext" aria-label="Next step">›</button><button type="button" class="rclose" id="' + m + '-rclose">Close</button></div>';
+  $(m + '-pidrow').insertAdjacentElement('afterend', el);
+  $(m + '-rprev').addEventListener('click', function () { stopAuto(); showStep(RPL.p - 1); });
+  $(m + '-rnext').addEventListener('click', function () { stopAuto(); showStep(RPL.p + 1); });
+  $(m + '-rplay').addEventListener('click', function () {
+    if (RPL.timer) { stopAuto(); return; }
+    if (RPL.p >= RPL.T) showStep(0);
+    startAuto();
+  });
+  $(m + '-rclose').addEventListener('click', closeReplay);
+  $(m + '-watch').addEventListener('click', function () { openReplay(m); });
+}
+function stopAuto() { if (RPL && RPL.timer) { clearInterval(RPL.timer); RPL.timer = 0; } if (RPL) { var b = $(RPL.m + '-rplay'); if (b) b.textContent = 'Play'; } }
+function startAuto() {
+  if (!RPL) return;
+  RPL.timer = setInterval(function () { if (!RPL || RPL.p >= RPL.T) { stopAuto(); return; } showStep(RPL.p + 1); }, 2400);
+  $(RPL.m + '-rplay').textContent = 'Pause';
+}
+function showStep(p) {
+  if (!RPL) return;
+  var m = RPL.m, g = game(m);
+  p = Math.max(0, Math.min(RPL.T, p)); RPL.p = p;
+  var r = g.replayShow(p);
+  if (!r) { closeReplay(); return; }
+  $(m + '-rtag').textContent = r.step ? Logic.names[r.step.tier] : 'Solved';
+  $(m + '-rtxt').innerHTML = r.step ? r.step.html : 'That is the whole solution. Every piece was forced by logic, so no guessing was ever needed.';
+  $(m + '-rcnt').textContent = p >= RPL.T ? 'Done' : 'Step ' + (p + 1) + ' of ' + RPL.T;
+  $(m + '-rsum').textContent = summaryHtml(RPL.steps, RPL.tiers, p);
+  $(m + '-rprev').disabled = p === 0; $(m + '-rnext').disabled = p >= RPL.T;
+  if (p >= RPL.T) stopAuto();
+}
+function openReplay(m) {
+  var g = game(m), info = g && g.replayOpen && g.replayOpen();
+  if (!info) return;
+  if (RPL) closeReplay();
+  RPL = { m: m, p: 0, T: info.total, steps: info.steps, tiers: info.tiers, timer: 0 };
+  $(m + '-replay').hidden = false;
+  $(m + '-watch').hidden = true;
+  showStep(0);
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) startAuto(); else $(m + '-rplay').textContent = 'Play';
+  try { $(m + '-replay').scrollIntoView({ block: 'nearest' }); } catch (e) {}
+}
+function closeReplay() {
+  if (!RPL) return;
+  var m = RPL.m, g = game(m);
+  stopAuto();
+  RPL = null;
+  $(m + '-replay').hidden = true;
+  if (g && g.replayClose) g.replayClose();
+  syncIds();
 }
 
 // ---- sheets
@@ -3295,12 +3761,14 @@ $('warnReset').addEventListener('click', function () {
 
 // ---- Play sheet: daily plus the practice levels of the current mode
 function buildPlay() {
-  var m = mid(), daily = m === 'd2' && isDaily(), cur = daily ? 'daily' : Progress.current(m), h = '';
+  var m = mid(), daily = m === 'd2' ? isDaily() : isDaily3(), cur = daily ? 'daily' : Progress.current(m), h = '';
   $('playTitle').textContent = m === 'd2' ? '2D puzzles' : '3D puzzles';
   $('playMsg').textContent = '';
-  if (m === 'd2') {
-    var lab = $('d2-dailyLabel').textContent;
-    h += '<button type="button" class="lv' + (cur === 'daily' ? ' cur' : '') + '" data-k="daily">' + bars(0) + '<span class="lt"><b>Daily</b><em>' + lab + '</em></span><span class="rt">' + (cur === 'daily' ? 'Playing' : '') + '</span></button>';
+  $('idMsg').textContent = '';
+  {
+    var lab = m === 'd2' ? $('d2-dailyLabel').textContent : game('d3').dailyLabel();
+    var dtick = m === 'd3' && game('d3').dailyDone() ? '<span class="tick">✓</span>' : '';
+    h += '<button type="button" class="lv' + (cur === 'daily' ? ' cur' : '') + '" data-k="daily">' + bars(0) + '<span class="lt"><b>Daily</b><em>' + lab + '</em></span><span class="rt">' + (cur === 'daily' ? 'Playing' : dtick) + '</span></button>';
   }
   Progress.levels(m).forEach(function (l) {
     var locked = !Progress.open(m, l.k), got = Progress.earnedLevel(m, l.k), isCur = cur === l.k;
@@ -3309,12 +3777,34 @@ function buildPlay() {
       '<span class="lt"><b>' + l.n + ' <small>' + SZ[m][l.k] + '</small></b><em>' + tech(l.t) + (got && !isCur ? ' · badge earned' : '') + '</em></span><span class="rt">' + rt + '</span></button>';
   });
   $('playList').innerHTML = h;
-  $('playNote').textContent = m === 'd2' ? 'Daily is the same puzzle for everyone. Practice levels are new every time.' : 'Every puzzle is new. Pick a level to start one.';
+  $('playNote').textContent = m === 'd2' ? 'Daily is the same puzzle for everyone. Practice levels are new every time.' : 'The daily cube is the same for everyone. Practice levels are new every time.';
 }
+function playId() {
+  var msg = $('idMsg'), p = window.ShikakuId.parse($('idIn').value);
+  function bad(t) { msg.textContent = t; if (window.FX) window.FX.play('bad'); }
+  if (!p) return bad('That is not a puzzle ID. IDs look like 2D-H-104729 or 3D-MA-250.');
+  var want = p.dim === 2 ? 'd2' : 'd3', here = mid();
+  if (want !== here) {
+    var gh = game(here);
+    if (gh && gh.inProgress()) return bad('A ' + (here === 'd2' ? '2D' : '3D') + ' puzzle is in progress. Solve it, or start over, then switch.');
+    var sb = document.querySelector('#dimsw button[data-dim="' + (p.dim === 2 ? '2d' : '3d') + '"]');
+    if (sb) sb.click();
+  }
+  var err = game(want).loadId(p);
+  if (err) return bad(err);
+  $('idIn').value = ''; msg.textContent = '';
+  close();
+  setTimeout(refresh, 80); setTimeout(refresh, 400);
+}
+$('idGo').addEventListener('click', playId);
+$('idIn').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); playId(); } });
 $('playList').addEventListener('click', function (e) {
   var b = e.target.closest('.lv'); if (!b) return;
   var m = mid(), k = b.dataset.k;
-  if (k === 'daily') { document.querySelector('#g2 [data-mode="daily"]').click(); close(); setTimeout(refresh, 80); return; }
+  if (k === 'daily') {
+    if (m === 'd2') document.querySelector('#g2 [data-mode="daily"]').click(); else game('d3').loadDaily();
+    close(); setTimeout(refresh, 80); return;
+  }
   if (!Progress.open(m, k)) {
     $('playMsg').textContent = Progress.needText(m, k);
     if (window.FX) window.FX.play('bad');
@@ -3336,6 +3826,11 @@ function buildProg() {
     var v = lsGet(x[0]); if (v && /^\d+$/.test(v)) rows.push('<div class="best"><span>' + x[1] + '</span><b>' + mmss(+v) + '</b></div>');
   });
   $('bests').innerHTML = rows.length ? rows.join('') : '<p class="snote">No times yet. A time counts when you solve without hints.</p>';
+  var g3 = game('d3');
+  if (g3 && g3.record) {
+    var r3 = g3.record();
+    $('rec3').innerHTML = '<div class="best"><span>Current streak</span><b>' + r3.current + '</b></div><div class="best"><span>Longest streak</span><b>' + r3.longest + '</b></div><div class="best"><span>Dailies solved</span><b>' + r3.solved + '</b></div><p class="snote">' + (r3.cloud ? 'Saved to your account and to this device.' : 'Saved on this device.') + '</p>';
+  }
   Progress.refresh();
 }
 
@@ -3357,6 +3852,7 @@ function buildHelp() { moveHelp(); helpTab(mid()); }
 $('helpTabs').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) helpTab(b.dataset.m); });
 moveHelp();
 
+buildReplay('d2'); buildReplay('d3');
 window.__ui = { refresh: refresh, close: close, pauseClick: pauseClick };
 window.addEventListener('shikaku-progress', function () { refresh(); });
 refresh();
