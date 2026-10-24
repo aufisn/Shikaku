@@ -136,6 +136,8 @@ body { padding-block: 14px 40px; }
 .pbox .playbtn svg { width: 38px; height: 38px; margin-left: 4px; }
 .pbox .pnote { margin: 0; font-size: 15px; font-weight: 600; color: var(--muted); text-wrap: pretty; }
 .pbox .pnote.warn { color: var(--bad); }
+.pbox .pnote[hidden], .pbox .newbtn[hidden] { display: none; }
+.pbox .newbtn { border: 1px solid var(--line); background: transparent; color: var(--ink); border-radius: 10px; padding: 11px 16px; font-size: 15px; font-weight: 600; cursor: pointer; }
 #g2, #g3, #gB { position: relative; }
 .wbtns { display: flex; flex-direction: column; gap: 8px; }
 .wbtns .done { padding: 13px 16px; font-size: 15px; }
@@ -1413,7 +1415,7 @@ function newPuzzle(n, master) {
     var k0 = Progress.key('d2', n, master), k1 = Progress.clamp('d2', k0);
     if (k1 !== k0) { master = k1 === 'master'; n = { easy: 5, medium: 7, hard: 10, expert: 13, master: 13 }[k1]; }
   }
-  busy = true;
+  busy = true; lsDel(P_KEY);
   practiceSize = n; practiceMaster = !!master;
   stopTimer();
   Array.prototype.forEach.call($('levels').querySelectorAll('button'), function (b) {
@@ -1474,6 +1476,7 @@ function loadDaily() {
       S.rects = huedRects(S.solution);
     } else {
       restoreDraft();
+      if (S.rects.length) { S.started = true; S.paused = true; S.restored = true; }
     }
     showFresh();
     if (done) { board.classList.add('solved'); setStatus(doneMessage(done), true); }
@@ -1481,6 +1484,7 @@ function loadDaily() {
     cleanOldDrafts();
     refreshRecord();
     busy = false;
+    if (window.__ui) window.__ui.refresh();
   }, 30);
 }
 function doneMessage(rec) {
@@ -1491,7 +1495,50 @@ function doneMessage(rec) {
 
 /* ---------- draft of today's unfinished daily (this device only) ---------- */
 function draftKey() { return 'shikaku-draft-' + S.date; }
+var P_KEY = 'shikaku-draft-2p';
+function sigOf(nums) { return nums.map(function (n) { return n.r + ':' + n.c + ':' + n.v; }).join(','); }
+// An unfinished practice puzzle is kept (seed, clues, rectangles, clock) so it can be resumed after the page is closed.
+function savePracticeDraft() {
+  if (!S || S.daily || S.solved || busy) return;
+  if (!S.rects.length) { lsDel(P_KEY); return; }
+  var el = S.started && !S.paused ? Math.floor((Date.now() - S.t0) / 1000) : S.elapsed;
+  lsSet(P_KEY, JSON.stringify({ v: 1, n: S.n, master: !!S.master, seed: S.seed, shared: !!S.shared, sig: sigOf(S.nums),
+    rects: S.rects, elapsed: el, hints: S.hints, nextHue: S.nextHue, pauses: S.pauses }));
+}
+function resumePractice() {
+  var d = null;
+  try { d = JSON.parse(lsGet(P_KEY) || 'null'); } catch (e) {}
+  if (!d || d.v !== 1 || !LEVELS[d.n] || !Number.isInteger(d.seed) || !Array.isArray(d.rects)) { lsDel(P_KEY); return false; }
+  busy = true; practiceSize = d.n; practiceMaster = !!d.master; stopTimer();
+  Array.prototype.forEach.call($('levels').querySelectorAll('button'), function (b) {
+    b.setAttribute('aria-pressed', String(b.dataset.master ? !!d.master : (!d.master && parseInt(b.dataset.size, 10) === d.n)));
+  });
+  setStatus('Restoring your game…');
+  setTimeout(function () {
+    var res = makePuzzle(d.n, d.seed);
+    if (!res || sigOf(res.nums) !== d.sig) { busy = false; lsDel(P_KEY); newPuzzle(practiceSize, practiceMaster); return; }
+    S = makeState(d.n, res, d.seed);
+    S.master = !!d.master; S.shared = !!d.shared;
+    showFresh();
+    var n = d.n;
+    S.rects = d.rects.filter(function (x) {
+      return x && Number.isInteger(x.r) && Number.isInteger(x.c) && Number.isInteger(x.h) && Number.isInteger(x.w) &&
+        x.r >= 0 && x.c >= 0 && x.h >= 1 && x.w >= 1 && x.r + x.h <= n && x.c + x.w <= n && typeof x.hue === 'number';
+    }).map(function (x) { return { r: x.r, c: x.c, h: x.h, w: x.w, hue: x.hue }; });
+    S.elapsed = Math.max(0, Math.min(86400, Math.floor(+d.elapsed || 0)));
+    S.hints = Math.max(0, Math.min(999, Math.floor(+d.hints || 0)));
+    S.nextHue = Math.max(0, Math.floor(+d.nextHue || 0));
+    S.pauses = Math.max(0, Math.min(99, Math.floor(+d.pauses || 0)));
+    S.started = true; S.paused = true; S.restored = true;
+    render(); updateButtons(); $('time').textContent = fmt(S.elapsed);
+    defaultStatus(); refreshRecord();
+    busy = false;
+    if (window.__ui) window.__ui.refresh();
+  }, 30);
+  return true;
+}
 function saveDraft() {
+  if (S && !S.daily) { savePracticeDraft(); return; }
   if (!S || !S.daily || S.solved) return;
   lsSet(draftKey(), JSON.stringify({ rects: S.rects, elapsed: S.elapsed, hints: S.hints, nextHue: S.nextHue, pauses: S.pauses }));
 }
@@ -1512,7 +1559,7 @@ function restoreDraft() {
     S.pauses = Math.max(0, Math.min(99, Math.floor(+d.pauses || 0)));
   } catch (e) {}
 }
-function clearDraft() { if (S && S.date) lsDel(draftKey()); }
+function clearDraft() { if (S && S.date) lsDel(draftKey()); else lsDel(P_KEY); }
 function cleanOldDrafts() {
   try {
     var drop = [];
@@ -1642,20 +1689,28 @@ function runTimer() {
 function stopTimer() { if (timer) { clearInterval(timer); timer = null; } }
 
 /* ---------- pause: one per puzzle; a second one resets the puzzle ---------- */
-function pauseInfo() { return { can: !!S && !S.solved && S.started && !S.paused, paused: !!S && S.paused, used: S ? S.pauses : 0 }; }
+function pauseInfo() { return { can: !!S && !S.solved && S.started && !S.paused, paused: !!S && S.paused, used: S ? S.pauses : 0,
+  restored: S && S.restored ? (S.daily ? 'Daily' : S.master ? 'Master' : LEVELS[S.n].name) + ' · ' + fmt(S.elapsed) + ' · ' + S.rects.length + ' of ' + S.nums.length + ' blocks placed' : '',
+  again: S && S.daily ? 'Start over' : 'Start a new puzzle instead' }; }
+function discardRestored() {
+  if (!S || !S.restored) return;
+  S.paused = false; S.restored = false;
+  if (S.daily) { resetRun(); return; }   // the daily is the same puzzle for everyone: start it again from an empty board
+  lsDel(P_KEY); newPuzzle(practiceSize, practiceMaster);
+}
 function pauseGame() {
   if (!pauseInfo().can) return false;
   S.elapsed = Math.floor((Date.now() - S.t0) / 1000);
   stopTimer(); S.paused = true; S.pauses++;
   $('time').textContent = fmt(S.elapsed);
   clearHint();
-  if (S.daily) saveDraft();
+  saveDraft();
   updateButtons();
   return true;
 }
 function resumeGame() {
   if (!S || !S.paused) return;
-  S.paused = false;
+  S.paused = false; S.restored = false;
   S.t0 = Date.now() - S.elapsed * 1000;
   runTimer();
   updateButtons();
@@ -2005,10 +2060,10 @@ setInterval(function () {
   checkRollover();
 }, 30000);
 document.addEventListener('visibilitychange', function () {
-  if (document.hidden) { if (S && S.daily) { S.elapsed = S.started && !S.solved && !S.paused ? Math.floor((Date.now() - S.t0) / 1000) : S.elapsed; saveDraft(); } }
+  if (document.hidden) { if (S && S.daily) { S.elapsed = S.started && !S.solved && !S.paused ? Math.floor((Date.now() - S.t0) / 1000) : S.elapsed; saveDraft(); } else savePracticeDraft(); }
   else checkRollover();
 });
-window.addEventListener('pagehide', function () { if (S && S.daily) saveDraft(); });
+window.addEventListener('pagehide', function () { saveDraft(); });
 
 /* ---------- start ---------- */
 loadLocalHistory();
@@ -2016,10 +2071,10 @@ mode = lsGet('shikaku-mode') === 'practice' ? 'practice' : 'daily';
 (function () { var i = dateInfo(todayStr()), n = DAILY_SIZE[i.dow]; $('dailyLabel').textContent = i.label + ' · ' + n + '×' + n; })();
 applyModeUi();
 refreshRecord();
-if (mode === 'daily') loadDaily(); else newPuzzle(practiceSize, practiceMaster);
+if (mode === 'daily') loadDaily(); else if (!resumePractice()) newPuzzle(practiceSize, practiceMaster);
 initCloud();
 window.__games = window.__games || {};
-window.__games.d2 = { inProgress: function () { return !!S && !S.solved && S.rects.length > 0; }, show: function () {}, pauseInfo: pauseInfo, pause: pauseGame, resume: resumeGame, resetRun: resetRun,
+window.__games.d2 = { discard: discardRestored, inProgress: function () { return !!S && !S.solved && S.rects.length > 0; }, show: function () {}, pauseInfo: pauseInfo, pause: pauseGame, resume: resumeGame, resetRun: resetRun,
   getId: function () { return S ? S.id : ''; }, loadId: loadId, canReplay: canReplay, replayOpen: replayOpen, replayShow: replayShow, replayClose: replayClose,
   replayActive: function () { return !!RP && RP.s === S; } };
 })();
@@ -2868,7 +2923,7 @@ function loadDaily3() {
   } else {
     var raw = lsGet(draftKey3()), ok = false;
     if (raw) { try { ok = applyDraft3(JSON.parse(raw)); } catch (e) { ok = false; } }
-    if (ok && S.boxes.some(function (b, i) { return b && i !== S.given; })) setStatus('Your unfinished daily is back where you left it.');
+    if (ok && S.boxes.some(function (b, i) { return b && i !== S.given; })) { setStatus('Your unfinished daily is back where you left it.'); markRestored(); }
   }
   S.noSave = false;
   try { for (var i = localStorage.length - 1; i >= 0; i--) { var k = localStorage.key(i); if (k && k.indexOf('shikaku-draft3-') === 0 && k !== 'shikaku-draft3-p' && k !== draftKey3()) localStorage.removeItem(k); } } catch (e) {}
@@ -2886,6 +2941,7 @@ function restorePractice3() {
     beginPuzzle(p.n, p.master, pick, { shared: !!d.shared });
     if (!applyDraft3(d)) { clearPracticeDraft3(); beginPuzzle(p.n, p.master, pick, { shared: !!d.shared }); return true; }
     setStatus('Your unfinished cube is back where you left it.');
+    markRestored();
     refreshUi(); request();
     return true;
   } catch (e) { return false; }
@@ -2932,7 +2988,16 @@ function replayClose() {
 function stopTimer() { if (timer) { clearInterval(timer); timer = null; } }
 
 // Pause: one per puzzle; a second one resets the puzzle.
-function pauseInfo() { return { can: !!S && !S.solved && S.started && !S.paused, paused: !!S && S.paused, used: S ? S.pauses : 0 }; }
+function pauseInfo() { return { can: !!S && !S.solved && S.started && !S.paused, paused: !!S && S.paused, used: S ? S.pauses : 0,
+  restored: S && S.restored ? (S.daily ? 'Daily' : S.master ? 'Master' : S.n + '×' + S.n + '×' + S.n) + ' · ' + fmt(S.elapsed) + ' · ' + S.boxes.filter(Boolean).length + ' of ' + S.nums.length + ' boxes placed' : '',
+  again: S && S.daily ? 'Start over' : 'Start a new puzzle instead' }; }
+function markRestored() { S.started = true; S.paused = true; S.restored = true; }
+function discardRestored() {
+  if (!S || !S.restored) return;
+  S.restored = false; S.paused = false;
+  if (S.daily) { resetRun(); return; }
+  clearPracticeDraft3(); newPuzzle(level, levelMaster);
+}
 function pauseGame() {
   if (!pauseInfo().can) return false;
   S.elapsed = Math.floor((Date.now() - S.t0) / 1000);
@@ -2944,7 +3009,7 @@ function pauseGame() {
 }
 function resumeGame() {
   if (!S || !S.paused) return;
-  S.paused = false;
+  S.paused = false; S.restored = false;
   S.t0 = Date.now() - S.elapsed * 1000;
   runTimer();
   refreshUi();
@@ -3341,7 +3406,7 @@ function checkRollover3() {
 }
 setInterval(checkRollover3, 30000);
 window.__games = window.__games || {};
-window.__games.d3 = { inProgress: function () { return !!S && !S.solved && S.boxes.filter(Boolean).length > (S.given >= 0 ? 1 : 0); }, show: function () { resize(); }, pauseInfo: pauseInfo, pause: pauseGame, resume: resumeGame, resetRun: resetRun,
+window.__games.d3 = { discard: discardRestored, inProgress: function () { return !!S && !S.solved && S.boxes.filter(Boolean).length > (S.given >= 0 ? 1 : 0); }, show: function () { resize(); }, pauseInfo: pauseInfo, pause: pauseGame, resume: resumeGame, resetRun: resetRun,
   getId: function () { return S ? S.id : ''; }, loadId: loadId, loadDaily: loadDaily3, isDaily: function () { return !!S && !!S.daily; }, dailyLabel: dailyLabel3,
   dailyDone: function () { return !!Store3.history[todayStr3()]; }, record: function () { var s = streaks3(); s.cloud = Store3.cloud; return s; },
   canReplay: canReplay, replayOpen: replayOpen, replayShow: replayShow, replayClose: replayClose, replayActive: function () { return !!RP && RP.s === S; } };
@@ -3814,19 +3879,64 @@ function runTimer() {
   timer = setInterval(function () { S.elapsed = Math.floor((Date.now() - S.t0) / 1000); $('time').textContent = fmt(S.elapsed); }, 500);
 }
 function stopTimer() { if (timer) { clearInterval(timer); timer = null; } }
-function pauseInfo() { return { can: !!S && !S.solved && S.started && !S.paused, paused: !!S && S.paused, used: S ? S.pauses : 0 }; }
+var B_KEY = 'shikaku-draft-bl';
+function lsDel(k) { try { localStorage.removeItem(k); } catch (e) {} }
+function sigOf(nums) { return nums.map(function (n) { return n.id + ':' + n.v; }).join(','); }
+// An unfinished puzzle is kept (level, seed or Master code, clues, blocks, clock) so it can be resumed after the page is closed.
+function saveDraft() {
+  if (!S || S.solved || busy) return;
+  if (!S.blocks.length) { lsDel(B_KEY); return; }
+  var el = S.started && !S.paused ? Math.floor((Date.now() - S.t0) / 1000) : S.elapsed;
+  lsSet(B_KEY, JSON.stringify({ v: 1, lv: S.lv, master: !!S.master, seed: S.master ? S.code : S.seed, shared: !!S.shared, sig: sigOf(S.nums),
+    blocks: S.blocks.map(function (b) { return [b.i0, b.j0, b.A, b.B, b.hue]; }), elapsed: el, hints: S.hints, nextHue: S.nextHue, pauses: S.pauses }));
+}
+function resumeDraft() {
+  var d = null;
+  try { d = JSON.parse(lsGet(B_KEY) || 'null'); } catch (e) {}
+  if (!d || d.v !== 1 || !BC.LEVELS[d.lv] || !Number.isInteger(d.seed) || !Array.isArray(d.blocks) || (d.master && d.seed >= BC.masterCount())) { lsDel(B_KEY); return false; }
+  busy = true; stopTimer(); setLevel(d.lv);
+  setStatus('Restoring your game…');
+  setTimeout(function () {
+    var res = d.master ? BC.masterBuild(d.seed) : BC.makePuzzle(d.lv, d.seed);
+    if (!res || sigOf(res.nums) !== d.sig) { busy = false; lsDel(B_KEY); newPuzzle(level); return; }
+    S = makeState(d.lv, res, d.seed);
+    if (d.master) S.code = d.seed;
+    S.shared = !!d.shared;
+    showFresh();
+    d.blocks.forEach(function (q) {
+      if (!Array.isArray(q) || q.length < 5 || !q.slice(0, 4).every(Number.isInteger)) return;
+      var bk = mk(q[0], q[1], q[2], q[3], +q[4] || 0);
+      if (bk) S.blocks.push(bk);
+    });
+    S.elapsed = Math.max(0, Math.min(86400, Math.floor(+d.elapsed || 0)));
+    S.hints = Math.max(0, Math.min(999, Math.floor(+d.hints || 0)));
+    S.nextHue = Math.max(0, Math.floor(+d.nextHue || 0));
+    S.pauses = Math.max(0, Math.min(99, Math.floor(+d.pauses || 0)));
+    S.started = true; S.paused = true; S.restored = true;
+    render(); updateButtons(); $('time').textContent = fmt(S.elapsed);
+    defaultStatus();
+    busy = false;
+    if (window.__shell) window.__shell.changed();
+    drain();
+  }, 30);
+  return true;
+}
+function pauseInfo() { return { can: !!S && !S.solved && S.started && !S.paused, paused: !!S && S.paused, used: S ? S.pauses : 0,
+  restored: S && S.restored ? BC.LEVELS[S.lv].n + ' · ' + fmt(S.elapsed) + ' · ' + S.blocks.length + ' of ' + S.nums.length + ' blocks placed' : '', again: 'Start a new puzzle instead' }; }
+function discardRestored() { if (!S || !S.restored) return; lsDel(B_KEY); S.paused = false; S.restored = false; newPuzzle(level); }
 function pauseGame() {
   if (!pauseInfo().can) return false;
   S.elapsed = Math.floor((Date.now() - S.t0) / 1000);
   stopTimer(); S.paused = true; S.pauses++;
   $('time').textContent = fmt(S.elapsed);
   clearHint();
+  saveDraft();
   updateButtons();
   return true;
 }
 function resumeGame() {
   if (!S || !S.paused) return;
-  S.paused = false; S.t0 = Date.now() - S.elapsed * 1000; runTimer(); updateButtons();
+  S.paused = false; S.restored = false; S.t0 = Date.now() - S.elapsed * 1000; runTimer(); updateButtons();
 }
 // Board cleared and clock back to zero. Hints already used stay counted.
 function resetRun() {
@@ -3864,12 +3974,13 @@ function afterChange() {
   var area = 0, allOk = true, bad = 0;
   S.blocks.forEach(function (b) { area += b.cells.length; if (!info(b).ok) { allOk = false; bad++; } });
   if (allOk && area === S.P * S.L && S.blocks.length === S.nums.length) { win(); return; }
+  saveDraft();
   if (S.master) { if (bad && area === S.P * S.L) setStatus('The flower is full, but at least one block is wrong.'); else defaultStatus(); }
   else if (bad) setStatus('Striped blocks break a rule. Each needs exactly one number, equal to its size.');
   else defaultStatus();
 }
 function win() {
-  S.solved = true; fx('win'); stopTimer();
+  S.solved = true; fx('win'); stopTimer(); lsDel(B_KEY);
   S.elapsed = Math.max(S.elapsed, Math.floor((Date.now() - S.t0) / 1000));
   $('time').textContent = fmt(S.elapsed);
   $('stage').classList.add('solved');
@@ -3919,7 +4030,7 @@ function setLevel(lv) { level = lv; lsSet('shikaku-bloom-level', lv); }
 function newPuzzle(lv) {
   if (busy) return;
   if (window.Progress) lv = Progress.clamp('bl', lv);
-  busy = true; stopTimer();
+  busy = true; stopTimer(); lsDel(B_KEY);
   setLevel(lv);
   setStatus(lv === 'master' ? 'Building a Master puzzle…' : 'Building a puzzle…');
   setTimeout(function () {
@@ -3938,7 +4049,7 @@ function loadId(p) {
   if (!p || p.dim !== 'bl' || !BC.LEVELS[p.lv]) return 'That ID is not a Bloom puzzle.';
   if (p.master && p.seed >= BC.masterCount()) return 'That Master ID does not exist.';
   if (busy) { pend = p; return ''; }
-  busy = true; stopTimer(); setLevel(p.lv);
+  busy = true; stopTimer(); lsDel(B_KEY); setLevel(p.lv);
   setStatus('Building that puzzle…');
   setTimeout(function () {
     var res = p.master ? BC.masterBuild(p.seed) : BC.makePuzzle(p.lv, p.seed);
@@ -4161,7 +4272,7 @@ $('hint').addEventListener('click', function () {
       h = { kind: 'remove', b: asBlock(blocker), why: { v: bv } };
     }
   }
-  S.hint = h; S.hints++; fx('hint'); startTimer(); updateButtons(); showHint();
+  S.hint = h; S.hints++; fx('hint'); startTimer(); saveDraft(); updateButtons(); showHint();
 });
 $('pause').addEventListener('click', function () { if (window.__ui) window.__ui.pauseClick('bl'); else if (S && S.paused) resumeGame(); else pauseGame(); });
 $('new').addEventListener('click', function () { newPuzzle(level); });
@@ -4170,13 +4281,16 @@ $('new').addEventListener('click', function () { newPuzzle(level); });
 window.__games = window.__games || {};
 window.__games.bl = {
   inProgress: function () { return !!S && !S.solved && S.blocks.length > 0; },
-  show: function () { if (!S && !busy) newPuzzle(level); },
+  discard: discardRestored,
+  show: function () { if (!S && !busy && !resumeDraft()) newPuzzle(level); },
   pauseInfo: pauseInfo, pause: pauseGame, resume: resumeGame, resetRun: resetRun,
   getId: function () { return S ? S.id : ''; }, loadId: loadId,
   canReplay: canReplay, replayOpen: replayOpen, replayShow: replayShow, replayClose: replayClose, replayActive: function () { return !!RP && RP.s === S; },
   level: function () { return level; }, start: function (lv) { if (BC.LEVELS[lv]) newPuzzle(lv); },
   levels: function () { return BC.ORDER.map(function (k) { var c = BC.LEVELS[k]; return { k: k, n: c.n, t: c.t, size: c.L + '×' + c.P }; }); }
 };
+document.addEventListener('visibilitychange', function () { if (document.hidden) saveDraft(); });
+window.addEventListener('pagehide', saveDraft);
 })();
 </script>
 <script>
@@ -4653,9 +4767,10 @@ var veils = {};
 ['d2', 'd3', 'bl'].forEach(function (m) {
   var g = $(GID[m]), v = document.createElement('div');
   v.className = 'pveil'; v.hidden = true;
-  v.innerHTML = '<div class="pbox" role="status"><span class="sr">Paused. </span><button type="button" class="playbtn" aria-label="Resume">' + PLAY_SVG + '</button><p class="pnote warn">Your next Pause will reset the game</p></div>';
+  v.innerHTML = '<div class="pbox" role="status"><span class="sr">Paused. </span><button type="button" class="playbtn" aria-label="Resume">' + PLAY_SVG + '</button><p class="pnote warn">Your next Pause will reset the game</p><p class="pnote resnote" hidden></p><button type="button" class="newbtn" hidden>Start a new puzzle instead</button></div>';
   g.appendChild(v); veils[m] = v;
   v.querySelector('.playbtn').addEventListener('click', function () { var gm = window.__games[m]; if (gm) gm.resume(); refresh(); });
+  v.querySelector('.newbtn').addEventListener('click', function () { var gm = window.__games[m]; if (gm && gm.discard) gm.discard(); refresh(); });
 });
 function game(m) { return window.__games && window.__games[m]; }
 // The frosted screen starts under the stats row, so the frozen time and the clock button stay visible.
@@ -4677,6 +4792,10 @@ function renderVeils() {
     var g = game(m), info = g && g.pauseInfo ? g.pauseInfo() : null, v = veils[m], was = v.hidden;
     if (!info) return;
     v.hidden = !info.paused;
+    var rn = v.querySelector('.resnote'), nb = v.querySelector('.newbtn'), wn = v.querySelector('.warn');
+    rn.hidden = nb.hidden = !info.restored; wn.hidden = !!info.restored;
+    if (info.restored) { rn.textContent = 'Welcome back. Unfinished: ' + info.restored + '.'; nb.textContent = info.again || 'Start a new puzzle instead'; }
+    if (m !== mid()) { v.hidden = true; return; }   // a game waiting in another mode shows its prompt when you switch to it
     if (m === mid() || info.paused) lock(!!info.paused);
     if (info.paused) { placeVeil(m); if (was) v.querySelector('.playbtn').focus(); }
   });
