@@ -137,7 +137,7 @@ body { padding-block: 14px 40px; }
 .pbox .pnote { margin: 0; font-size: 15px; font-weight: 600; color: var(--muted); text-wrap: pretty; }
 .pbox .pnote.warn { color: var(--bad); }
 /* challenge bar: time, mistakes and hints in one row */
-.stats.cbar { display: grid !important; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.2fr) minmax(0, 0.9fr); gap: 6px 10px !important; align-items: end; font-size: 10.5px !important; }
+.stats.cbar { display: grid !important; grid-template-columns: minmax(0, 2.1fr) minmax(0, 1fr) minmax(0, 0.8fr); gap: 6px 10px !important; align-items: end; font-size: 10.5px !important; }
 .cseg { min-width: 0; display: flex; flex-direction: column; gap: 7px; --c: var(--good); }
 .cseg.warn { --c: var(--hint); }
 .cseg.bad { --c: var(--bad); }
@@ -149,6 +149,12 @@ body { padding-block: 14px 40px; }
 .ctrack .cmark.lim { opacity: 0.85; }
 .ctrack .ctick { position: absolute; top: -4px; bottom: -4px; left: 0; width: 4px; margin-left: -2px; border-radius: 2px; background: var(--c); box-shadow: 0 0 0 1.5px var(--surface); transition: left 0.25s; }
 .ctrack .ctick { display: none; }
+.clabs { position: relative; height: 10px; margin-bottom: -3px; }
+.clab { position: absolute; top: 0; transform: translateX(-50%); font-size: 9px; line-height: 1; color: var(--muted); white-space: nowrap; }
+.clab.r { transform: translateX(-100%); }
+.clab.l { transform: none; }
+@media (max-width: 359px) { .clab .w { display: none; } }
+.stats.cbar.neutral .clabs { display: none; }
 .cseg.hide .cfill { display: none; }
 .stats.cbar.neutral { grid-template-columns: auto auto auto; justify-content: space-between; }
 .stats.cbar.neutral .ctrack, .stats.cbar.neutral .cof, .stats.cbar.neutral .cnote { display: none; }
@@ -481,9 +487,9 @@ body { padding-block: 14px 40px; }
   <p class="dimnote" id="d2-locknote" role="status" hidden></p>
 
   <div class="stats cbar" id="d2-cbar">
-    <div class="cseg cs-time"><div class="crow"><button type="button" class="pz" id="d2-pause" aria-label="Pause the clock"><svg class="ic-pause" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M8 5v14M16 5v14" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg><svg class="ic-play" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg><b id="d2-time">0:00</b></button><span class="cnote" data-f="note"></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark" data-f="par"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
-    <div class="cseg cs-mist"><div class="crow"><span>Mistakes <b id="d2-mist">0</b><span class="cof" data-f="mof"></span></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
-    <div class="cseg cs-hint"><div class="crow"><span>Hints <b id="d2-hints">0</b><span class="cof" data-f="hof"></span></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
+    <div class="cseg cs-time"><div class="crow"><button type="button" class="pz" id="d2-pause" aria-label="Pause the clock"><svg class="ic-pause" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M8 5v14M16 5v14" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg><svg class="ic-play" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg><b id="d2-time">0:00</b></button></div><div class="clabs"><span class="clab" data-l="par"></span><span class="clab" data-l="lim"></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark" data-f="par"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
+    <div class="cseg cs-mist"><div class="crow"><span>Mistakes: <b id="d2-mist">0</b></span></div><div class="clabs"><span class="clab" data-l="lim"></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
+    <div class="cseg cs-hint"><div class="crow"><span>Hints: <b id="d2-hints">0</b></span></div><div class="clabs"><span class="clab" data-l="lim"></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
   </div>
 
   <div class="stage">
@@ -580,9 +586,9 @@ body { padding-block: 14px 40px; }
   <p class="dimnote" id="d3-locknote" role="status" hidden></p>
 
   <div class="stats cbar" id="d3-cbar">
-    <div class="cseg cs-time"><div class="crow"><button type="button" class="pz" id="d3-pause" aria-label="Pause the clock"><svg class="ic-pause" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M8 5v14M16 5v14" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg><svg class="ic-play" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg><b id="d3-time">0:00</b></button><span class="cnote" data-f="note"></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark" data-f="par"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
-    <div class="cseg cs-mist"><div class="crow"><span>Mistakes <b id="d3-mist">0</b><span class="cof" data-f="mof"></span></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
-    <div class="cseg cs-hint"><div class="crow"><span>Hints <b id="d3-hints">0</b><span class="cof" data-f="hof"></span></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
+    <div class="cseg cs-time"><div class="crow"><button type="button" class="pz" id="d3-pause" aria-label="Pause the clock"><svg class="ic-pause" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M8 5v14M16 5v14" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg><svg class="ic-play" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg><b id="d3-time">0:00</b></button></div><div class="clabs"><span class="clab" data-l="par"></span><span class="clab" data-l="lim"></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark" data-f="par"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
+    <div class="cseg cs-mist"><div class="crow"><span>Mistakes: <b id="d3-mist">0</b></span></div><div class="clabs"><span class="clab" data-l="lim"></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
+    <div class="cseg cs-hint"><div class="crow"><span>Hints: <b id="d3-hints">0</b></span></div><div class="clabs"><span class="clab" data-l="lim"></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
   </div>
 
   <div class="stage" id="d3-stage">
@@ -677,9 +683,9 @@ body { padding-block: 14px 40px; }
   <div id="gB" hidden>
 
   <div class="stats cbar" id="bl-cbar">
-    <div class="cseg cs-time"><div class="crow"><button type="button" class="pz" id="bl-pause" aria-label="Pause the clock"><svg class="ic-pause" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M8 5v14M16 5v14" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg><svg class="ic-play" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg><b id="bl-time">0:00</b></button><span class="cnote" data-f="note"></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark" data-f="par"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
-    <div class="cseg cs-mist"><div class="crow"><span>Mistakes <b id="bl-mist">0</b><span class="cof" data-f="mof"></span></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
-    <div class="cseg cs-hint"><div class="crow"><span>Hints <b id="bl-hints">0</b><span class="cof" data-f="hof"></span></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
+    <div class="cseg cs-time"><div class="crow"><button type="button" class="pz" id="bl-pause" aria-label="Pause the clock"><svg class="ic-pause" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M8 5v14M16 5v14" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg><svg class="ic-play" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg><b id="bl-time">0:00</b></button></div><div class="clabs"><span class="clab" data-l="par"></span><span class="clab" data-l="lim"></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark" data-f="par"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
+    <div class="cseg cs-mist"><div class="crow"><span>Mistakes: <b id="bl-mist">0</b></span></div><div class="clabs"><span class="clab" data-l="lim"></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
+    <div class="cseg cs-hint"><div class="crow"><span>Hints: <b id="bl-hints">0</b></span></div><div class="clabs"><span class="clab" data-l="lim"></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
   </div>
 
   <div class="stage bstage" id="bl-stage">
@@ -4510,7 +4516,11 @@ window.Challenge = (function () {
     e.classList.remove('ok', 'warn', 'bad'); e.classList.add(tone);
     q(e, '.cfill').style.width = (pos * 100).toFixed(1) + '%';
     q(e, '.ctick').style.left = (pos * 100).toFixed(1) + '%';
-    Object.keys(marks).forEach(function (f) { var mk = q(e, '[data-f="' + f + '"]'); if (mk) mk.style.left = (marks[f] * 100).toFixed(1) + '%'; });
+    Object.keys(marks).forEach(function (f) {
+      var mk = q(e, '[data-f="' + f + '"]'), lb = q(e, '[data-l="' + f + '"]'), p = marks[f];
+      if (mk) mk.style.left = (p * 100).toFixed(1) + '%';
+      if (lb) { lb.style.left = (p * 100).toFixed(1) + '%'; lb.classList.toggle('r', p > 0.72 || f === 'par'); lb.classList.toggle('l', p < 0.1); }
+    });
   }
   function paint(m, info) {
     var root = document.getElementById(m + '-cbar');
@@ -4522,14 +4532,15 @@ window.Challenge = (function () {
     if (neutral) { root.title = ''; return; }
     var smax = L.limit * 1.2, ts = Math.min(info.secs, smax) / smax;
     seg(root, '.cs-time', info.secs <= L.par ? 'ok' : info.secs <= L.limit ? 'warn' : 'bad', ts, { par: L.par / smax, lim: L.limit / smax });
-    q(root, '.cs-time [data-f="note"]').textContent = 'par ' + fmt(L.par);
+    q(root, '.cs-time [data-l="par"]').innerHTML = fmt(L.par);
+    q(root, '.cs-time [data-l="lim"]').innerHTML = fmt(L.limit);
     var cm = info.mist, sm = L.mist + 1;
     seg(root, '.cs-mist', cm > L.mist ? 'bad' : 'ok', Math.min(cm, sm) / sm, { lim: L.mist / sm });
     q(root, '.cs-mist').classList.toggle('hide', hideM);
-    q(root, '.cs-mist [data-f="mof"]').textContent = '/' + L.mist;
+    q(root, '.cs-mist [data-l="lim"]').textContent = L.mist;
     var ch = info.hints, sh = L.hint + 1;
     seg(root, '.cs-hint', ch > L.hint ? 'bad' : 'ok', Math.min(ch, sh) / sh, { lim: L.hint / sh });
-    q(root, '.cs-hint [data-f="hof"]').textContent = '/' + L.hint;
+    q(root, '.cs-hint [data-l="lim"]').textContent = L.hint;
     root.title = 'Badge limits: finish within ' + fmt(L.limit) + ' (par ' + fmt(L.par) + '), at most ' + L.mist + ' mistakes and ' + L.hint + ' hints.';
   }
   return { limits: limits, check: check, paint: paint, fmt: fmt };
