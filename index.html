@@ -136,6 +136,24 @@ body { padding-block: 14px 40px; }
 .pbox .playbtn svg { width: 38px; height: 38px; margin-left: 4px; }
 .pbox .pnote { margin: 0; font-size: 15px; font-weight: 600; color: var(--muted); text-wrap: pretty; }
 .pbox .pnote.warn { color: var(--bad); }
+/* challenge bar: time, mistakes and hints in one row */
+.stats.cbar { display: grid !important; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.2fr) minmax(0, 0.9fr); gap: 6px 10px !important; align-items: end; font-size: 10.5px !important; }
+.cseg { min-width: 0; display: flex; flex-direction: column; gap: 7px; --c: var(--good); }
+.cseg.warn { --c: var(--hint); }
+.cseg.bad { --c: var(--bad); }
+.crow { display: flex; align-items: center; justify-content: space-between; gap: 6px; white-space: nowrap; line-height: 1.1; }
+.cnote, .cof { color: var(--muted); }
+.ctrack { position: relative; height: 6px; border-radius: 3px; background: color-mix(in srgb, var(--line) 75%, transparent); }
+.ctrack .cfill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 3px; background: var(--c); transition: width 0.25s; }
+.ctrack .cmark { position: absolute; top: -3px; bottom: -3px; width: 2px; margin-left: -1px; border-radius: 1px; background: var(--ink); opacity: 0.45; }
+.ctrack .cmark.lim { opacity: 0.85; }
+.ctrack .ctick { position: absolute; top: -4px; bottom: -4px; left: 0; width: 4px; margin-left: -2px; border-radius: 2px; background: var(--c); box-shadow: 0 0 0 1.5px var(--surface); transition: left 0.25s; }
+.ctrack .ctick { display: none; }
+.cseg.hide .cfill { display: none; }
+.stats.cbar.neutral { grid-template-columns: auto auto auto; justify-content: space-between; }
+.stats.cbar.neutral .ctrack, .stats.cbar.neutral .cof, .stats.cbar.neutral .cnote { display: none; }
+.pidinfo { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pidinfo b { color: var(--ink); font-weight: 600; }
 .pbox .pnote[hidden], .pbox .newbtn[hidden] { display: none; }
 .pbox .newbtn { border: 1px solid var(--line); background: transparent; color: var(--ink); border-radius: 10px; padding: 11px 16px; font-size: 15px; font-weight: 600; cursor: pointer; }
 #g2, #g3, #gB { position: relative; }
@@ -462,11 +480,10 @@ body { padding-block: 14px 40px; }
   </div>
   <p class="dimnote" id="d2-locknote" role="status" hidden></p>
 
-  <div class="stats">
-    <span><button type="button" class="pz" id="d2-pause" aria-label="Pause the clock"><svg class="ic-pause" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M8 5v14M16 5v14" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg><svg class="ic-play" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg><b id="d2-time">0:00</b></button></span>
-    <span><span id="d2-countlabel">Correct</span> <b id="d2-count">0/0</b></span>
-    <span>Hints <b id="d2-hints">0</b></span>
-    <span>Logic <b id="d2-rating">·</b></span>
+  <div class="stats cbar" id="d2-cbar">
+    <div class="cseg cs-time"><div class="crow"><button type="button" class="pz" id="d2-pause" aria-label="Pause the clock"><svg class="ic-pause" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M8 5v14M16 5v14" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg><svg class="ic-play" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg><b id="d2-time">0:00</b></button><span class="cnote" data-f="note"></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark" data-f="par"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
+    <div class="cseg cs-mist"><div class="crow"><span>Mistakes <b id="d2-mist">0</b><span class="cof" data-f="mof"></span></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
+    <div class="cseg cs-hint"><div class="crow"><span>Hints <b id="d2-hints">0</b><span class="cof" data-f="hof"></span></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
   </div>
 
   <div class="stage">
@@ -486,6 +503,7 @@ body { padding-block: 14px 40px; }
   </div>
 
   <div class="pidrow" id="d2-pidrow">
+    <span class="pidinfo">Logic <b id="d2-rating">·</b> · <span id="d2-countlabel">Correct</span> <b id="d2-count">0/0</b></span>
     <button type="button" class="pidbtn" id="d2-pid" hidden></button>
     <button type="button" class="pidbtn watch" id="d2-watch" hidden>▶ Watch the logic</button>
   </div>
@@ -535,7 +553,7 @@ body { padding-block: 14px 40px; }
       <li><strong>Trial:</strong> you have to test a guess.</li>
     </ul>
     <p>Size alone does not decide difficulty: some small puzzles need a trial, and some big ones fall to single-option moves. Practice levels aim for it, one technique each: Easy needs only Direct, Medium goes up to Cross-check, Hard and Expert need Elimination, Master needs Trial. The daily puzzle is chosen by size only; it shows its rating but is not steered and earns no badge.</p>
-    <p><strong>Badges.</strong> Solve a practice puzzle with at most one hint (three on Master) and you earn the badge for that level's technique. Medium needs the Direct badge, Hard needs Cross-check, Expert needs Elimination, and Master needs Elimination earned on Expert. Badges show at the bottom of the page. You can switch the locks off in Settings; badges are still kept.</p>
+    <p><strong>Badges.</strong> Solve a practice puzzle inside all three limits on the bar (finish within twice the par time, and no more than the mistakes and hints allowed) and you earn the badge for that level's technique. Tick marks on the bar show the limits and the ticker shows where you are: green is safe, yellow means you are past par, red means that limit is gone and so is the badge. A mistake is a block that is not part of the solution. Master hides the mistake count until you finish. Medium needs the Direct badge, Hard needs Cross-check, Expert needs Elimination, and Master needs Elimination earned on Expert. Badges show at the bottom of the page. You can switch the locks off in Settings; badges are still kept.</p>
     <p><strong>Master</strong> is the top size with a puzzle that needs at least two Trial steps. It has no previews when you tap a number, no stripes on wrong rectangles, and only three hints. The counter says Placed, not Correct, because it no longer tells you what is right. <strong>Hints</strong> work from the same steps. A hint outlines the easiest forced rectangle, says why it is forced and names the technique, for example <em>Hint · Cross-check</em>. For a cross-check it also marks the key cell with a dashed outline. The outline fades after 5 seconds; the explanation stays until your next move. If no step is left, the hint says so and gives you the answer. Each new hint counts.</p>
   </details>
 
@@ -561,11 +579,10 @@ body { padding-block: 14px 40px; }
   </div>
   <p class="dimnote" id="d3-locknote" role="status" hidden></p>
 
-  <div class="stats">
-    <span><button type="button" class="pz" id="d3-pause" aria-label="Pause the clock"><svg class="ic-pause" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M8 5v14M16 5v14" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg><svg class="ic-play" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg><b id="d3-time">0:00</b></button></span>
-    <span>Boxes <b id="d3-count">0/0</b></span>
-    <span>Hints <b id="d3-hints">0</b></span>
-    <span>Logic <b id="d3-rating">·</b></span>
+  <div class="stats cbar" id="d3-cbar">
+    <div class="cseg cs-time"><div class="crow"><button type="button" class="pz" id="d3-pause" aria-label="Pause the clock"><svg class="ic-pause" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M8 5v14M16 5v14" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg><svg class="ic-play" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg><b id="d3-time">0:00</b></button><span class="cnote" data-f="note"></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark" data-f="par"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
+    <div class="cseg cs-mist"><div class="crow"><span>Mistakes <b id="d3-mist">0</b><span class="cof" data-f="mof"></span></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
+    <div class="cseg cs-hint"><div class="crow"><span>Hints <b id="d3-hints">0</b><span class="cof" data-f="hof"></span></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
   </div>
 
   <div class="stage" id="d3-stage">
@@ -614,6 +631,7 @@ body { padding-block: 14px 40px; }
   </div>
 
   <div class="pidrow" id="d3-pidrow">
+    <span class="pidinfo">Logic <b id="d3-rating">·</b> · Boxes <b id="d3-count">0/0</b></span>
     <button type="button" class="pidbtn" id="d3-pid" hidden></button>
     <button type="button" class="pidbtn watch" id="d3-watch" hidden>▶ Watch the logic</button>
   </div>
@@ -645,7 +663,7 @@ body { padding-block: 14px 40px; }
       <li><strong>Trial:</strong> you have to test a guess.</li>
     </ul>
     <p>Size alone does not decide difficulty: some small puzzles need a trial, and some big ones fall to single-option moves. Each level aims for one technique: Easy needs only Direct, Medium goes up to Cross-check, Hard and Expert need Elimination, Master needs Trial. Expert is a 6×6×6 cube.</p>
-    <p><strong>Badges.</strong> Solve a puzzle with at most one hint (three on Master) and you earn the badge for that level's technique. Medium needs the Direct badge, Hard needs Cross-check, Expert needs Elimination, and Master needs Elimination from 3D Expert plus the Trial badge from 2D Master. Badges show at the bottom of the page. You can switch the locks off in Settings; badges are still kept.</p>
+    <p><strong>Badges.</strong> Solve a puzzle inside all three limits on the bar (finish within twice the par time, and no more than the mistakes and hints allowed) and you earn the badge for that level's technique. Tick marks on the bar show the limits and the ticker shows where you are: green is safe, yellow means you are past par, red means that limit is gone and so is the badge. A mistake is a block that is not part of the solution. Master hides the mistake count until you finish. Medium needs the Direct badge, Hard needs Cross-check, Expert needs Elimination, and Master needs Elimination from 3D Expert plus the Trial badge from 2D Master. Badges show at the bottom of the page. You can switch the locks off in Settings; badges are still kept.</p>
     <p><strong>Master</strong> is a 5×5×5 that needs at least two Trial steps. It has no starter box, no candidate dots, no red warnings, and only three hints. Each Master puzzle comes from a stored set, turned or mirrored so it looks new. <strong>Hints</strong> work from the same steps. A hint outlines the easiest forced box, says why it is forced and names the technique, for example <em>Hint · Cross-check</em>. For a cross-check it also marks the key cell with a dashed outline. The outline fades after 5 seconds; the explanation stays until your next move. If no step is left, the hint says so and gives you the answer. Each new hint counts.</p>
   </details>
 
@@ -658,11 +676,10 @@ body { padding-block: 14px 40px; }
 
   <div id="gB" hidden>
 
-  <div class="stats">
-    <span><button type="button" class="pz" id="bl-pause" aria-label="Pause the clock"><svg class="ic-pause" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M8 5v14M16 5v14" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg><svg class="ic-play" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg><b id="bl-time">0:00</b></button></span>
-    <span><span id="bl-countlabel">Correct</span> <b id="bl-count">0/0</b></span>
-    <span>Hints <b id="bl-hints">0</b></span>
-    <span>Logic <b id="bl-rating">·</b></span>
+  <div class="stats cbar" id="bl-cbar">
+    <div class="cseg cs-time"><div class="crow"><button type="button" class="pz" id="bl-pause" aria-label="Pause the clock"><svg class="ic-pause" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M8 5v14M16 5v14" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg><svg class="ic-play" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg><b id="bl-time">0:00</b></button><span class="cnote" data-f="note"></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark" data-f="par"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
+    <div class="cseg cs-mist"><div class="crow"><span>Mistakes <b id="bl-mist">0</b><span class="cof" data-f="mof"></span></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
+    <div class="cseg cs-hint"><div class="crow"><span>Hints <b id="bl-hints">0</b><span class="cof" data-f="hof"></span></span></div><div class="ctrack"><i class="cfill"></i><i class="cmark lim" data-f="lim"></i><i class="ctick"></i></div></div>
   </div>
 
   <div class="stage bstage" id="bl-stage">
@@ -681,6 +698,7 @@ body { padding-block: 14px 40px; }
   </div>
 
   <div class="pidrow" id="bl-pidrow">
+    <span class="pidinfo">Logic <b id="bl-rating">·</b> · <span id="bl-countlabel">Correct</span> <b id="bl-count">0/0</b></span>
     <button type="button" class="pidbtn" id="bl-pid" hidden></button>
     <button type="button" class="pidbtn watch" id="bl-watch" hidden>▶ Watch the logic</button>
   </div>
@@ -763,7 +781,7 @@ body { padding-block: 14px 40px; }
     <div class="seg helptabs mini" id="helpTabs" role="group" aria-label="Which game"><button type="button" data-m="d2" aria-pressed="true">2D grid</button><button type="button" data-m="d3" aria-pressed="false">3D cube</button><button type="button" data-m="bl" aria-pressed="false">Bloom</button></div>
     <div class="helpbody g2s" id="helpBody2"><p><strong>Goal.</strong> Split the grid into rectangles. Each rectangle holds exactly one number, and that number is its area.</p><p><strong>Controls.</strong> Drag across cells to draw a rectangle. Tap a rectangle to remove it. Tap a number to see where it could go.</p><p><strong>Pause.</strong> Tap the clock to take a break. The clock stops and the board is hidden until you resume. Each puzzle allows <strong>one pause</strong>. A second pause <strong>resets the puzzle</strong>: the board is cleared and the clock goes back to 0:00, and hints you used stay counted. You get a warning first, and the pause icon turns amber once your pause is used. Closing the page does not count as a pause; for the daily, your time so far and your pause are saved.</p><p><strong>Puzzle ID.</strong> Every practice puzzle shows an ID such as 2D-H-104729 under the buttons. Tap it to copy. Open the level chip, type or paste an ID under Play a puzzle ID, and you get exactly the same puzzle. Shared puzzles record no best time and earn no badge, so a friend can race you on the same board.</p><p><strong>Watch the logic.</strong> After you solve a puzzle, tap Watch the logic. The solver places each rectangle in the order it would find them, and names the technique for every step. A Trial step shows the options that fail in red.</p></div>
     <div class="helpbody g3s" id="helpBody3" hidden><p><strong>Goal.</strong> Fill the cube with boxes. Each box holds exactly one number, and that number is its volume.</p><p><strong>Controls.</strong> Tap a number to see where its box could go; blue circles show the cells its options would cover. Pick a shape, step through placements, then Place box. Drag the cube to rotate it, pinch to zoom.</p><p><strong>Pause.</strong> Tap the clock to take a break. The clock stops and the board is hidden until you resume. Each puzzle allows <strong>one pause</strong>. A second pause <strong>resets the puzzle</strong>: the board is cleared and the clock goes back to 0:00, and hints you used stay counted. You get a warning first, and the pause icon turns amber once your pause is used. Closing the page does not count as a pause; for the daily, your time so far and your pause are saved.</p><p><strong>Daily cube.</strong> Open the level chip and pick Daily for today's cube, the same for everyone. Its size follows the weekday: Mon 3, Tue 4, Wed 4, Thu 5, Fri 5, Sat 5, Sun 4. Your boxes, clock and pause are saved, so a reload brings the cube back as you left it. Streaks are kept separately from the 2D daily. Practice cubes you leave unfinished also come back after a reload.</p><p><strong>Puzzle ID.</strong> Every practice cube shows an ID such as 3D-H-933546 under the buttons. Tap it to copy. Type or paste an ID under Play a puzzle ID in the level chip to get exactly the same cube. Shared puzzles record no best time and earn no badge.</p><p><strong>Watch the logic.</strong> After you solve a cube, tap Watch the logic to see each box placed in the order the solver would find it, with the technique named. On a Trial step the dashed box is an option that fails.</p></div>
-    <div class="helpbody gBs" id="helpBodyB" hidden><p><strong>Goal.</strong> Fill the flower with blocks of diamonds. Each block holds exactly one number, and that number is how many diamonds the block has.</p><p><strong>The flower.</strong> The diamonds lie along two families of spirals, one turning each way. A block is a rectangle between two spirals of each kind: 2×3 means two diamonds along one spiral and three along the other. The ring closes, so a block can cross any petal. The inner and outer edges are zigzags, and a block cannot poke past them.</p><p><strong>Controls.</strong> Drag from one diamond to another: they are opposite corners of the block. Tap a block to remove it. Tap a number to see where it could go. A 1 places itself when you tap it.</p><p><strong>Levels.</strong> Size is rings × petals, from 5×8 on Easy up to 10×16 on Master. Easy needs only Direct steps, Medium goes up to Cross-check, Hard and Expert need Elimination, and Master needs Trial steps. Master has no previews, no error marks and only three hints. Bloom has no daily puzzle yet.</p><p><strong>Badges.</strong> Solve a puzzle with at most one hint (three on Master) and you earn the badge for that level's technique. Medium needs the Direct badge, Hard needs Cross-check, Expert needs Elimination, and Master needs Elimination earned on Expert. Bloom badges are separate from 2D and 3D. The Level locks switch in Settings turns the locks off.</p><p><strong>Pause.</strong> Tap the clock to take a break. The clock stops and the board is hidden until you resume. Each puzzle allows <strong>one pause</strong>. A second pause <strong>resets the puzzle</strong>: the board is cleared and the clock goes back to 0:00, and hints you used stay counted.</p><p><strong>Puzzle ID.</strong> Every puzzle shows an ID such as BL-H-104729 under the buttons. Tap it to copy. Type or paste an ID under Play a puzzle ID in the level chip to get exactly the same puzzle. Shared puzzles record no best time.</p><p><strong>Watch the logic.</strong> After you solve a puzzle, tap Watch the logic to see each block placed in the order the solver would find it, with the technique named. A Trial step shows the options that fail in red.</p></div>
+    <div class="helpbody gBs" id="helpBodyB" hidden><p><strong>Goal.</strong> Fill the flower with blocks of diamonds. Each block holds exactly one number, and that number is how many diamonds the block has.</p><p><strong>The flower.</strong> The diamonds lie along two families of spirals, one turning each way. A block is a rectangle between two spirals of each kind: 2×3 means two diamonds along one spiral and three along the other. The ring closes, so a block can cross any petal. The inner and outer edges are zigzags, and a block cannot poke past them.</p><p><strong>Controls.</strong> Drag from one diamond to another: they are opposite corners of the block. Tap a block to remove it. Tap a number to see where it could go. A 1 places itself when you tap it.</p><p><strong>Levels.</strong> Size is rings × petals, from 5×8 on Easy up to 10×16 on Master. Easy needs only Direct steps, Medium goes up to Cross-check, Hard and Expert need Elimination, and Master needs Trial steps. Master has no previews, no error marks and only three hints. Bloom has no daily puzzle yet.</p><p><strong>Badges.</strong> Solve a puzzle inside all three limits on the bar (finish within twice the par time, and no more than the mistakes and hints allowed) and you earn the badge for that level's technique. Tick marks on the bar show the limits and the ticker shows where you are: green is safe, yellow means you are past par, red means that limit is gone and so is the badge. A mistake is a block that is not part of the solution. Master hides the mistake count until you finish. Medium needs the Direct badge, Hard needs Cross-check, Expert needs Elimination, and Master needs Elimination earned on Expert. Bloom badges are separate from 2D and 3D. The Level locks switch in Settings turns the locks off.</p><p><strong>Pause.</strong> Tap the clock to take a break. The clock stops and the board is hidden until you resume. Each puzzle allows <strong>one pause</strong>. A second pause <strong>resets the puzzle</strong>: the board is cleared and the clock goes back to 0:00, and hints you used stay counted.</p><p><strong>Puzzle ID.</strong> Every puzzle shows an ID such as BL-H-104729 under the buttons. Tap it to copy. Type or paste an ID under Play a puzzle ID in the level chip to get exactly the same puzzle. Shared puzzles record no best time.</p><p><strong>Watch the logic.</strong> After you solve a puzzle, tap Watch the logic to see each block placed in the order the solver would find it, with the technique named. A Trial step shows the options that fail in red.</p></div>
   </section>
 </div>
 <div class="sheet" id="sheet-warn" hidden>
@@ -1367,7 +1385,7 @@ function makeState(n, res, seed) {
   return {
     cands: cands, rating: rating, trials: rated.steps[4], order: rated.order, steps: rated.steps, id: '', shared: false,
     n: n, nums: res.nums, solution: res.solution, numAt: numAt,
-    rects: [], undo: [], sel: -1, solved: false, hints: 0, elapsed: 0, started: false, t0: 0,
+    rects: [], undo: [], sel: -1, solved: false, hints: 0, mistakes: 0, elapsed: 0, started: false, t0: 0,
     seed: seed, nextHue: 0, cellEls: [], daily: false, date: null, hint: null, master: false, pauses: 0, paused: false
   };
 }
@@ -1503,7 +1521,7 @@ function savePracticeDraft() {
   if (!S.rects.length) { lsDel(P_KEY); return; }
   var el = S.started && !S.paused ? Math.floor((Date.now() - S.t0) / 1000) : S.elapsed;
   lsSet(P_KEY, JSON.stringify({ v: 1, n: S.n, master: !!S.master, seed: S.seed, shared: !!S.shared, sig: sigOf(S.nums),
-    rects: S.rects, elapsed: el, hints: S.hints, nextHue: S.nextHue, pauses: S.pauses }));
+    rects: S.rects, elapsed: el, hints: S.hints, mistakes: S.mistakes, nextHue: S.nextHue, pauses: S.pauses }));
 }
 function resumePractice() {
   var d = null;
@@ -1529,6 +1547,7 @@ function resumePractice() {
     S.hints = Math.max(0, Math.min(999, Math.floor(+d.hints || 0)));
     S.nextHue = Math.max(0, Math.floor(+d.nextHue || 0));
     S.pauses = Math.max(0, Math.min(99, Math.floor(+d.pauses || 0)));
+    S.mistakes = Math.max(0, Math.min(999, Math.floor(+d.mistakes || 0)));
     S.started = true; S.paused = true; S.restored = true;
     render(); updateButtons(); $('time').textContent = fmt(S.elapsed);
     defaultStatus(); refreshRecord();
@@ -1540,7 +1559,7 @@ function resumePractice() {
 function saveDraft() {
   if (S && !S.daily) { savePracticeDraft(); return; }
   if (!S || !S.daily || S.solved) return;
-  lsSet(draftKey(), JSON.stringify({ rects: S.rects, elapsed: S.elapsed, hints: S.hints, nextHue: S.nextHue, pauses: S.pauses }));
+  lsSet(draftKey(), JSON.stringify({ rects: S.rects, elapsed: S.elapsed, hints: S.hints, mistakes: S.mistakes, nextHue: S.nextHue, pauses: S.pauses }));
 }
 function restoreDraft() {
   var raw = lsGet(draftKey());
@@ -1557,6 +1576,7 @@ function restoreDraft() {
     S.hints = Math.max(0, Math.min(999, Math.floor(+d.hints || 0)));
     S.nextHue = Math.max(0, Math.floor(+d.nextHue || 0));
     S.pauses = Math.max(0, Math.min(99, Math.floor(+d.pauses || 0)));
+    S.mistakes = Math.max(0, Math.min(999, Math.floor(+d.mistakes || 0)));
   } catch (e) {}
 }
 function clearDraft() { if (S && S.date) lsDel(draftKey()); else lsDel(P_KEY); }
@@ -1636,7 +1656,7 @@ function render() {
   }
   $('count').textContent = (S.master ? S.rects.length : good) + '/' + S.nums.length;
   $('countlabel').textContent = S.master ? 'Placed' : 'Correct';
-  $('hints').textContent = S.master ? S.hints + '/3' : S.hints;
+  $('hints').textContent = S.hints;
 }
 
 function describeSel() {
@@ -1728,6 +1748,7 @@ function resetRun() {
 function placeRect(rc, tone) {
   pushUndo();
   S.rects = S.rects.filter(function (x) { return !overlap(x, rc); });
+  if (!S.solution.some(function (p) { return p.r === rc.r && p.c === rc.c && p.h === rc.h && p.w === rc.w; })) S.mistakes++;
   rc.hue = freshHue(rc, S.nextHue++, S.rects);
   S.rects.push(rc);
   startTimer();
@@ -1785,7 +1806,7 @@ function win() {
       msg += best === null ? ' First time on this size.' : ' New best (was ' + fmt(best) + ').';
     } else msg += ' Best on this size: ' + fmt(best) + '.';
   }
-  if (window.Progress && !S.shared) msg += Progress.message('d2', Progress.key('d2', S.n, S.master), S.rating, S.hints);
+  if (window.Progress && !S.shared) msg += Progress.message('d2', Progress.key('d2', S.n, S.master), S.rating, S.hints, { secs: S.elapsed, mist: S.mistakes, clues: S.nums.length });
   setStatus(msg + ' Start a new puzzle when you are ready.', true);
 }
 
@@ -2074,7 +2095,12 @@ refreshRecord();
 if (mode === 'daily') loadDaily(); else if (!resumePractice()) newPuzzle(practiceSize, practiceMaster);
 initCloud();
 window.__games = window.__games || {};
-window.__games.d2 = { discard: discardRestored, inProgress: function () { return !!S && !S.solved && S.rects.length > 0; }, show: function () {}, pauseInfo: pauseInfo, pause: pauseGame, resume: resumeGame, resetRun: resetRun,
+function challengeInfo() {
+  if (!S) return null;
+  var secs = S.started && !S.paused && !S.solved ? Math.floor((Date.now() - S.t0) / 1000) : S.elapsed;
+  return { k: S.master ? 'master' : ({ 5: 'easy', 7: 'medium', 10: 'hard', 13: 'expert' })[S.n], clues: S.nums.length, secs: secs, mist: S.mistakes || 0, hints: S.hints, master: !!S.master, solved: !!S.solved, neutral: !!S.daily || !!S.shared };
+}
+window.__games.d2 = { challengeInfo: challengeInfo, discard: discardRestored, inProgress: function () { return !!S && !S.solved && S.rects.length > 0; }, show: function () {}, pauseInfo: pauseInfo, pause: pauseGame, resume: resumeGame, resetRun: resetRun,
   getId: function () { return S ? S.id : ''; }, loadId: loadId, canReplay: canReplay, replayOpen: replayOpen, replayShow: replayShow, replayClose: replayClose,
   replayActive: function () { return !!RP && RP.s === S; } };
 })();
@@ -2710,7 +2736,7 @@ function beginPuzzle(n, master, pick, opts) {
     order: pick.order, steps: pick.steps, id: id, shared: !!opts.shared, daily: !!opts.daily, date: opts.date || null, noSave: !!opts.daily,
     boxes: res.nums.map(function () { return null; }), boxOf: new Int16Array(N).fill(-1),
     sel: -1, given: -1, hint: null, unlock: false, ghost: null, heat: null, dead: {}, unreach: null, rem: {}, nDead: 0, nUn: 0,
-    groups: null, shapeKey: null, pi: 0, undo: [], hints: 0, elapsed: 0, started: false, t0: 0, solved: false, master: !!master, pauses: 0, paused: false
+    groups: null, shapeKey: null, pi: 0, undo: [], hints: 0, mistakes: 0, elapsed: 0, started: false, t0: 0, solved: false, master: !!master, pauses: 0, paused: false
   };
   $('rating').textContent = Logic.names[S.rating];
   Array.prototype.forEach.call($('levels').querySelectorAll('button'), function (b) { b.setAttribute('aria-pressed', String(!opts.daily && (b.dataset.master ? !!master : (!master && +b.dataset.n === n)))); });
@@ -2879,7 +2905,7 @@ function saveDraft3() {
   if (!S || S.solved || S.noSave || S.replaying) return;
   var el = S.elapsed;
   if (S.started && !S.paused) el = Math.floor((Date.now() - S.t0) / 1000);
-  var d = { boxes: S.boxes.map(function (b) { return b ? b.id : -1; }), elapsed: el, hints: S.hints, pauses: S.pauses };
+  var d = { boxes: S.boxes.map(function (b) { return b ? b.id : -1; }), elapsed: el, hints: S.hints, mistakes: S.mistakes, pauses: S.pauses };
   if (!S.daily) {
     var placed = S.boxes.some(function (b, i) { return b && i !== S.given; });
     if (!S.id || !placed) { clearPracticeDraft3(); return; }
@@ -2903,6 +2929,7 @@ function applyDraft3(d) {
   S.elapsed = Math.max(0, Math.min(86400, Math.floor(+d.elapsed || 0)));
   S.hints = Math.max(0, Math.min(999, Math.floor(+d.hints || 0)));
   S.pauses = Math.max(0, Math.min(99, Math.floor(+d.pauses || 0)));
+    S.mistakes = Math.max(0, Math.min(999, Math.floor(+d.mistakes || 0)));
   occupy(); analyze();
   $('time').textContent = fmt(S.elapsed);
   return true;
@@ -3053,6 +3080,7 @@ function placeSelected() {
   if (!S || S.solved || S.sel < 0 || !S.ghost) return;
   pushUndo();
   S.boxes[S.sel] = S.ghost;
+  if (S.ghost.id !== S.solution[S.sel].id) S.mistakes++;
   startTimer();
   afterChange();
   if (!S.solved) fx(S.nDead || S.nUn ? 'bad' : 'place');
@@ -3173,7 +3201,7 @@ function win() {
     if (best === null || S.elapsed < best) { lsSet(key, String(S.elapsed)); msg += best === null ? ' First time on this size.' : ' New best (was ' + fmt(best) + ').'; }
     else msg += ' Best on this size: ' + fmt(best) + '.';
   }
-  if (window.Progress && !S.shared && !S.daily) msg += Progress.message('d3', Progress.key('d3', S.n, S.master), S.rating, S.hints);
+  if (window.Progress && !S.shared && !S.daily) msg += Progress.message('d3', Progress.key('d3', S.n, S.master), S.rating, S.hints, { secs: S.elapsed, mist: S.mistakes, clues: S.nums.length });
   setStatus(msg + tail, 'win');
   if (!S.daily) clearPracticeDraft3();
   V.mode = 'glass';
@@ -3198,7 +3226,7 @@ function refreshUi() {
   }
   var placed = S.boxes.filter(Boolean).length;
   $('count').textContent = placed + '/' + S.nums.length;
-  $('hints').textContent = S.master ? S.hints + '/3' : S.hints;
+  $('hints').textContent = S.hints;
   $('undo').disabled = S.solved || !S.undo.length;
   var left = S.master ? Math.max(0, 3 - S.hints) : 0;
   $('hint').disabled = S.solved || (S.master && left === 0 && !S.hint);
@@ -3406,7 +3434,12 @@ function checkRollover3() {
 }
 setInterval(checkRollover3, 30000);
 window.__games = window.__games || {};
-window.__games.d3 = { discard: discardRestored, inProgress: function () { return !!S && !S.solved && S.boxes.filter(Boolean).length > (S.given >= 0 ? 1 : 0); }, show: function () { resize(); }, pauseInfo: pauseInfo, pause: pauseGame, resume: resumeGame, resetRun: resetRun,
+function challengeInfo() {
+  if (!S) return null;
+  var secs = S.started && !S.paused && !S.solved ? Math.floor((Date.now() - S.t0) / 1000) : S.elapsed;
+  return { k: S.master ? 'master' : ({ 3: 'easy', 4: 'medium', 5: 'hard', 6: 'expert' })[S.n], clues: S.nums.length, secs: secs, mist: S.mistakes || 0, hints: S.hints, master: !!S.master, solved: !!S.solved, neutral: !!S.daily || !!S.shared };
+}
+window.__games.d3 = { challengeInfo: challengeInfo, discard: discardRestored, inProgress: function () { return !!S && !S.solved && S.boxes.filter(Boolean).length > (S.given >= 0 ? 1 : 0); }, show: function () { resize(); }, pauseInfo: pauseInfo, pause: pauseGame, resume: resumeGame, resetRun: resetRun,
   getId: function () { return S ? S.id : ''; }, loadId: loadId, loadDaily: loadDaily3, isDaily: function () { return !!S && !!S.daily; }, dailyLabel: dailyLabel3,
   dailyDone: function () { return !!Store3.history[todayStr3()]; }, record: function () { var s = streaks3(); s.cloud = Store3.cloud; return s; },
   canReplay: canReplay, replayOpen: replayOpen, replayShow: replayShow, replayClose: replayClose, replayActive: function () { return !!RP && RP.s === S; } };
@@ -3786,7 +3819,7 @@ function makeState(lv, res, seed) {
     lv: lv, P: cfg.P, L: cfg.L, g: geo(cfg.P, cfg.L), nums: res.nums, solution: res.solution, cands: res.cands, numAt: BC.buildNumAt(N, res.nums),
     rating: rated.tier, trials: rated.steps[4], order: rated.order, steps: rated.steps, logicOk: rated.solved,
     id: '', shared: false, master: !!cfg.master, seed: seed, code: -1,
-    blocks: [], undo: [], sel: -1, solved: false, hints: 0, elapsed: 0, started: false, t0: 0, nextHue: 0, hint: null, hintOn: false, pauses: 0, paused: false
+    blocks: [], undo: [], sel: -1, solved: false, hints: 0, mistakes: 0, elapsed: 0, started: false, t0: 0, nextHue: 0, hint: null, hintOn: false, pauses: 0, paused: false
   };
 }
 function idOf(st) { return st.master ? (st.code >= 0 ? 'BL-MA-' + st.code : '') : 'BL-' + BC.LEVELS[st.lv].code + '-' + st.seed; }
@@ -3858,7 +3891,7 @@ function render() {
   }
   $('count').textContent = (S.master ? S.blocks.length : good) + '/' + S.nums.length;
   $('countlabel').textContent = S.master ? 'Placed' : 'Correct';
-  $('hints').textContent = S.master ? S.hints + '/3' : S.hints;
+  $('hints').textContent = S.hints;
 }
 
 function defaultStatus() {
@@ -3888,7 +3921,7 @@ function saveDraft() {
   if (!S.blocks.length) { lsDel(B_KEY); return; }
   var el = S.started && !S.paused ? Math.floor((Date.now() - S.t0) / 1000) : S.elapsed;
   lsSet(B_KEY, JSON.stringify({ v: 1, lv: S.lv, master: !!S.master, seed: S.master ? S.code : S.seed, shared: !!S.shared, sig: sigOf(S.nums),
-    blocks: S.blocks.map(function (b) { return [b.i0, b.j0, b.A, b.B, b.hue]; }), elapsed: el, hints: S.hints, nextHue: S.nextHue, pauses: S.pauses }));
+    blocks: S.blocks.map(function (b) { return [b.i0, b.j0, b.A, b.B, b.hue]; }), elapsed: el, hints: S.hints, mistakes: S.mistakes, nextHue: S.nextHue, pauses: S.pauses }));
 }
 function resumeDraft() {
   var d = null;
@@ -3912,6 +3945,7 @@ function resumeDraft() {
     S.hints = Math.max(0, Math.min(999, Math.floor(+d.hints || 0)));
     S.nextHue = Math.max(0, Math.floor(+d.nextHue || 0));
     S.pauses = Math.max(0, Math.min(99, Math.floor(+d.pauses || 0)));
+    S.mistakes = Math.max(0, Math.min(999, Math.floor(+d.mistakes || 0)));
     S.started = true; S.paused = true; S.restored = true;
     render(); updateButtons(); $('time').textContent = fmt(S.elapsed);
     defaultStatus();
@@ -3963,6 +3997,7 @@ function freshHue(b, start, list) {
 function placeBlock(b) {
   pushUndo();
   S.blocks = S.blocks.filter(function (x) { return !overlap(x.cells, b.cells); });
+  if (!S.solution.some(function (p) { return p.key === b.key; })) S.mistakes++;
   b.hue = freshHue(b, S.nextHue++, S.blocks);
   S.blocks.push(b);
   startTimer();
@@ -3993,7 +4028,7 @@ function win() {
     if (best === null || S.elapsed < best) { lsSet(key, String(S.elapsed)); msg += best === null ? ' First time on this level.' : ' New best (was ' + fmt(best) + ').'; }
     else msg += ' Best on this level: ' + fmt(best) + '.';
   }
-  if (window.Progress && !S.shared) msg += Progress.message('bl', S.lv, S.rating, S.hints);
+  if (window.Progress && !S.shared) msg += Progress.message('bl', S.lv, S.rating, S.hints, { secs: S.elapsed, mist: S.mistakes, clues: S.nums.length });
   setStatus(msg + ' Start a new puzzle when you are ready.', true);
 }
 
@@ -4279,7 +4314,13 @@ $('new').addEventListener('click', function () { newPuzzle(level); });
 
 /* ---------- start ---------- */
 window.__games = window.__games || {};
+function challengeInfo() {
+  if (!S) return null;
+  var secs = S.started && !S.paused && !S.solved ? Math.floor((Date.now() - S.t0) / 1000) : S.elapsed;
+  return { k: S.lv, clues: S.nums.length, secs: secs, mist: S.mistakes || 0, hints: S.hints, master: !!S.master, solved: !!S.solved, neutral: !!S.shared };
+}
 window.__games.bl = {
+  challengeInfo: challengeInfo,
   inProgress: function () { return !!S && !S.solved && S.blocks.length > 0; },
   discard: discardRestored,
   show: function () { if (!S && !busy && !resumeDraft()) newPuzzle(level); },
@@ -4437,6 +4478,63 @@ document.getElementById('sVibTest').addEventListener('click', function () {
 });
 })();
 </script>
+<script>// Challenge: par time, allowed mistakes and allowed hints per mode and level; paints the Time | Mistakes | Hints bar.
+window.Challenge = (function () {
+  // [par seconds for a typical puzzle, typical clue count]. Par scales with the puzzle's own clue count (0.8x to 1.25x). The limit for a badge is 2 x par.
+  var BASE = {
+    d2: { easy: [15, 6], medium: [45, 11], hard: [180, 18], expert: [420, 29], master: [540, 30] },
+    d3: { easy: [20, 5], medium: [140, 9], hard: [420, 16], expert: [960, 27], master: [540, 16] },
+    bl: { easy: [35, 16], medium: [120, 20], hard: [250, 30], expert: [480, 38], master: [660, 45] }
+  };
+  var MIST = { easy: 3, medium: 3, hard: 4, expert: 5, master: 5 };
+  var HINT = { easy: 2, medium: 2, hard: 1, expert: 1, master: 2 };
+  function fmt(s) { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+  function limits(m, k, clues) {
+    var b = BASE[m] && BASE[m][k];
+    if (!b) return null;
+    var f = Math.max(0.8, Math.min(1.25, (clues || b[1]) / b[1])), par = Math.max(10, Math.round(b[0] * f / 5) * 5);
+    return { par: par, limit: par * 2, mist: MIST[k], hint: HINT[k] };
+  }
+  // Does a finished game meet all three limits? reasons lists the ones missed.
+  function check(m, k, clues, secs, mist, hints) {
+    var L = limits(m, k, clues), why = [];
+    if (!L) return { ok: true, why: why };
+    if (secs > L.limit) why.push('time ' + fmt(secs) + ' (limit ' + fmt(L.limit) + ')');
+    if (mist > L.mist) why.push(mist + (mist === 1 ? ' mistake' : ' mistakes') + ' (limit ' + L.mist + ')');
+    if (hints > L.hint) why.push(hints + (hints === 1 ? ' hint' : ' hints') + ' (limit ' + L.hint + ')');
+    return { ok: !why.length, why: why, L: L };
+  }
+  function q(root, sel) { return root.querySelector(sel); }
+  function seg(root, cls, tone, pos, marks) {
+    var e = q(root, cls); if (!e) return;
+    e.classList.remove('ok', 'warn', 'bad'); e.classList.add(tone);
+    q(e, '.cfill').style.width = (pos * 100).toFixed(1) + '%';
+    q(e, '.ctick').style.left = (pos * 100).toFixed(1) + '%';
+    Object.keys(marks).forEach(function (f) { var mk = q(e, '[data-f="' + f + '"]'); if (mk) mk.style.left = (marks[f] * 100).toFixed(1) + '%'; });
+  }
+  function paint(m, info) {
+    var root = document.getElementById(m + '-cbar');
+    if (!root || !info) return;
+    var L = limits(m, info.k, info.clues), neutral = !!info.neutral || !L;
+    root.classList.toggle('neutral', neutral);
+    var mistEl = document.getElementById(m + '-mist'), hideM = !!info.master && !info.solved;
+    if (mistEl) mistEl.textContent = hideM && !neutral ? '?' : String(info.mist);
+    if (neutral) { root.title = ''; return; }
+    var smax = L.limit * 1.2, ts = Math.min(info.secs, smax) / smax;
+    seg(root, '.cs-time', info.secs <= L.par ? 'ok' : info.secs <= L.limit ? 'warn' : 'bad', ts, { par: L.par / smax, lim: L.limit / smax });
+    q(root, '.cs-time [data-f="note"]').textContent = 'par ' + fmt(L.par);
+    var cm = info.mist, sm = L.mist + 1;
+    seg(root, '.cs-mist', cm > L.mist ? 'bad' : 'ok', Math.min(cm, sm) / sm, { lim: L.mist / sm });
+    q(root, '.cs-mist').classList.toggle('hide', hideM);
+    q(root, '.cs-mist [data-f="mof"]').textContent = '/' + L.mist;
+    var ch = info.hints, sh = L.hint + 1;
+    seg(root, '.cs-hint', ch > L.hint ? 'bad' : 'ok', Math.min(ch, sh) / sh, { lim: L.hint / sh });
+    q(root, '.cs-hint [data-f="hof"]').textContent = '/' + L.hint;
+    root.title = 'Badge limits: finish within ' + fmt(L.limit) + ' (par ' + fmt(L.par) + '), at most ' + L.mist + ' mistakes and ' + L.hint + ' hints.';
+  }
+  return { limits: limits, check: check, paint: paint, fmt: fmt };
+})();
+</script>
 <script>// Technique badges and level locks, shared by 2D and 3D.
 // Each level asks for one technique (its tier). A solve earns the badge of min(puzzle rating, level tier).
 // A level unlocks when the badge it needs is held. The Settings switch (FX prog) turns the locks off; badges are still kept.
@@ -4494,26 +4592,28 @@ var Progress = (function () {
     return 'easy';
   }
 
-  function award(m, k, rating, hints) {
+  // ex = { secs, mist, clues }: a badge also needs the finish time and the mistakes within the limits of Challenge.
+  function award(m, k, rating, hints, ex) {
     var l = lvl(m, k);
     if (!l) return null;
     var cap = k === 'master' ? 3 : MAX_HINTS;
     var t = Math.max(1, Math.min(rating || 1, l.t));
-    var out = { name: names()[t], tier: t, isNew: false, blocked: false, short: t < l.t, want: l.t };
-    if (hints > cap) { out.blocked = earnedAt(m, t).indexOf(k) < 0; return out; }
+    var out = { name: names()[t], tier: t, isNew: false, blocked: false, short: t < l.t, want: l.t, why: [] };
+    if (ex && window.Challenge) { var ck = window.Challenge.check(m, k, ex.clues, ex.secs, ex.mist, hints); out.why = ck.why; if (!ck.ok) { out.blocked = true; return out; } }
+    else if (hints > cap) { out.blocked = true; return out; }
     var a = data[m][t] = data[m][t] || [];
     if (a.indexOf(k) < 0) { a.push(k); out.isNew = true; save(); emit(); }
     return out;
   }
   // The sentence shown under a solved practice puzzle ('' when nothing to say).
-  function message(m, k, rating, hints) {
-    var r = award(m, k, rating, hints), nm = names();
+  function message(m, k, rating, hints, ex) {
+    var r = award(m, k, rating, hints, ex), nm = names();
     if (!r) return '';
-    var l = lvl(m, k);
-    if (r.blocked) return ' No badge: it needs ' + (k === 'master' ? 'at most 3 hints' : 'at most 1 hint') + '.';
-    if (r.isNew) return ' <strong>Badge earned: ' + r.name + '.</strong>';
-    if (r.short && earnedAt(m, l.t).indexOf(k) < 0) return ' This one only needed ' + r.name + ', so no ' + nm[l.t] + ' badge. Try another ' + l.n + ' puzzle.';
-    return '';
+    var l = lvl(m, k), mnote = k === 'master' && ex && window.Challenge ? ' Mistakes: ' + ex.mist + ' (limit ' + window.Challenge.limits(m, k, ex.clues).mist + ').' : '';
+    if (r.blocked) return (r.why.length ? ' No badge this time: ' + r.why.join(', ') + '.' : ' No badge: it needs at most ' + (k === 'master' ? '3 hints' : '1 hint') + '.') + mnote;
+    if (r.isNew) return ' <strong>Badge earned: ' + r.name + '.</strong>' + mnote;
+    if (r.short && earnedAt(m, l.t).indexOf(k) < 0) return ' This one only needed ' + r.name + ', so no ' + nm[l.t] + ' badge. Try another ' + l.n + ' puzzle.' + mnote;
+    return mnote;
   }
 
   function emit() { try { window.dispatchEvent(new Event('shikaku-progress')); } catch (e) {} }
@@ -4602,7 +4702,13 @@ function bars(t) { var h = ''; for (var i = 1; i <= 4; i++) h += '<i' + (i <= t 
 function tech(t) { return Logic.names[t]; }
 
 // ---- the chip beside the 2D/3D switch
+function paintBars() {
+  var m = mid(), g = game(m);
+  if (g && g.challengeInfo && window.Challenge) window.Challenge.paint(m, g.challengeInfo());
+}
+setInterval(paintBars, 250);
 function refresh() {
+  paintBars();
   var chip = $('lvlchip'); if (!chip) return;
   var m = mid(), html = '', label = '';
   if (m === 'bl') {
