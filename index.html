@@ -2026,7 +2026,7 @@ $('hint').addEventListener('click', function () {
   showHint();
 });
 $('pause').addEventListener('click', function () { if (window.__ui) window.__ui.pauseClick('d2'); else if (S && S.paused) resumeGame(); else pauseGame(); });
-$('new').addEventListener('click', function () { newPuzzle(practiceSize, practiceMaster); });
+$('new').addEventListener('click', function () { window.NewGame('d2', function () { newPuzzle(practiceSize, practiceMaster); }); });
 Array.prototype.forEach.call($('levels').querySelectorAll('button'), function (b) {
   b.addEventListener('click', function () {
     if (window.Progress && !Progress.guard('d2', b)) return;
@@ -2036,7 +2036,7 @@ Array.prototype.forEach.call($('levels').querySelectorAll('button'), function (b
       if (S && S.daily) saveDraft();
       stopTimer(); mode = 'practice'; lsSet('shikaku-mode', 'practice'); applyModeUi();
     }
-    newPuzzle(parseInt(b.dataset.size, 10), !!b.dataset.master);
+    window.NewGame('d2', function () { newPuzzle(parseInt(b.dataset.size, 10), !!b.dataset.master); });
   });
 });
 
@@ -3345,11 +3345,11 @@ $('act').addEventListener('click', function () {
 $('undo').addEventListener('click', undo);
 $('hint').addEventListener('click', hint);
 $('pause').addEventListener('click', function () { if (window.__ui) window.__ui.pauseClick('d3'); else if (S && S.paused) resumeGame(); else pauseGame(); });
-$('new').addEventListener('click', function () { newPuzzle(level, levelMaster); });
+$('new').addEventListener('click', function () { window.NewGame('d3', function () { newPuzzle(level, levelMaster); }); });
 Array.prototype.forEach.call($('levels').querySelectorAll('button'), function (b) { b.addEventListener('click', function () {
   if (window.Progress && !Progress.guard('d3', b)) return;
   if (window.Progress) Progress.hideNotes();
-  newPuzzle(+b.dataset.n, !!b.dataset.master);
+  window.NewGame('d3', function () { newPuzzle(+b.dataset.n, !!b.dataset.master); });
 }); });
 Array.prototype.forEach.call($('snaps').querySelectorAll('button'), function (b) { b.addEventListener('click', function () { snapTo(b.dataset.view); }); });
 Array.prototype.forEach.call($('modes').querySelectorAll('button'), function (b) {
@@ -4316,7 +4316,7 @@ $('hint').addEventListener('click', function () {
   S.hint = h; S.hints++; fx('hint'); startTimer(); saveDraft(); updateButtons(); showHint();
 });
 $('pause').addEventListener('click', function () { if (window.__ui) window.__ui.pauseClick('bl'); else if (S && S.paused) resumeGame(); else pauseGame(); });
-$('new').addEventListener('click', function () { newPuzzle(level); });
+$('new').addEventListener('click', function () { window.NewGame('bl', function () { newPuzzle(level); }); });
 
 /* ---------- start ---------- */
 window.__games = window.__games || {};
@@ -4353,6 +4353,33 @@ var btns = Array.prototype.slice.call(sw.querySelectorAll('button'));
 var subs = {}; btns.forEach(function (b) { var sm = b.querySelector('small'); subs[b.dataset.dim] = sm ? sm.textContent : ''; });
 function game(d) { return (window.__games || {})[GK[d]]; }
 function locked() { var g = game(cur); return !!(g && g.inProgress()); }
+/* One confirm for every way of replacing a game in progress (all modes) */
+(function () {
+  var st = document.createElement('style');
+  st.textContent = '.ngv{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(10,16,24,.55)}' +
+    '.ngv[hidden]{display:none}.ngc{max-width:340px;width:100%;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 12px 40px rgba(0,0,0,.35);font-family:var(--font-body)}' +
+    '.ngc h3{margin:0 0 6px;font-family:var(--font-display);font-size:18px}.ngc p{margin:0 0 14px;font-size:14px;line-height:1.4;color:var(--muted)}' +
+    '.ngc .row{display:flex;gap:8px}.ngc button{flex:1;min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:600 14px var(--font-body);cursor:pointer}' +
+    '.ngc button.go{background:var(--bad);border-color:var(--bad);color:#fff}.ngc button.keep{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}';
+  document.head.appendChild(st);
+  var box = document.createElement('div'); box.className = 'ngv'; box.hidden = true; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true');
+  box.innerHTML = '<div class="ngc"><h3>Leave this puzzle?</h3><p id="ngmsg"></p><div class="row"><button type="button" class="keep" id="ngkeep">Keep playing</button><button type="button" class="go" id="nggo">Start new</button></div></div>';
+  document.body.appendChild(box);
+  var pend = null;
+  function hide() { box.hidden = true; pend = null; }
+  box.addEventListener('click', function (e) { if (e.target === box) hide(); });
+  document.getElementById('ngkeep').addEventListener('click', hide);
+  document.getElementById('nggo').addEventListener('click', function () { var f = pend; hide(); if (f) f(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !box.hidden) hide(); });
+  /* key: 'd2' | 'd3' | 'bl'; go: what to run if the player agrees (or nothing is in progress) */
+  window.NewGame = function (key, go) {
+    var g = (window.__games || {})[key];
+    if (!(g && g.inProgress && g.inProgress())) { go(); return; }
+    var sv = g.pauseInfo && g.pauseInfo();
+    document.getElementById('ngmsg').textContent = 'Your current puzzle is unfinished. Starting a new one will discard it.' + (key === 'bl' || key === 'd2' || key === 'd3' ? ' Mistakes and hints so far are lost with it.' : '');
+    pend = go; box.hidden = false; document.getElementById('ngkeep').focus();
+  };
+})();
 function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
 function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
 
@@ -4975,11 +5002,14 @@ function playId() {
     var sb = document.querySelector('#dimsw button[data-dim="' + (p.dim === 2 ? '2d' : p.dim === 3 ? '3d' : 'bl') + '"]');
     if (sb) sb.click();
   }
-  var err = game(want).loadId(p);
-  if (err) return bad(err);
-  $('idIn').value = ''; msg.textContent = '';
-  close();
-  setTimeout(refresh, 80); setTimeout(refresh, 400);
+  function go() {
+    var err = game(want).loadId(p);
+    if (err) return bad(err);
+    $('idIn').value = ''; msg.textContent = '';
+    close();
+    setTimeout(refresh, 80); setTimeout(refresh, 400);
+  }
+  window.NewGame(want, go);
 }
 $('idGo').addEventListener('click', playId);
 $('idIn').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); playId(); } });
@@ -4988,7 +5018,7 @@ $('playList').addEventListener('click', function (e) {
   var m = mid(), k = b.dataset.k;
   if (m === 'bl') {
     if (!Progress.open('bl', k)) { $('playMsg').textContent = Progress.needText('bl', k); if (window.FX) window.FX.play('bad'); return; }
-    close(); game('bl').start(k); setTimeout(refresh, 80); setTimeout(refresh, 400); return;
+    close(); window.NewGame('bl', function () { game('bl').start(k); setTimeout(refresh, 80); setTimeout(refresh, 400); }); return;
   }
   if (k === 'daily') {
     if (m === 'd2') document.querySelector('#g2 [data-mode="daily"]').click(); else game('d3').loadDaily();
